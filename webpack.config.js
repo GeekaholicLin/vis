@@ -5,7 +5,7 @@ const copyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const HtmlWebpackIncludeAssetsPlugin = require("html-webpack-include-assets-plugin");
-const api = require("./src/path.config.js");
+// const api = require("./src/path.config.js");
 const prod = process.env.NODE_ENV === "production";
 
 const imgLoaderDev = [
@@ -49,8 +49,8 @@ const imgLoader = prod ? imgLoaderProd : imgLoaderDev;
 module.exports = {
   context: path.resolve(__dirname, "src"),
   entry: {
-    index: "./index.js",
-    common: ["echarts"]
+    index: "./index.js"
+    // common: ["echarts"]
   },
   output: {
     path: path.join(__dirname, prod ? "dist" : "build"),
@@ -152,7 +152,7 @@ if (prod) {
   module.exports.devServer = {
     contentBase: "src",
     // host: "0.0.0.0",
-    port: 5050,
+    port: 6606,
     disableHostCheck: true,
     hot: true,
     publicPath: "/",
@@ -162,10 +162,10 @@ if (prod) {
     },
     proxy: {
       "/api": {
-        target: api.apiHost
+        // target: api.apiHost
       },
       "/data": {
-        target: api.apiHost
+        // target: api.apiHost
         // target: api.dataHost
       },
       changeOrigin: true,
