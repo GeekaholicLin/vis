@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { area } from "d3-shape";
-import { Group } from "./Group";
+import Group from "./Group";
 import { PREFIX } from "../constant";
 export default class Area extends Component {
   constructor(props) {

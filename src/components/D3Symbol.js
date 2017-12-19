@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { symbol } from "d3-shape";
-import { Group } from "./Group";
+import _ from "lodash";
+import Group from "./Group";
 import { PREFIX, SYMBOLS_MAP } from "../constant";
 
 export default class D3Symbol extends Component {
@@ -11,7 +12,9 @@ export default class D3Symbol extends Component {
   }
   render() {
     let { className, children, top, left, type, size, ...rest } = this.props;
-    let symbolGenerator = symbol.type(SYMBOLS_MAP[type]).size(size);
+    let symbolGenerator = symbol
+      .type(_.isFunction(type) ? type : SYMBOLS_MAP[type])
+      .size(size);
     return (
       <Group className={`${PREFIX}-symbol-group`} left={left} top={top}>
         <path
