@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { PREFIX } from "../constant";
-export default class Svg extends Component {
+export default class SVG extends Component {
   constructor(props) {
     super(props);
   }
@@ -15,15 +15,15 @@ export default class Svg extends Component {
     );
   }
 }
-Svg.displayName = `${PREFIX}-Svg`;
-Svg.propTypes = {
+SVG.displayName = `${PREFIX}-SVG`;
+SVG.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   className: PropTypes.string,
   style: PropTypes.object,
   children: PropTypes.node
 };
-Svg.defaultProps = {
+SVG.defaultProps = {
   width: 800,
   height: 800
 };
