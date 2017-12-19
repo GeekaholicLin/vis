@@ -1,3 +1,12 @@
+import {
+  symbolCircle,
+  symbolCross,
+  symbolDiamond,
+  symbolSquare,
+  symbolStar,
+  symbolTriangle,
+  symbolWye
+} from "d3-shape";
 export const PREFIX = "vix";
 export const SCALES = [
   "auto",
@@ -16,17 +25,15 @@ export const SCALES = [
   "sequential",
   "threshold"
 ];
-export const SYMBOLS = [
-  "circle",
-  "cross",
-  "diamond",
-  "square",
-  "star",
-  "triangle",
-  "wye",
-  "line",
-  "none"
-];
+export const SYMBOLS_MAP = {
+  circle: symbolCircle,
+  cross: symbolCross,
+  diamond: symbolDiamond,
+  square: symbolSquare,
+  star: symbolStar,
+  triangle: symbolTriangle,
+  wye: symbolWye
+};
 export const ORIENTATION = ["top", "right", "left", "bottom"];
 export const SVG_EVENTS = [
   "onClick",
