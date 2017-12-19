@@ -5,7 +5,17 @@ import {
   symbolSquare,
   symbolStar,
   symbolTriangle,
-  symbolWye
+  symbolWye,
+  stackOrderAscending,
+  stackOrderDescending,
+  stackOrderInsideOut,
+  stackOrderNone,
+  stackOrderReverse,
+  stackOffsetDiverging,
+  stackOffsetExpand,
+  stackOffsetNone,
+  stackOffsetSilhouette,
+  stackOffsetWiggle
 } from "d3-shape";
 export const PREFIX = "vix";
 export const SCALES = [
@@ -33,6 +43,20 @@ export const SYMBOLS_MAP = {
   star: symbolStar,
   triangle: symbolTriangle,
   wye: symbolWye
+};
+export const STACK_ORDER_MAP = {
+  ascnding: stackOrderAscending,
+  descending: stackOrderDescending,
+  insideout: stackOrderInsideOut,
+  none: stackOrderNone,
+  reverse: stackOrderReverse
+};
+export const STACK_OFFSET_MAP = {
+  deverging: stackOffsetDiverging,
+  expand: stackOffsetExpand,
+  node: stackOffsetNone,
+  silhouette: stackOffsetSilhouette,
+  wiggle: stackOffsetWiggle
 };
 export const ORIENTATION = ["top", "right", "left", "bottom"];
 export const SVG_EVENTS = [

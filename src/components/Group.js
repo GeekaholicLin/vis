@@ -8,11 +8,11 @@ export default class Group extends Component {
     super(props);
   }
   render() {
-    const { className, children, transform, left, top, ...rest } = props;
+    const { className, children, left, top, ...rest } = props;
     return (
       <g
         className={cx(`${PREFIX}-group`, className)}
-        transform={transform || `translate(${left},${top})`}
+        transform={`translate(${left},${top})`}
         {...rest}
       >
         {children}
@@ -23,7 +23,6 @@ export default class Group extends Component {
 Group.displayName = `${PREFIX}-Group`;
 Group.propTypes = {
   className: PropTypes.string,
-  transform: PropTypes.string,
   left: PropTypes.number,
   top: PropTypes.number,
   children: PropTypes.node
