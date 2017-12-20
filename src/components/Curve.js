@@ -48,8 +48,8 @@ Curve.PropTypes = {
   data: PropTypes.array.isRequired,
   xScale: PropTypes.func,
   yScale: PropTypes.func,
-  x: PropTypes.func,
-  y: PropTypes.func,
+  x: PropTypes.func.isRequired, //accessor func
+  y: PropTypes.func.isRequired,
   defined: PropTypes.func,
   curve: PropTypes.curve,
   symbolGenerator: PropTypes.func

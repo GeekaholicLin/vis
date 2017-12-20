@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import d3Axis from "d3-axis";
+import * as d3Axis from "d3-axis";
+import { select } from "d3-selection";
 import _ from "lodash";
 import PropTypes from "prop-types";
+import cx from "classnames";
 import { PREFIX, ORIENTATION, SCALES } from "../constant";
 import Group from "./Group";
 //TODO:
@@ -11,6 +13,7 @@ export default class Axis extends Component {
   }
   render() {
     let {
+      className,
       orientation,
       scale,
       ticks,
@@ -19,17 +22,24 @@ export default class Axis extends Component {
       tickSize,
       tickSizeInner,
       tickSizeOuter,
-      tickPadding
+      tickPadding,
+      ...rest
     } = this.props;
-    let axisGenerator = d3Axis["axis" + _.capitalize(orientation)];
+    let axisGenerator = d3Axis["axis" + _.capitalize(orientation)](scale);
     if (_.isFunction(axisGenerator)) {
-      axisGenerator(scale).tickArguments(ticks);
+      axisGenerator.tickArguments(ticks);
       tickValues && axisGenerator.tickValues(tickValues);
       tickFormat && axisGenerator.tickFormat(tickFormat);
       tickSize && axisGenerator.tickSize(tickSize);
       tickSizeInner && axisGenerator.tickSizeInner(tickSizeInner);
       tickSizeOuter && axisGenerator.tickSizeOuter(tickSizeOuter);
-      return <g className={className} ref={node => axisGenerator(node)} />;
+      return (
+        <g
+          className={cx(`${PREFIX}-axis`, className)}
+          ref={node => select(node).call(axisGenerator)}
+          {...rest}
+        />
+      );
     }
     return null;
   }
@@ -39,16 +49,15 @@ Axis.propTypes = {
   className: PropTypes.string,
   orientation: PropTypes.oneOf(ORIENTATION),
   scale: PropTypes.func.isRequired,
-  dataKey: PropTypes.string.isRequired,
-  ticks: PropTypes.array,
-  tickValues: PropTypes.arr,
+  ticks: PropTypes.array.isRequired,
+  tickValues: PropTypes.array,
   tickFormat: PropTypes.func,
   tickSize: PropTypes.number,
   tickSizeInner: PropTypes.number,
   tickSizeOuter: PropTypes.number,
   tickPadding: PropTypes.number
 };
-Axis.propTypes = {
-  className: `${PREFIX}-axis`,
-  orientation: "bottom"
+Axis.defaultProps = {
+  orientation: "bottom",
+  ticks: []
 };

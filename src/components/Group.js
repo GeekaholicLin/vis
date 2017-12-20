@@ -8,7 +8,7 @@ export default class Group extends Component {
     super(props);
   }
   render() {
-    const { className, children, left, top, ...rest } = props;
+    const { className, children, left, top, ...rest } = this.props;
     return (
       <g
         className={cx(`${PREFIX}-group`, className)}
