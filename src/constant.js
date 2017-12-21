@@ -142,3 +142,8 @@ export const SVG_PRESENTATION_ATTRS = [
   "writingMode"
 ];
 export const SVG_STYLE_ATTRS = ["className", "style"];
+export const DEFAULT_PROPS = {
+  width: 960,
+  height: 500,
+  margin: { top: 30, right: 30, bottom: 30, left: 30 }
+};

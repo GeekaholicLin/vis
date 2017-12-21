@@ -24,6 +24,6 @@ SVG.propTypes = {
   children: PropTypes.node
 };
 SVG.defaultProps = {
-  width: 800,
-  height: 800
+  width: 960,
+  height: 500
 };

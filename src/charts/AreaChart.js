@@ -3,35 +3,43 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import SVG from "../components/SVG";
 import Group from "../components/Group";
-import { Curve, Axis } from "../components/index";
-import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
-
-export default class LineChart extends Component {
+import { Area, Axis } from "../components/index";
+import { PREFIX, DEFAULT_PROPS } from "../constant";
+export default class AreaChart extends Component {
   constructor(props) {
     super(props);
   }
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.data.length > 0;
+  }
   render() {
-    const {
+    let {
       className,
-      children,
       width,
       height,
       margin,
-      defined,
-      curve,
       data,
       x,
+      x0,
+      x1,
       y,
+      y0,
+      y1,
       xScale,
       yScale,
-      xTickFormat,
-      yTickFormat,
       xDomain,
       yDomain,
       xRange,
       yRange,
-      tickPadding
+      defined,
+      curve,
+      xTickFormat,
+      yTickFormat,
+      tickPadding,
+      ...rest
     } = this.props;
+    console.log("AreaChat-data", data);
+    let areaProps = Object.keys(Area.propTypes);
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     let xNewScale = xScale
@@ -42,38 +50,42 @@ export default class LineChart extends Component {
       .range(yRange || [height - margin.top, margin.bottom]);
     return (
       <SVG
-        className={cx(`${PREFIX}-line-chart`, className)}
+        className={cx(`${PREFIX}-area-chart`, className)}
         width={width}
         height={height}
       >
         <Group>
-          <Curve
-            className={"vis-app-curve"}
+          <Area
+            className="area-chart-area"
             data={data}
             x={x}
+            x0={x0}
+            x1={x1}
             y={y}
-            xScale={xScale}
-            yScale={yScale}
+            y0={y0}
+            y1={y1}
             defined={defined}
             curve={curve}
+            xScale={xScale}
+            yScale={yScale}
+            fill={"steelblue"}
+            stroke={"none"}
           />
           <Axis
             key={"x"}
-            className={"line-chart-xAxis"}
+            className={"vis-app-xAxis"}
             scale={xScale}
             tickFormat={xTickFormat}
             tickPadding={tickPadding}
-            tickSizeInner={-innerHeight}
             transform={`translate(0,${innerHeight + margin.top})`}
           />
           <Axis
             key={"y"}
             orientation={"left"}
-            className={"line-chart-yAxis"}
+            className={"vis-app-yAxis"}
             scale={yScale}
             tickFormat={yTickFormat}
             tickPadding={tickPadding}
-            tickSizeInner={-innerWidth}
             transform={`translate(${margin.left},0)`}
           />
         </Group>
@@ -81,32 +93,20 @@ export default class LineChart extends Component {
     );
   }
 }
-LineChart.displayName = `${PREFIX}-LineChart`;
-LineChart.propTypes = {
+
+AreaChart.displayName = `${PREFIX}-AreaChart`;
+AreaChart.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.node,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
   margin: PropTypes.shape({
     top: PropTypes.number,
     right: PropTypes.number,
     bottom: PropTypes.number,
     left: PropTypes.number
   }),
-  defined: PropTypes.func,
-  curve: PropTypes.func,
-  data: PropTypes.array, //the following prop with map to all of children
-  x: PropTypes.func.isRequired, //accessor func
-  y: PropTypes.func.isRequired,
-  xScale: PropTypes.func,
-  yScale: PropTypes.func,
-  xDomain: PropTypes.array,
-  yDomain: PropTypes.array,
-  xRange: PropTypes.array,
-  yRange: PropTypes.array,
-  xTickFormat: PropTypes.func,
-  yTickFormat: PropTypes.func
+  ...Area.propTypes
 };
-LineChart.defaultProps = {
+AreaChart.defaultProps = {
   ...DEFAULT_PROPS
 };

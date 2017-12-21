@@ -46,12 +46,16 @@ Curve.displayName = `${PREFIX}-Curve`;
 Curve.PropTypes = {
   className: PropTypes.string,
   data: PropTypes.array.isRequired,
-  xScale: PropTypes.func,
-  yScale: PropTypes.func,
+  xScale: PropTypes.func.isRequired,
+  yScale: PropTypes.func.isRequired,
   x: PropTypes.func.isRequired, //accessor func
   y: PropTypes.func.isRequired,
   defined: PropTypes.func,
-  curve: PropTypes.curve,
+  curve: PropTypes.func,
   symbolGenerator: PropTypes.func
 };
-Curve.defaultProps = {};
+Curve.defaultProps = {
+  fill: "none",
+  stroke: "blue",
+  strokeWidth: 2
+};

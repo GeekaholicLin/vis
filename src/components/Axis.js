@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import { PREFIX, ORIENTATION, SCALES } from "../constant";
 import Group from "./Group";
-//TODO:
 export default class Axis extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +35,7 @@ export default class Axis extends Component {
       return (
         <g
           className={cx(`${PREFIX}-axis`, className)}
-          ref={node => select(node).call(axisGenerator)}
+          ref={node => axisGenerator(select(node))}
           {...rest}
         />
       );

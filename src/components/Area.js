@@ -57,11 +57,7 @@ Area.propTypes = {
   xScale: PropTypes.func.isRequired,
   yScale: PropTypes.func.isRequired,
   defined: PropTypes.func,
-  curve: PropTypes.func,
-  stroke: PropTypes.string,
-  strokeWidth: PropTypes.number,
-  strokeDasharray: PropTypes.string,
-  fill: PropTypes.string
+  curve: PropTypes.func
 };
 Area.defaultProps = {
   stroke: "#000",
