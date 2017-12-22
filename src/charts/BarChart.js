@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import SVG from "../components/SVG";
 import Group from "../components/Group";
-import { Area, Axis } from "../components/index";
+import { Bar, Axis } from "../components/index";
 import { PREFIX, DEFAULT_PROPS } from "../constant";
-export default class AreaChart extends Component {
+export default class BarChart extends Component {
   constructor(props) {
     super(props);
   }
@@ -17,25 +17,20 @@ export default class AreaChart extends Component {
       margin,
       data,
       x,
-      x0,
-      x1,
       y,
-      y0,
-      y1,
       xScale,
       yScale,
       xDomain,
       yDomain,
       xRange,
       yRange,
-      defined,
-      curve,
       xTickFormat,
       yTickFormat,
       tickPadding,
+      top,
+      left,
       ...rest
     } = this.props;
-    let areaProps = Object.keys(Area.propTypes);
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     let xNewScale = xScale
@@ -46,27 +41,25 @@ export default class AreaChart extends Component {
       .range(yRange || [height - margin.top, margin.bottom]);
     return (
       <SVG
-        className={cx(`${PREFIX}-area-chart`, className)}
+        className={cx(`${PREFIX}-bar-chart`, className)}
         width={width}
         height={height}
       >
         <Group>
-          <Area
-            className="area-chart-area"
-            data={data}
-            x={x}
-            x0={x0}
-            x1={x1}
-            y={y}
-            y0={y0}
-            y1={y1}
-            defined={defined}
-            curve={curve}
-            xScale={xScale}
-            yScale={yScale}
-            fill={"steelblue"}
-            stroke={"none"}
-          />
+          {data.map((d, i) => {
+            return (
+              <Bar
+                key={`bar-chart-rect-${i}`}
+                className="bar-chart-rect"
+                left={xScale(x(d))}
+                top={yScale(y(d))}
+                width={xScale.bandwidth()}
+                height={innerHeight + margin.bottom - yScale(d.frequency)}
+                fill={"steelblue"}
+                stroke={"none"}
+              />
+            );
+          })}
           <Axis
             key={"x"}
             className={"vis-app-xAxis"}
@@ -78,6 +71,7 @@ export default class AreaChart extends Component {
           <Axis
             key={"y"}
             orientation={"left"}
+            ticks={[10, "%"]}
             className={"vis-app-yAxis"}
             scale={yScale}
             tickFormat={yTickFormat}
@@ -90,8 +84,8 @@ export default class AreaChart extends Component {
   }
 }
 
-AreaChart.displayName = `${PREFIX}-AreaChart`;
-AreaChart.propTypes = {
+BarChart.displayName = `${PREFIX}-BarChart`;
+BarChart.propTypes = {
   className: PropTypes.string,
   width: PropTypes.number,
   height: PropTypes.number,
@@ -101,8 +95,8 @@ AreaChart.propTypes = {
     bottom: PropTypes.number,
     left: PropTypes.number
   }),
-  ...Area.propTypes
+  ...Bar.propTypes
 };
-AreaChart.defaultProps = {
+BarChart.defaultProps = {
   ...DEFAULT_PROPS
 };

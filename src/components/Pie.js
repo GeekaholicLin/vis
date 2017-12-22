@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { arc, pie } from "d3-shape";
+import _ from "lodash";
 import Group from "./Group";
 import { PREFIX } from "../constant";
 export default class Pie extends Component {
@@ -25,19 +26,23 @@ export default class Pie extends Component {
       startAngle,
       endAngle,
       padAngle,
+      color,
       ...rest
     } = this.props;
     let arcGenerator = arc();
-    centroid && arcGenerator.centroid(centroid);
-    innerRadius && arcGenerator.innerRadius(innerRadius);
+    arcGenerator.innerRadius(innerRadius);
     outerRadius && arcGenerator.outerRadius(outerRadius);
     cornerRadius && arcGenerator.cornerRadius(cornerRadius);
     padRadius && arcGenerator.padRadius(padRadius);
+    startAngle && arcGenerator.startAngle(startAngle);
+    endAngle && arcGenerator.endAngle(endAngle);
     let pieGenerator = pie();
-    pieSort && pieGenerator.sort(pieSort);
-    pieValue && pieGenerator.value(pieValue);
+    sort && pieGenerator.sort(sort);
+    value && pieGenerator.value(value);
+    sortValue && pieGenerator.sortValue(sortValue);
     padAngle && pieGenerator.padAngle(padAngle);
     let pieArcs = pieGenerator(data);
+    console.log(pieArcs);
     return (
       <Group className={cx(`${PREFIX}-pie`, className)} top={top} left={left}>
         {pieArcs.map((pieArc, i) => {
@@ -46,6 +51,8 @@ export default class Pie extends Component {
               key={`${PREFIX}-pie-arc-${i}`}
               className={`${PREFIX}-pie-arc`}
               d={arcGenerator(pieArc)}
+              {...rest}
+              fill={_.isString(color) ? color : color(pieArc.data)}
             />
           );
         })}
@@ -56,7 +63,7 @@ export default class Pie extends Component {
 Pie.displayName = `${PREFIX}-Pie`;
 Pie.propTypes = {
   className: PropTypes.string,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.number).isRequired,
   top: PropTypes.number,
   left: PropTypes.number,
   centroid: PropTypes.any, //arc
