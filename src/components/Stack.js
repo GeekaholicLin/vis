@@ -21,6 +21,7 @@ export default class Stack extends Component {
       value,
       order,
       offset,
+      color,
       ...rest
     } = this.props;
     let stackGenerator = stack();
@@ -35,6 +36,7 @@ export default class Stack extends Component {
         _.isFunction(offset) ? offset : STACK_OFFSET_MAP[offset]
       );
     let stackDataArr = stackGenerator(data); //generate data for area or bar
+    console.log("stackDataArr", stackDataArr);
     return (
       <Group
         className={cx(`{PREFIX}-stack-group`, className)}
@@ -47,12 +49,13 @@ export default class Stack extends Component {
           return React.cloneElement(
             children,
             {
-              key: `${PREFIX}-stack-${displayName}-i`,
+              key: `${PREFIX}-stack-${displayName}-${i}`,
               className: cx(
                 `${PREFIX}-stack-${displayName}`,
                 children.props.className
               ),
               data: stackData,
+              fill: _.isString(color) ? color : color(stackData.key),
               ...rest
             },
             children.children
@@ -79,7 +82,8 @@ Stack.propTypes = {
   offset: PropTypes.oneOfType([
     PropTypes.oneOf(Object.keys(STACK_OFFSET_MAP)),
     PropTypes.func
-  ])
+  ]),
+  color: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
 };
 Stack.defaultProps = {
   left: 0,

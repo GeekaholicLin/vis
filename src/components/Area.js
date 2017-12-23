@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import _ from "lodash";
 import { area } from "d3-shape";
 import Group from "./Group";
 import { PREFIX } from "../constant";
@@ -25,12 +26,12 @@ export default class Area extends Component {
       ...rest
     } = this.props;
     const areaGenerator = area();
-    x && areaGenerator.x(d => xScale(x(d)));
-    x0 && areaGenerator.x0(d => xScale(x0(d)));
-    x1 && areaGenerator.x1(d => xScale(x1(d)));
-    y && areaGenerator.y(d => yScale(y(d)));
-    y0 && areaGenerator.y0(d => yScale(y0(d)));
-    y1 && areaGenerator.y1(d => yScale(y1(d)));
+    !_.isNil(x) && areaGenerator.x(d => xScale(x(d)));
+    !_.isNil(x0) && areaGenerator.x0(d => xScale(x0(d)));
+    !_.isNil(x1) && areaGenerator.x1(d => xScale(x1(d)));
+    !_.isNil(y) && areaGenerator.y(d => yScale(y(d)));
+    !_.isNil(y0) && areaGenerator.y0(d => yScale(y0(d)));
+    !_.isNil(y1) && areaGenerator.y1(d => yScale(y1(d)));
     defined && areaGenerator.defined(defined);
     curve && areaGenerator.curve(curve);
     return (

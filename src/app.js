@@ -10,7 +10,13 @@ import {
 import { extent, max } from "d3-array";
 import { timeParse, timeFormat } from "d3-time-format";
 import { tsv } from "d3-request";
-import { LineChart, AreaChart, BarChart, PieChart } from "./charts";
+import {
+  LineChart,
+  AreaChart,
+  BarChart,
+  PieChart,
+  StackAreaChart
+} from "./charts";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
 export default class App extends Component {
@@ -18,7 +24,9 @@ export default class App extends Component {
     super(props);
     this.state = {
       areaData: [],
-      barData: []
+      barData: [],
+      stackAreaData: [],
+      keys: []
     };
   }
 
@@ -40,13 +48,30 @@ export default class App extends Component {
     tsv(
       "./data/letter.data.tsv",
       d => {
-        d.close = +d.frequency;
+        d.frequency = +d.frequency;
         return d;
       },
       (error, data) => {
         if (error) throw error;
         this.setState({
           barData: [...data]
+        });
+      }
+    );
+    tsv(
+      "./data/stacked-area.data.tsv",
+      (d, i, columns) => {
+        d.date = timeParse("%Y %b %d")(d.date);
+        for (var i = 1, n = columns.length; i < n; ++i)
+          d[columns[i]] = d[columns[i]] / 100;
+        d.columns = columns;
+        return d;
+      },
+      (error, data) => {
+        if (error) throw error;
+        this.setState({
+          stackAreaData: [...data],
+          keys: data[0] ? data[0].columns.slice(1) : []
         });
       }
     );
@@ -60,7 +85,7 @@ export default class App extends Component {
     let pieData = [1, 1, 2, 3, 5, 8, 13, 21];
     let xScale = scaleTime().nice();
     let yScale = scaleLinear().nice();
-    let { areaData, barData } = this.state;
+    let { areaData, barData, stackAreaData, keys } = this.state;
     return (
       <div>
         <div id="line-chart">
@@ -87,13 +112,31 @@ export default class App extends Component {
             data={areaData}
             x={d => d.date}
             y={d => d.close}
-            y0={() => 0}
+            y0={d => 0}
             y1={d => d.close}
             xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
             xDomain={extent(areaData, d => d.date)}
             yDomain={[0, max(areaData, d => d.close)]}
             tickPadding={7}
+          />
+        </div>
+        <div id="stacked-area-chart">
+          <StackAreaChart
+            className="vis-app-area-chart"
+            width={960}
+            height={500}
+            margin={{ left: 50, top: 50, right: 50, bottom: 50 }}
+            data={stackAreaData}
+            x={d => d.data.date}
+            y0={d => d[0]}
+            y1={d => d[1]}
+            xScale={scaleTime().nice()}
+            yScale={scaleLinear().nice()}
+            xDomain={extent(stackAreaData, d => d.date)}
+            yDomain={[0, 1]}
+            keys={keys}
+            color={scaleOrdinal(schemeCategory20)}
           />
         </div>
         <div id="bar-chart">

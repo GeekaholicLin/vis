@@ -42,7 +42,6 @@ export default class Pie extends Component {
     sortValue && pieGenerator.sortValue(sortValue);
     padAngle && pieGenerator.padAngle(padAngle);
     let pieArcs = pieGenerator(data);
-    console.log(pieArcs);
     return (
       <Group className={cx(`${PREFIX}-pie`, className)} top={top} left={left}>
         {pieArcs.map((pieArc, i) => {
