@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import SVG from "../components/SVG";
 import Group from "../components/Group";
-import { Bar, Axis } from "../components/index";
+import { Bar, Axis, Stack } from "../components/index";
 import { PREFIX, DEFAULT_PROPS } from "../constant";
 export default class BarChart extends Component {
   constructor(props) {
@@ -29,6 +29,13 @@ export default class BarChart extends Component {
       tickPadding,
       top,
       left,
+      keys,
+      value,
+      order,
+      offset,
+      stackLeft,
+      stackTop,
+      color,
       ...rest
     } = this.props;
     const innerWidth = width - margin.left - margin.right;
@@ -39,6 +46,7 @@ export default class BarChart extends Component {
     let yNewScale = yScale
       .domain(yDomain || [0, max(data, y)])
       .range(yRange || [height - margin.top, margin.bottom]);
+
     return (
       <SVG
         className={cx(`${PREFIX}-bar-chart`, className)}
@@ -46,15 +54,26 @@ export default class BarChart extends Component {
         height={height}
       >
         <Group>
-          <Bar
+          <Stack
+            className="stacked-bar-chart"
+            left={stackLeft}
+            top={stackTop}
             data={data}
-            left={d => xScale(x(d))}
-            top={d => yScale(y(d))}
-            width={xScale.bandwidth()}
-            height={d => innerHeight + margin.bottom - yScale(d.frequency)}
-            fill={"steelblue"}
-            stroke={"none"}
-          />
+            keys={keys}
+            value={value}
+            order={order}
+            offset={offset}
+            color={color}
+          >
+            <Bar
+              left={d => xScale(x(d))}
+              top={d => yScale(y(d))}
+              width={xScale.bandwidth()}
+              height={d => yScale(d[0]) - yScale(d[1])}
+              fill={"steelblue"}
+              stroke={"none"}
+            />
+          </Stack>
           <Axis
             key={"x"}
             className={"vis-app-xAxis"}

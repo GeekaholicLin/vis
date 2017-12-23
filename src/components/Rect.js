@@ -8,12 +8,26 @@ export default class Rect extends Component {
     super(props);
   }
   render() {
-    let { className, top, left, ...rest } = this.props;
+    let {
+      className,
+      data,
+      top,
+      left,
+      width,
+      height,
+      rx,
+      ry,
+      ...rest
+    } = this.props;
     return (
       <rect
         className={cx(`${PREFIX}-rect`, className)}
-        x={left}
-        y={top}
+        x={_.isFunction(left) ? left(data) : left}
+        y={_.isFunction(top) ? top(data) : top}
+        width={_.isFunction(width) ? width(data) : width}
+        height={_.isFunction(height) ? height(data) : height}
+        rx={_.isFunction(rx) ? rx(data) : rx}
+        ry={_.isFunction(ry) ? ry(data) : ry}
         {...rest}
       />
     );
@@ -22,11 +36,11 @@ export default class Rect extends Component {
 Rect.displayName = `${PREFIX}-Rect`;
 Rect.propTypes = {
   className: PropTypes.string,
-  top: PropTypes.number,
-  left: PropTypes.number,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  rx: PropTypes.number,
-  ry: PropTypes.number
+  top: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
+  left: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
+  rx: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
+  ry: PropTypes.oneOfType([PropTypes.number, PropTypes.func])
 };
 Rect.defaultProps = {};

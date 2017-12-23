@@ -36,7 +36,6 @@ export default class Stack extends Component {
         _.isFunction(offset) ? offset : STACK_OFFSET_MAP[offset]
       );
     let stackDataArr = stackGenerator(data); //generate data for area or bar
-    console.log("stackDataArr", stackDataArr);
     return (
       <Group
         className={cx(`{PREFIX}-stack-group`, className)}

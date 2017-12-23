@@ -7,15 +7,17 @@ import {
   scaleOrdinal,
   schemeCategory20
 } from "d3-scale";
+import { stackOffsetExpand } from "d3-shape";
 import { extent, max } from "d3-array";
 import { timeParse, timeFormat } from "d3-time-format";
-import { tsv } from "d3-request";
+import { tsv, csv } from "d3-request";
 import {
   LineChart,
   AreaChart,
   BarChart,
   PieChart,
-  StackAreaChart
+  StackAreaChart,
+  StackBarChart
 } from "./charts";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
@@ -26,7 +28,9 @@ export default class App extends Component {
       areaData: [],
       barData: [],
       stackAreaData: [],
-      keys: []
+      stackBarData: [],
+      stackAreaKeys: [],
+      stackBarkeys: []
     };
   }
 
@@ -71,7 +75,28 @@ export default class App extends Component {
         if (error) throw error;
         this.setState({
           stackAreaData: [...data],
-          keys: data[0] ? data[0].columns.slice(1) : []
+          stackAreaKeys: data[0] ? data[0].columns.slice(1) : []
+        });
+      }
+    );
+    csv(
+      "./data/stack-bar.data.csv",
+      (d, i, columns) => {
+        for (let i = 1, t = 0; i < columns.length; ++i) {
+          t += d[columns[i]] = +d[columns[i]];
+          d.total = t;
+        }
+        d.columns = columns;
+        return d;
+      },
+      (error, data) => {
+        if (error) throw error;
+        data.sort(function(a, b) {
+          return b[data.columns[1]] / b.total - a[data.columns[1]] / a.total;
+        });
+        this.setState({
+          stackBarData: [...data],
+          stackBarKeys: data[0] ? data[0].columns.slice(1) : []
         });
       }
     );
@@ -85,7 +110,14 @@ export default class App extends Component {
     let pieData = [1, 1, 2, 3, 5, 8, 13, 21];
     let xScale = scaleTime().nice();
     let yScale = scaleLinear().nice();
-    let { areaData, barData, stackAreaData, keys } = this.state;
+    let {
+      areaData,
+      barData,
+      stackAreaData,
+      stackAreaKeys,
+      stackBarData,
+      stackBarKeys
+    } = this.state;
     return (
       <div>
         <div id="line-chart">
@@ -135,7 +167,7 @@ export default class App extends Component {
             yScale={scaleLinear().nice()}
             xDomain={extent(stackAreaData, d => d.date)}
             yDomain={[0, 1]}
-            keys={keys}
+            keys={stackAreaKeys}
             color={scaleOrdinal(schemeCategory20)}
           />
         </div>
@@ -154,6 +186,36 @@ export default class App extends Component {
             xDomain={barData.map(d => d.letter)}
             yDomain={[0, max(barData, d => d.frequency)]}
             tickPadding={0.1}
+          />
+        </div>
+        <div id="stacked-bar-chart">
+          <StackBarChart
+            className="stacked-bar-chart"
+            margin={{ left: 50, top: 50, right: 50, bottom: 50 }}
+            width={960}
+            height={500}
+            data={stackBarData}
+            x={d => d.data.State}
+            y={d => d[1]}
+            xScale={scaleBand()
+              .round(true)
+              .padding(0.1)
+              .align(0.1)}
+            yScale={scaleLinear().nice()}
+            xDomain={stackBarData.map(d => d.State)}
+            yDomain={[0, 1]}
+            tickPadding={0.1}
+            keys={stackBarKeys}
+            offset={"expand"}
+            color={scaleOrdinal().range([
+              "#98abc5",
+              "#8a89a6",
+              "#7b6888",
+              "#6b486b",
+              "#a05d56",
+              "#d0743c",
+              "#ff8c00"
+            ])}
           />
         </div>
         <div id="pie-chart">

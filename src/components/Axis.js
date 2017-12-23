@@ -12,6 +12,7 @@ export default class Axis extends Component {
   }
   render() {
     let {
+      hidden,
       className,
       orientation,
       scale,
@@ -24,6 +25,7 @@ export default class Axis extends Component {
       tickPadding,
       ...rest
     } = this.props;
+    if (hidden) return null;
     let axisGenerator = d3Axis["axis" + _.capitalize(orientation)](scale);
     if (_.isFunction(axisGenerator)) {
       axisGenerator.tickArguments(ticks);
@@ -45,6 +47,7 @@ export default class Axis extends Component {
 }
 Axis.displayName = `${PREFIX}-Axis`;
 Axis.propTypes = {
+  hidden: PropTypes.bool,
   className: PropTypes.string,
   orientation: PropTypes.oneOf(ORIENTATION),
   scale: PropTypes.func.isRequired,
@@ -57,6 +60,7 @@ Axis.propTypes = {
   tickPadding: PropTypes.number
 };
 Axis.defaultProps = {
+  hidden: false,
   orientation: "bottom",
   ticks: []
 };
