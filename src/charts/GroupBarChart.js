@@ -5,7 +5,7 @@ import SVG from "../components/SVG";
 import Group from "../components/Group";
 import { Bar, Axis, Stack } from "../components/index";
 import { PREFIX, DEFAULT_PROPS } from "../constant";
-export default class BarChart extends Component {
+export default class GroupBarChart extends Component {
   constructor(props) {
     super(props);
   }
@@ -16,37 +16,39 @@ export default class BarChart extends Component {
       height,
       margin,
       data,
-      x,
+      x0,
+      x1,
       y,
-      xScale,
+      x0Scale,
+      x1Scale,
       yScale,
-      xDomain,
+      x0Domain,
+      x1Domain,
       yDomain,
-      xRange,
+      x0Range,
+      x1Range,
       yRange,
       xTickFormat,
       yTickFormat,
       tickPadding,
       top,
       left,
-      keys,
-      value,
-      order,
-      offset,
-      stackLeft,
-      stackTop,
       color,
       ...rest
     } = this.props;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-    let xNewScale = xScale
-      .domain(xDomain || [0, max(data, x)])
-      .range(xRange || [margin.left, width - margin.right]);
-    let yNewScale = yScale
+    x0Scale
+      .domain(x0Domain || [0, max(data, x0)])
+      .range(x0Range || [margin.left, width - margin.right]);
+    x1Scale
+      .domain(x1Domain || [0, max(data, x1)])
+      .range(x1Range || [0, x0Scale.bandwidth()]);
+
+    yScale
       .domain(yDomain || [0, max(data, y)])
       .range(yRange || [height - margin.top, margin.bottom]);
-
+    let keys = _.isFunction(x1Domain) ? x1Domain() : x1Domain;
     return (
       <SVG
         className={cx(`${PREFIX}-bar-chart`, className)}
@@ -54,29 +56,34 @@ export default class BarChart extends Component {
         height={height}
       >
         <Group>
-          <Stack
-            className="stacked-bar-chart"
-            left={stackLeft}
-            top={stackTop}
-            data={data}
-            keys={keys}
-            value={value}
-            order={order}
-            offset={offset}
-            color={color}
-          >
-            <Bar
-              left={d => xScale(x(d))}
-              top={d => yScale(y(d))}
-              width={xScale.bandwidth()}
-              height={d => yScale(d[0]) - yScale(d[1])}
-              stroke={"none"}
-            />
-          </Stack>
+          {data.map((barGroupArr, i) => {
+            return (
+              <Group
+                className={`grouped-bar-category-${i}`}
+                left={x0Scale(x0(barGroupArr))}
+                top={0}
+                key={`grouped-bar-category-${i}`}
+              >
+                <Bar
+                  data={keys.map(key => ({
+                    key: key,
+                    value: barGroupArr[key]
+                  }))}
+                  left={d => x1Scale(x1(d))}
+                  top={d => yScale(y(d))}
+                  width={x1Scale.bandwidth()}
+                  height={d => height - margin.top - yScale(y(d))}
+                  fill={d => color(x1(d))}
+                  stroke={"none"}
+                />
+              </Group>
+            );
+          })}
+
           <Axis
             key={"x"}
             className={"vis-app-xAxis"}
-            scale={xScale}
+            scale={x0Scale}
             tickFormat={xTickFormat}
             tickPadding={tickPadding}
             transform={`translate(0,${innerHeight + margin.top})`}
@@ -84,7 +91,6 @@ export default class BarChart extends Component {
           <Axis
             key={"y"}
             orientation={"left"}
-            ticks={[10, "%"]}
             className={"vis-app-yAxis"}
             scale={yScale}
             tickFormat={yTickFormat}
@@ -97,8 +103,8 @@ export default class BarChart extends Component {
   }
 }
 
-BarChart.displayName = `${PREFIX}-BarChart`;
-BarChart.propTypes = {
+GroupBarChart.displayName = `${PREFIX}-BarChart`;
+GroupBarChart.propTypes = {
   className: PropTypes.string,
   width: PropTypes.number,
   height: PropTypes.number,
@@ -107,9 +113,8 @@ BarChart.propTypes = {
     right: PropTypes.number,
     bottom: PropTypes.number,
     left: PropTypes.number
-  }),
-  ...Bar.propTypes
+  })
 };
-BarChart.defaultProps = {
+GroupBarChart.defaultProps = {
   ...DEFAULT_PROPS
 };

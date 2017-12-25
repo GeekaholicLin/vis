@@ -5,6 +5,7 @@ import {
   scaleTime,
   scaleBand,
   scaleOrdinal,
+  schemeCategory10,
   schemeCategory20
 } from "d3-scale";
 import { stackOffsetExpand } from "d3-shape";
@@ -17,7 +18,8 @@ import {
   BarChart,
   PieChart,
   StackAreaChart,
-  StackBarChart
+  StackBarChart,
+  GroupBarChart
 } from "./charts";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
@@ -29,8 +31,10 @@ export default class App extends Component {
       barData: [],
       stackAreaData: [],
       stackBarData: [],
+      groupBarData: [],
       stackAreaKeys: [],
-      stackBarkeys: []
+      stackBarkeys: [],
+      groupBarKeys: []
     };
   }
 
@@ -100,6 +104,23 @@ export default class App extends Component {
         });
       }
     );
+    csv(
+      "./data/group-bar.data.csv",
+      (d, i, columns) => {
+        for (let i = 1, t = 0; i < columns.length; ++i) {
+          d[columns[i]] = +d[columns[i]];
+        }
+        d.columns = columns;
+        return d;
+      },
+      (error, data) => {
+        if (error) throw error;
+        this.setState({
+          groupBarData: [...data],
+          groupBarKeys: data.columns ? data.columns.slice(1) : []
+        });
+      }
+    );
   }
   render() {
     let margin = { top: 20, right: 10, bottom: 20, left: 10 };
@@ -116,7 +137,9 @@ export default class App extends Component {
       stackAreaData,
       stackAreaKeys,
       stackBarData,
-      stackBarKeys
+      stackBarKeys,
+      groupBarData,
+      groupBarKeys
     } = this.state;
     return (
       <div>
@@ -218,6 +241,7 @@ export default class App extends Component {
             ])}
           />
         </div>
+
         <div id="pie-chart">
           <PieChart
             className="vis-app-pie-chart"
@@ -227,6 +251,32 @@ export default class App extends Component {
             innerRadius={0}
             outerRadius={150}
             color={scaleOrdinal(schemeCategory20)}
+          />
+        </div>
+
+        <div id="group-bar-chart">
+          <GroupBarChart
+            className="grouped-bar-chart"
+            margin={{ left: 50, top: 50, right: 50, bottom: 50 }}
+            width={960}
+            height={500}
+            data={groupBarData}
+            x0={d => d.Education}
+            x1={d => d.key}
+            y={d => d.value}
+            x0Scale={scaleBand()
+              .round(true)
+              .paddingInner(0.1)}
+            x1Scale={scaleBand().padding(0.05)}
+            yScale={scaleLinear().nice()}
+            x0Domain={groupBarData.map(d => d.Education)}
+            x1Domain={groupBarKeys}
+            yDomain={[
+              0,
+              max(groupBarData, d => max(groupBarKeys, key => d[key]))
+            ]}
+            color={scaleOrdinal(schemeCategory10)}
+            yRange={[450, 0]}
           />
         </div>
       </div>
