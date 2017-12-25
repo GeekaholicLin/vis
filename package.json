@@ -11,7 +11,7 @@
     "start": "cross-env NODE_ENV=dev webpack-dev-server --open",
     "precommit": "lint-staged",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "doc": "build-storybook -c .storybook -o doc",
+    "docs": "build-storybook -c .storybook -o docs",
     "profile:dll": "source-map-explorer src/lib/vendor.min.js"
   },
   "lint-staged": {
