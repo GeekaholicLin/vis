@@ -9,9 +9,9 @@
     "build:dll":
       "cross-env NODE_ENV=production webpack --config webpack.dll.js",
     "start": "cross-env NODE_ENV=dev webpack-dev-server --open",
-    "precommit": "storybook:build && lint-staged",
+    "precommit": "lint-staged",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "storybook:build": "build-storybook -c .storybook -o doc",
+    "doc": "build-storybook -c .storybook -o doc",
     "profile:dll": "source-map-explorer src/lib/vendor.min.js"
   },
   "lint-staged": {
