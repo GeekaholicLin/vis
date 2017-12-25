@@ -24,11 +24,11 @@ export default class Bar extends Component {
       height,
       rx,
       ry,
-      fill,
+      color,
       ...rest
     } = this.props;
     return (
-      <Group className={cx("bar-group", className)}>
+      <Group className={cx(`${PREFIX}-bar-group`, className)}>
         {data.map((d, i) => {
           return (
             <Rect
@@ -40,7 +40,7 @@ export default class Bar extends Component {
               height={_.isFunction(height) ? height(d) : height}
               rx={_.isFunction(rx) ? rx(d) : rx}
               ry={_.isFunction(ry) ? ry(d) : ry}
-              fill={_.isFunction(fill) ? fill(d) : fill}
+              fill={_.isFunction(color) ? color(d) : color}
               {...rest}
             />
           );
@@ -49,10 +49,13 @@ export default class Bar extends Component {
     );
   }
 }
-Bar.displayName = `${PREFIX}-Bar`;
+Bar.displayName = `${PREFIX}Bar`;
 Bar.propTypes = {
   className: PropTypes.string,
   data: PropTypes.array,
-  ...Rect.propTypes
+  ...Rect.propTypes,
+  color: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
-Bar.defaultProps = {};
+Bar.defaultProps = {
+  ...Rect.defaultProps
+};

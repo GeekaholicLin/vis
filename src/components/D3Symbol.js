@@ -4,40 +4,37 @@ import cx from "classnames";
 import { symbol } from "d3-shape";
 import _ from "lodash";
 import Group from "./Group";
-import { PREFIX, SYMBOLS_MAP } from "../constant";
+import { PREFIX, SYMBOLS_MAP, ALL_COMMON_PROPTYPES } from "../constant";
 
 export default class D3Symbol extends Component {
   constructor(props) {
     super(props);
   }
   render() {
-    let { className, children, top, left, type, size, ...rest } = this.props;
+    let { className, left, top, type, size, ...rest } = this.props;
     let symbolGenerator = symbol
       .type(_.isFunction(type) ? type : SYMBOLS_MAP[type])
       .size(size);
     return (
-      <Group className={`${PREFIX}-symbol-group`} left={left} top={top}>
-        <path
-          className={cx(`${PREFIX}-symbol`, className)}
-          d={symbolGenerator()}
-        />
-        {children}
-      </Group>
+      <path
+        className={cx(`${PREFIX}-symbol`, className)}
+        d={symbolGenerator()}
+        transform={`translate(${left},${top})`}
+        {...rest}
+      />
     );
   }
 }
 
-D3Symbol.displayName = `${PREFIX}-D3Symbol`;
+D3Symbol.displayName = `${PREFIX}D3Symbol`;
 D3Symbol.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.node, //for label etc.
-  left: PropTypes.number,
-  top: PropTypes.number,
   type: PropTypes.oneOfType([
     PropTypes.oneOf(Object.keys(SYMBOLS_MAP)),
-    PropTypes.shape({ draw: PropTypes.func.isRequired }) //a draw func obj for custom symbols
+    PropTypes.shape({ draw: PropTypes.func }) //a draw func obj for custom symbols
   ]),
-  size: PropTypes.number
+  size: PropTypes.number,
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 D3Symbol.defaultProps = {
   type: "circle",

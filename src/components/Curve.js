@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { PREFIX } from "../constant";
+import _ from "lodash";
 import { line } from "d3-shape";
-import Group from "./Group";
+import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
 export default class Curve extends Component {
   constructor(props) {
     super(props);
@@ -12,6 +12,8 @@ export default class Curve extends Component {
     let {
       className,
       data,
+      left,
+      top,
       xScale,
       yScale,
       x,
@@ -27,22 +29,16 @@ export default class Curve extends Component {
     defined && lineGenerator.defined(defined);
     curve && lineGenerator.curve(curve);
     return (
-      <Group className={`${PREFIX}-curve-group`}>
-        <path
-          className={cx(`${PREFIX}-curve`, className)}
-          d={lineGenerator(data)}
-          {...rest}
-        />
-        {symbolGenerator && (
-          <Group className={`${PREFIX}-curve-symbols-group`}>
-            data.map(symbolGenerator)
-          </Group>
-        )}
-      </Group>
+      <path
+        className={cx(`${PREFIX}-curve`, className)}
+        d={lineGenerator(data)}
+        transform={`translate(${left},${top})`}
+        {...rest}
+      />
     );
   }
 }
-Curve.displayName = `${PREFIX}-Curve`;
+Curve.displayName = `${PREFIX}Curve`;
 Curve.PropTypes = {
   className: PropTypes.string,
   data: PropTypes.array.isRequired,
@@ -52,10 +48,12 @@ Curve.PropTypes = {
   y: PropTypes.func.isRequired,
   defined: PropTypes.func,
   curve: PropTypes.func,
-  symbolGenerator: PropTypes.func
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Curve.defaultProps = {
   fill: "none",
-  stroke: "blue",
-  strokeWidth: 2
+  stroke: "#000",
+  strokeWidth: 2,
+  left: 0,
+  top: 0
 };

@@ -1,64 +1,3 @@
-import {
-  symbolCircle,
-  symbolCross,
-  symbolDiamond,
-  symbolSquare,
-  symbolStar,
-  symbolTriangle,
-  symbolWye,
-  stackOrderAscending,
-  stackOrderDescending,
-  stackOrderInsideOut,
-  stackOrderNone,
-  stackOrderReverse,
-  stackOffsetDiverging,
-  stackOffsetExpand,
-  stackOffsetNone,
-  stackOffsetSilhouette,
-  stackOffsetWiggle
-} from "d3-shape";
-export const PREFIX = "vix";
-export const SCALES = [
-  "auto",
-  "linear",
-  "pow",
-  "sqrt",
-  "log",
-  "identity",
-  "time",
-  "band",
-  "point",
-  "ordinal",
-  "quantile",
-  "quantize",
-  "utcTime",
-  "sequential",
-  "threshold"
-];
-export const SYMBOLS_MAP = {
-  circle: symbolCircle,
-  cross: symbolCross,
-  diamond: symbolDiamond,
-  square: symbolSquare,
-  star: symbolStar,
-  triangle: symbolTriangle,
-  wye: symbolWye
-};
-export const STACK_ORDER_MAP = {
-  ascnding: stackOrderAscending,
-  descending: stackOrderDescending,
-  insideout: stackOrderInsideOut,
-  none: stackOrderNone,
-  reverse: stackOrderReverse
-};
-export const STACK_OFFSET_MAP = {
-  deverging: stackOffsetDiverging,
-  expand: stackOffsetExpand,
-  node: stackOffsetNone,
-  silhouette: stackOffsetSilhouette,
-  wiggle: stackOffsetWiggle
-};
-export const ORIENTATION = ["top", "right", "left", "bottom"];
 export const SVG_EVENTS = [
   "onClick",
   "onContextMenu",
@@ -79,7 +18,6 @@ export const SVG_EVENTS = [
   "onMouseOver",
   "onMouseUp"
 ];
-
 export const SVG_PRESENTATION_ATTRS = [
   "alignmentBaseline",
   "baselineShift",
@@ -142,8 +80,3 @@ export const SVG_PRESENTATION_ATTRS = [
   "writingMode"
 ];
 export const SVG_STYLE_ATTRS = ["className", "style"];
-export const DEFAULT_PROPS = {
-  width: 960,
-  height: 500,
-  margin: { top: 30, right: 30, bottom: 30, left: 30 }
-};

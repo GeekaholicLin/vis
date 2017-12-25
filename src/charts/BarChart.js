@@ -52,7 +52,7 @@ export default class BarChart extends Component {
             top={d => yScale(y(d))}
             width={xScale.bandwidth()}
             height={d => innerHeight + margin.bottom - yScale(d.frequency)}
-            fill={"steelblue"}
+            color={"steelblue"}
             stroke={"none"}
           />
           <Axis

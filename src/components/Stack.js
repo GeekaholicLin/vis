@@ -4,7 +4,12 @@ import cx from "classnames";
 import { stack, area } from "d3-shape";
 import _ from "lodash";
 import Group from "./Group";
-import { PREFIX, STACK_OFFSET_MAP, STACK_ORDER_MAP } from "../constant";
+import {
+  PREFIX,
+  STACK_OFFSET_MAP,
+  STACK_ORDER_MAP,
+  ALL_COMMON_PROPTYPES
+} from "../constant";
 
 export default class Stack extends Component {
   constructor(props) {
@@ -25,20 +30,20 @@ export default class Stack extends Component {
       ...rest
     } = this.props;
     let stackGenerator = stack();
-    keys && stackGenerator.keys(keys);
-    value && stackGenerator.value(value);
-    order &&
+    !_.isNil(keys) && stackGenerator.keys(keys);
+    !_.isNil(value) && stackGenerator.value(value);
+    !_.isNil(order) &&
       stackGenerator.order(
         _.isFunction(order) ? order : STACK_ORDER_MAP[order]
       );
-    offset &&
+    !_.isNil(offset) &&
       stackGenerator.offset(
         _.isFunction(offset) ? offset : STACK_OFFSET_MAP[offset]
       );
     let stackDataArr = stackGenerator(data); //generate data for area or bar
     return (
       <Group
-        className={cx(`{PREFIX}-stack-group`, className)}
+        className={cx(`${PREFIX}-stack-group`, className)}
         left={left}
         top={top}
       >
@@ -48,13 +53,13 @@ export default class Stack extends Component {
           return React.cloneElement(
             children,
             {
-              key: `${PREFIX}-stack-${displayName}-${i}`,
+              key: `stack-${displayName}-${i}`,
               className: cx(
-                `${PREFIX}-stack-${displayName}`,
+                `stack-${displayName}-${i}`,
                 children.props.className
               ),
               data: stackData,
-              fill: _.isString(color) ? color : color(stackData.key),
+              fill: _.isFunction(color) ? color(stackData.key) : color,
               ...rest
             },
             children.children
@@ -65,12 +70,10 @@ export default class Stack extends Component {
   }
 }
 
-Stack.displayName = `${PREFIX}-Stack`;
+Stack.displayName = `${PREFIX}Stack`;
 Stack.propTypes = {
   className: PropTypes.string,
   children: PropTypes.element.isRequired, //requiring single child
-  left: PropTypes.number,
-  top: PropTypes.number,
   data: PropTypes.array,
   keys: PropTypes.oneOfType([PropTypes.func, PropTypes.array]),
   value: PropTypes.oneOfType([PropTypes.func, PropTypes.number]),
@@ -82,7 +85,7 @@ Stack.propTypes = {
     PropTypes.oneOf(Object.keys(STACK_OFFSET_MAP)),
     PropTypes.func
   ]),
-  color: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top", "color"])
 };
 Stack.defaultProps = {
   left: 0,

@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { PREFIX } from "../constant";
+import _ from "lodash";
+import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
 
 export default class Line extends Component {
   constructor(props) {
     super(props);
   }
   render() {
-    let { className, from, to, ...rest } = this.props;
+    let { className, left, top, from, to, ...rest } = this.props;
     return (
       <line
         className={cx(`${PREFIX}-line`, className)}
@@ -16,12 +17,13 @@ export default class Line extends Component {
         y1={from && from.y}
         x2={to && to.x}
         y2={to && to.y}
+        transform={`translate(${left},${top})`}
         {...rest}
       />
     );
   }
 }
-Line.displayName = `${PREFIX}-Line`;
+Line.displayName = `${PREFIX}Line`;
 Line.propTypes = {
   className: PropTypes.string,
   from: PropTypes.shape({
@@ -32,11 +34,9 @@ Line.propTypes = {
     x: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     y: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }),
-  stroke: PropTypes.string,
-  strokeWidth: PropTypes.number,
-  strokeDasharray: PropTypes.string
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Line.defaultProps = {
-  stroke: "#000",
-  strokeWidth: 2
+  left: 0,
+  top: 0
 };

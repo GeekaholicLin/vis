@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { PREFIX } from "../constant";
+import _ from "lodash";
+import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
 export default class ClipPath extends Component {
   constructor(props) {
     super(props);
@@ -9,7 +10,7 @@ export default class ClipPath extends Component {
   render() {
     let { id, children, ...rest } = this.props;
     return (
-      <defs>
+      <defs transform={`translate(${left},${top})`}>
         <clipPath
           id={id}
           className={cx(`${PREFIX}-clippath`, className)}
@@ -21,10 +22,14 @@ export default class ClipPath extends Component {
     );
   }
 }
-ClipPath.displayName = `${PREFIX}-clippath`;
+ClipPath.displayName = `${PREFIX}Clippath`;
 ClipPath.propTypes = {
   id: PropTypes.string.isRequired,
   className: PropTypes.string,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
-ClipPath.defaultProps = {};
+ClipPath.defaultProps = {
+  left: 0,
+  top: 0
+};

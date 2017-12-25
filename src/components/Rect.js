@@ -33,14 +33,33 @@ export default class Rect extends Component {
     );
   }
 }
-Rect.displayName = `${PREFIX}-Rect`;
+Rect.displayName = `${PREFIX}Rect`;
 Rect.propTypes = {
   className: PropTypes.string,
-  top: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-  left: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-  width: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-  height: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-  rx: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-  ry: PropTypes.oneOfType([PropTypes.number, PropTypes.func])
+  top: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.string
+  ]),
+  left: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.string
+  ]),
+  width: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.string
+  ]),
+  height: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.string
+  ]),
+  rx: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.string]),
+  ry: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.string])
 };
-Rect.defaultProps = {};
+Rect.defaultProps = {
+  left: 0,
+  top: 0
+};

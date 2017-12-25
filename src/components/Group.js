@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { PREFIX } from "../constant";
+import _ from "lodash";
+import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
 import cx from "classnames";
 
 export default class Group extends Component {
@@ -20,12 +21,11 @@ export default class Group extends Component {
     );
   }
 }
-Group.displayName = `${PREFIX}-Group`;
+Group.displayName = `${PREFIX}Group`;
 Group.propTypes = {
   className: PropTypes.string,
-  left: PropTypes.number,
-  top: PropTypes.number,
-  children: PropTypes.node
+  children: PropTypes.node.isRequired,
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Group.defaultProps = {
   left: 0,

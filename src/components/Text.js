@@ -6,7 +6,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import Text from "react-svg-text";
+import { default as Label } from "react-svg-text";
 import { PREFIX } from "../constant";
 
 export default class Text extends Component {
@@ -16,7 +16,7 @@ export default class Text extends Component {
   render() {
     let { left, top, className, ...rest } = this.props;
     return (
-      <Text
+      <Label
         className={cx(`{PREFIX}-text`, className)}
         x={left}
         y={top}
@@ -25,13 +25,13 @@ export default class Text extends Component {
     );
   }
 }
-Text.displayName = `${PREFIX}-Text`;
+Text.displayName = `${PREFIX}Text`;
 Text.propTypes = {
   className: PropTypes.string,
-  left: PropTypes.number,
-  top: PropTypes.number,
-  dx: PropTypes.number,
-  dy: PropTypes.number,
+  top: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  left: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  dx: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  dy: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   lineHeight: PropTypes.string,
   capHeight: PropTypes.string,
   scaleToFit: PropTypes.bool,

@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import cx from "classnames";
 import _ from "lodash";
+import cx from "classnames";
 import { area } from "d3-shape";
-import Group from "./Group";
-import { PREFIX } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
 export default class Area extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +12,8 @@ export default class Area extends Component {
     let {
       className,
       data,
+      left,
+      top,
       x,
       x0,
       x1,
@@ -26,26 +27,25 @@ export default class Area extends Component {
       ...rest
     } = this.props;
     const areaGenerator = area();
-    !_.isNil(x) && areaGenerator.x(d => xScale(x(d)));
-    !_.isNil(x0) && areaGenerator.x0(d => xScale(x0(d)));
-    !_.isNil(x1) && areaGenerator.x1(d => xScale(x1(d)));
-    !_.isNil(y) && areaGenerator.y(d => yScale(y(d)));
-    !_.isNil(y0) && areaGenerator.y0(d => yScale(y0(d)));
-    !_.isNil(y1) && areaGenerator.y1(d => yScale(y1(d)));
+    x && areaGenerator.x(d => xScale(x(d)));
+    x0 && areaGenerator.x0(d => xScale(x0(d)));
+    x1 && areaGenerator.x1(d => xScale(x1(d)));
+    y && areaGenerator.y(d => yScale(y(d)));
+    y0 && areaGenerator.y0(d => yScale(y0(d)));
+    y1 && areaGenerator.y1(d => yScale(y1(d)));
     defined && areaGenerator.defined(defined);
     curve && areaGenerator.curve(curve);
     return (
-      <Group className={`${PREFIX}-area-group`}>
-        <path
-          className={cx(`${PREFIX}-area`, className)}
-          d={areaGenerator(data)}
-          {...rest}
-        />
-      </Group>
+      <path
+        className={cx(`${PREFIX}-area`, className)}
+        d={areaGenerator(data)}
+        transform={`translate(${left},${top})`}
+        {...rest}
+      />
     );
   }
 }
-Area.displayName = `${PREFIX}-Area`;
+Area.displayName = `${PREFIX}Area`;
 Area.propTypes = {
   className: PropTypes.string,
   data: PropTypes.array,
@@ -58,10 +58,10 @@ Area.propTypes = {
   xScale: PropTypes.func.isRequired,
   yScale: PropTypes.func.isRequired,
   defined: PropTypes.func,
-  curve: PropTypes.func
+  curve: PropTypes.func,
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Area.defaultProps = {
-  stroke: "#000",
-  strokeWidth: 2,
-  fill: "rgba(0,0,0,0.4)"
+  left: 0,
+  top: 0
 };

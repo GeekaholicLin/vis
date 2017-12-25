@@ -1,10 +1,14 @@
 import React, { Component } from "react";
-import * as d3Axis from "d3-axis";
 import { select } from "d3-selection";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { PREFIX, ORIENTATION, SCALES } from "../constant";
+import {
+  PREFIX,
+  ORIENTATION_MAP,
+  SCALES,
+  ALL_COMMON_PROPTYPES
+} from "../constant";
 import Group from "./Group";
 export default class Axis extends Component {
   constructor(props) {
@@ -12,8 +16,9 @@ export default class Axis extends Component {
   }
   render() {
     let {
-      hidden,
       className,
+      left,
+      top,
       orientation,
       scale,
       ticks,
@@ -25,19 +30,20 @@ export default class Axis extends Component {
       tickPadding,
       ...rest
     } = this.props;
-    if (hidden) return null;
-    let axisGenerator = d3Axis["axis" + _.capitalize(orientation)](scale);
+    let axisGenerator = ORIENTATION_MAP[orientation](scale);
     if (_.isFunction(axisGenerator)) {
       axisGenerator.tickArguments(ticks);
       tickValues && axisGenerator.tickValues(tickValues);
       tickFormat && axisGenerator.tickFormat(tickFormat);
-      tickSize && axisGenerator.tickSize(tickSize);
-      tickSizeInner && axisGenerator.tickSizeInner(tickSizeInner);
-      tickSizeOuter && axisGenerator.tickSizeOuter(tickSizeOuter);
+      !_.isNil(tickSize) && axisGenerator.tickSize(tickSize);
+      !_.isNil(tickSizeInner) && axisGenerator.tickSizeInner(tickSizeInner);
+      !_.isNil(tickSizeOuter) && axisGenerator.tickSizeOuter(tickSizeOuter);
+      !_.isNil(tickPadding) && axisGenerator.tickPadding(tickPadding);
       return (
         <g
           className={cx(`${PREFIX}-axis`, className)}
           ref={node => axisGenerator(select(node))}
+          transform={`translate(${left},${top})`}
           {...rest}
         />
       );
@@ -45,11 +51,10 @@ export default class Axis extends Component {
     return null;
   }
 }
-Axis.displayName = `${PREFIX}-Axis`;
+Axis.displayName = `${PREFIX}Axis`;
 Axis.propTypes = {
-  hidden: PropTypes.bool,
   className: PropTypes.string,
-  orientation: PropTypes.oneOf(ORIENTATION),
+  orientation: PropTypes.oneOf(Object.keys(ORIENTATION_MAP)),
   scale: PropTypes.func.isRequired,
   ticks: PropTypes.array.isRequired,
   tickValues: PropTypes.array,
@@ -57,10 +62,12 @@ Axis.propTypes = {
   tickSize: PropTypes.number,
   tickSizeInner: PropTypes.number,
   tickSizeOuter: PropTypes.number,
-  tickPadding: PropTypes.number
+  tickPadding: PropTypes.number,
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Axis.defaultProps = {
-  hidden: false,
   orientation: "bottom",
-  ticks: []
+  ticks: [],
+  left: 0,
+  top: 0
 };

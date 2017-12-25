@@ -77,7 +77,7 @@ PieChart.propTypes = {
     bottom: PropTypes.number,
     left: PropTypes.number
   }),
-  color: PropTypes.oneOfType(PropTypes.string, PropTypes.func),
+  color: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   ...Pie.propTypes
 };
 PieChart.defaultProps = {

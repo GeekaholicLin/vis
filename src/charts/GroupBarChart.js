@@ -73,7 +73,7 @@ export default class GroupBarChart extends Component {
                   top={d => yScale(y(d))}
                   width={x1Scale.bandwidth()}
                   height={d => height - margin.top - yScale(y(d))}
-                  fill={d => color(x1(d))}
+                  color={d => color(x1(d))}
                   stroke={"none"}
                 />
               </Group>
