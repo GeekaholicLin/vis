@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import cx from "classnames";
-import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 export default class SVG extends Component {
   constructor(props) {
     super(props);
@@ -29,8 +29,5 @@ SVG.propTypes = {
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 SVG.defaultProps = {
-  width: 960,
-  height: 500,
-  top: 0,
-  left: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["width", "height", "left", "top"])
 };

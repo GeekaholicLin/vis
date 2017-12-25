@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
-import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 
 export default class Line extends Component {
   constructor(props) {
@@ -37,6 +37,5 @@ Line.propTypes = {
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Line.defaultProps = {
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

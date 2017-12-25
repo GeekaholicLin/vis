@@ -5,7 +5,7 @@ import { arc, pie } from "d3-shape";
 import _ from "lodash";
 import Group from "./Group";
 import Arc from "./Arc";
-import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 export default class Pie extends Component {
   constructor(props) {
     super(props);
@@ -79,6 +79,5 @@ Pie.propTypes = {
 };
 Pie.defaultProps = {
   innerRadius: 0,
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

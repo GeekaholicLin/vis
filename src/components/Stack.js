@@ -8,7 +8,8 @@ import {
   PREFIX,
   STACK_OFFSET_MAP,
   STACK_ORDER_MAP,
-  ALL_COMMON_PROPTYPES
+  ALL_COMMON_PROPTYPES,
+  ALL_DEFAULT_PROPS
 } from "../constant";
 
 export default class Stack extends Component {
@@ -88,6 +89,5 @@ Stack.propTypes = {
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top", "color"])
 };
 Stack.defaultProps = {
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

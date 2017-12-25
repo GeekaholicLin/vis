@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import { line } from "d3-shape";
-import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 export default class Curve extends Component {
   constructor(props) {
     super(props);
@@ -52,8 +52,5 @@ Curve.PropTypes = {
 };
 Curve.defaultProps = {
   fill: "none",
-  stroke: "#000",
-  strokeWidth: 2,
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top", "stroke", "strokeWidth"])
 };

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 import cx from "classnames";
 
 export default class Group extends Component {
@@ -28,6 +28,5 @@ Group.propTypes = {
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Group.defaultProps = {
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

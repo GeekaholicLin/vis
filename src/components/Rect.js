@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { PREFIX } from "../constant";
+import { PREFIX, ALL_DEFAULT_PROPS } from "../constant";
 
 export default class Rect extends Component {
   constructor(props) {
@@ -60,6 +60,5 @@ Rect.propTypes = {
   ry: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.string])
 };
 Rect.defaultProps = {
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import cx from "classnames";
 import { area } from "d3-shape";
-import { PREFIX, ALL_COMMON_PROPTYPES } from "../constant";
+import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 export default class Area extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +62,5 @@ Area.propTypes = {
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Area.defaultProps = {
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

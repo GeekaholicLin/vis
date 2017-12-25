@@ -7,7 +7,8 @@ import {
   PREFIX,
   ORIENTATION_MAP,
   SCALES,
-  ALL_COMMON_PROPTYPES
+  ALL_COMMON_PROPTYPES,
+  ALL_DEFAULT_PROPS
 } from "../constant";
 import Group from "./Group";
 export default class Axis extends Component {
@@ -68,6 +69,5 @@ Axis.propTypes = {
 Axis.defaultProps = {
   orientation: "bottom",
   ticks: [],
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };

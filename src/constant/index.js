@@ -26,4 +26,8 @@ export {
 /**
  * constant about components including default props and propTypes
  */
-export { DEFAULT_PROPS, ALL_COMMON_PROPTYPES } from "./component.constant";
+export {
+  DEFAULT_PROPS,
+  ALL_COMMON_PROPTYPES,
+  ALL_DEFAULT_PROPS
+} from "./component.constant";

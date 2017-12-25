@@ -4,7 +4,12 @@ import cx from "classnames";
 import { symbol } from "d3-shape";
 import _ from "lodash";
 import Group from "./Group";
-import { PREFIX, SYMBOLS_MAP, ALL_COMMON_PROPTYPES } from "../constant";
+import {
+  PREFIX,
+  SYMBOLS_MAP,
+  ALL_COMMON_PROPTYPES,
+  ALL_DEFAULT_PROPS
+} from "../constant";
 
 export default class D3Symbol extends Component {
   constructor(props) {
@@ -39,6 +44,5 @@ D3Symbol.propTypes = {
 D3Symbol.defaultProps = {
   type: "circle",
   size: 64,
-  left: 0,
-  top: 0
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
 };
