@@ -9,7 +9,9 @@
     "build:dll":
       "cross-env NODE_ENV=production webpack --config webpack.dll.js",
     "start": "cross-env NODE_ENV=dev webpack-dev-server --open",
-    "precommit": "lint-staged",
+    "precommit": "storybook:build && lint-staged",
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "storybook:build": "build-storybook -c .storybook -o doc",
     "profile:dll": "source-map-explorer src/lib/vendor.min.js"
   },
   "lint-staged": {
@@ -28,6 +30,7 @@
   "author": "GeekaholicLin",
   "license": "MIT",
   "devDependencies": {
+    "@storybook/react": "^3.2.19",
     "add-asset-html-webpack-plugin": "^2.0.1",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
