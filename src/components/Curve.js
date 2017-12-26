@@ -39,7 +39,7 @@ export default class Curve extends Component {
   }
 }
 Curve.displayName = `${PREFIX}Curve`;
-Curve.PropTypes = {
+Curve.propTypes = {
   className: PropTypes.string,
   data: PropTypes.array.isRequired,
   xScale: PropTypes.func.isRequired,

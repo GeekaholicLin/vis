@@ -13,3 +13,5 @@ export { default as Rect } from "./Rect";
 export { default as Stack } from "./Stack";
 export { default as SVG } from "./SVG";
 export { default as Text } from "./Text";
+export { default as XAxis } from "./XAxis";
+export { default as YAxis } from "./YAxis";

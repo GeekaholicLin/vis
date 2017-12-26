@@ -129,8 +129,6 @@ export default class App extends Component {
       date: timeParse("%d.%m.%Y")(obj.date)
     }));
     let pieData = [1, 1, 2, 3, 5, 8, 13, 21];
-    let xScale = scaleTime().nice();
-    let yScale = scaleLinear().nice();
     let {
       areaData,
       barData,
@@ -146,17 +144,15 @@ export default class App extends Component {
         <div id="line-chart">
           <LineChart
             className="vis-app-line-chart"
-            width={960}
-            height={500}
             data={lineData}
             x={d => d.date}
             y={d => d.price}
-            xScale={xScale}
-            yScale={yScale}
-            xDomain={extent(lineData, d => d.date)}
-            yDomain={[0, max(lineData, d => d.price)]}
-            tickPadding={7}
+            xScale={scaleTime().nice()}
+            yScale={scaleLinear().nice()}
+            xTickPadding={7}
+            yTickPadding={7}
             xTickFormat={timeFormat("%x")}
+            grid={"none"}
           />
         </div>
         <div id="area-chart">
@@ -248,7 +244,7 @@ export default class App extends Component {
             data={pieData}
             width={500}
             height={500}
-            innerRadius={0}
+            innerRadius={50}
             outerRadius={150}
             color={scaleOrdinal(schemeCategory20)}
           />

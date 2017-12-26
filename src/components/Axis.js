@@ -56,8 +56,8 @@ Axis.displayName = `${PREFIX}Axis`;
 Axis.propTypes = {
   className: PropTypes.string,
   orientation: PropTypes.oneOf(Object.keys(ORIENTATION_MAP)),
-  scale: PropTypes.func.isRequired,
-  ticks: PropTypes.array.isRequired,
+  scale: PropTypes.func,
+  ticks: PropTypes.array,
   tickValues: PropTypes.array,
   tickFormat: PropTypes.func,
   tickSize: PropTypes.number,
