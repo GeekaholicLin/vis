@@ -44,11 +44,12 @@ export default class Chart extends Component {
         tickSizeInner: ["row", "auto"].indexOf(grid) > -1 ? -innerWidth : 6
       },
       Curve: {
-        data,
         xScale,
-        yScale,
-        x,
-        y
+        yScale
+      },
+      Area: {
+        xScale,
+        yScale
       }
     };
     return (

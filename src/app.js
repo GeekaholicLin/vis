@@ -152,24 +152,19 @@ export default class App extends Component {
             xTickPadding={7}
             yTickPadding={7}
             xTickFormat={timeFormat("%x")}
-            grid={"none"}
+            grid={"auto"}
           />
         </div>
         <div id="area-chart">
           <AreaChart
             className="vis-app-area-chart"
-            width={960}
-            height={500}
             data={areaData}
             x={d => d.date}
             y={d => d.close}
-            y0={d => 0}
-            y1={d => d.close}
             xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
-            xDomain={extent(areaData, d => d.date)}
-            yDomain={[0, max(areaData, d => d.close)]}
-            tickPadding={7}
+            xTickPadding={7}
+            yTickPadding={7}
           />
         </div>
         <div id="stacked-area-chart">
