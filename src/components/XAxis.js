@@ -21,5 +21,6 @@ XAxis.propTypes = {
   orientation: PropTypes.oneOf(["top", "bottom"])
 };
 XAxis.defaultProps = {
-  ...Axis.defaultProps
+  ...Axis.defaultProps,
+  orientation: "bottom"
 };

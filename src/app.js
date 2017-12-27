@@ -123,7 +123,6 @@ export default class App extends Component {
     );
   }
   render() {
-    let margin = { top: 20, right: 10, bottom: 20, left: 10 };
     let lineData = salesData.map(obj => ({
       price: obj.price,
       date: timeParse("%d.%m.%Y")(obj.date)
@@ -149,10 +148,10 @@ export default class App extends Component {
             y={d => d.price}
             xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
-            xTickPadding={7}
-            yTickPadding={7}
             xTickFormat={timeFormat("%x")}
             grid={"auto"}
+            xTickPadding={10}
+            yTickPadding={10}
           />
         </div>
         <div id="area-chart">
@@ -163,16 +162,10 @@ export default class App extends Component {
             y={d => d.close}
             xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
-            xTickPadding={7}
-            yTickPadding={7}
           />
         </div>
         <div id="stacked-area-chart">
           <StackAreaChart
-            className="vis-app-area-chart"
-            width={960}
-            height={500}
-            margin={{ left: 50, top: 50, right: 50, bottom: 50 }}
             data={stackAreaData}
             x={d => d.data.date}
             y0={d => d[0]}
@@ -183,31 +176,27 @@ export default class App extends Component {
             yDomain={[0, 1]}
             keys={stackAreaKeys}
             color={scaleOrdinal(schemeCategory20)}
+            yTicks={[10, "%"]}
           />
         </div>
         <div id="bar-chart">
           <BarChart
             className="vis-app-area-chart"
-            width={960}
-            height={500}
             data={barData}
             x={d => d.letter}
             y={d => d.frequency}
             xScale={scaleBand()
               .round(true)
               .padding(0.1)}
-            yScale={scaleLinear().nice()}
+            yScale={scaleLinear()}
             xDomain={barData.map(d => d.letter)}
-            yDomain={[0, max(barData, d => d.frequency)]}
-            tickPadding={0.1}
+            xTickPadding={0.1}
+            yTickPadding={0.1}
           />
         </div>
         <div id="stacked-bar-chart">
           <StackBarChart
             className="stacked-bar-chart"
-            margin={{ left: 50, top: 50, right: 50, bottom: 50 }}
-            width={960}
-            height={500}
             data={stackBarData}
             x={d => d.data.State}
             y={d => d[1]}
@@ -218,7 +207,8 @@ export default class App extends Component {
             yScale={scaleLinear().nice()}
             xDomain={stackBarData.map(d => d.State)}
             yDomain={[0, 1]}
-            tickPadding={0.1}
+            xTickPadding={0.1}
+            tTickPadding={0.1}
             keys={stackBarKeys}
             offset={"expand"}
             color={scaleOrdinal().range([
@@ -237,7 +227,7 @@ export default class App extends Component {
           <PieChart
             className="vis-app-pie-chart"
             data={pieData}
-            width={500}
+            width={960}
             height={500}
             innerRadius={50}
             outerRadius={150}
@@ -248,26 +238,19 @@ export default class App extends Component {
         <div id="group-bar-chart">
           <GroupBarChart
             className="grouped-bar-chart"
-            margin={{ left: 50, top: 50, right: 50, bottom: 50 }}
-            width={960}
-            height={500}
             data={groupBarData}
-            x0={d => d.Education}
-            x1={d => d.key}
-            y={d => d.value}
-            x0Scale={scaleBand()
+            x={d => d.Education}
+            xScale={scaleBand()
               .round(true)
               .paddingInner(0.1)}
-            x1Scale={scaleBand().padding(0.05)}
             yScale={scaleLinear().nice()}
-            x0Domain={groupBarData.map(d => d.Education)}
-            x1Domain={groupBarKeys}
+            xDomain={groupBarData.map(d => d.Education)}
+            keys={groupBarKeys}
             yDomain={[
               0,
               max(groupBarData, d => max(groupBarKeys, key => d[key]))
             ]}
             color={scaleOrdinal(schemeCategory10)}
-            yRange={[450, 0]}
           />
         </div>
       </div>

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export const DEFAULT_PROPS = {
   width: 960,
   height: 500,
-  margin: { top: 30, right: 30, bottom: 30, left: 30 }
+  margin: { top: 30, right: 50, bottom: 30, left: 50 }
 };
 
 export const ALL_COMMON_PROPTYPES = {

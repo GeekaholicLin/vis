@@ -5,7 +5,7 @@ import _ from "lodash";
 import cx from "classnames";
 import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 
-export default class Arc extends Comment {
+export default class Arc extends Component {
   constructor(props) {
     super(props);
   }
@@ -46,7 +46,7 @@ export default class Arc extends Comment {
 }
 
 Arc.displayName = `${PREFIX}Arc`;
-Arc.PropTypes = {
+Arc.propTypes = {
   className: PropTypes.string,
   centroid: PropTypes.any,
   innerRadius: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import SVG from "../components/SVG";
-import Group from "../components/Group";
-import { Pie } from "../components/index";
+import { generateAxisPropTypes, mappingPropsWithKeys } from "../ultis";
+import { SVG, Group, Pie } from "../components/index";
 import { PREFIX, DEFAULT_PROPS } from "../constant";
 
 export default class PieChart extends Component {
@@ -15,50 +14,24 @@ export default class PieChart extends Component {
       className,
       width,
       height,
-      margin,
+      color,
       data,
-      top,
-      left,
-      centroid,
       innerRadius,
-      outerRadius,
-      cornerRadius,
-      padRadius,
-      value,
-      sort,
-      sortValue,
-      startAngle,
-      endAngle,
-      padAngle,
-      color
+      outerRadius
     } = this.props;
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
     return (
       <SVG
         className={cx(`${PREFIX}-bar-chart`, className)}
         width={width}
         height={height}
       >
-        <Group transform={`translate(${innerWidth / 2},${innerHeight / 2})`}>
+        <Group left={width / 2} top={height / 2}>
           <Pie
+            {...mappingPropsWithKeys(this.props, Object.keys(Pie.propTypes), [
+              "left",
+              "top"
+            ])}
             className="pie-chart"
-            data={data}
-            top={top}
-            left={left}
-            centroid={centroid}
-            innerRadius={innerRadius}
-            outerRadius={outerRadius}
-            cornerRadius={cornerRadius}
-            padRadius={padRadius}
-            value={value}
-            sort={sort}
-            sortValue={sortValue}
-            startAngle={startAngle}
-            endAngle={endAngle}
-            padAngle={padAngle}
-            stroke={"white"}
-            color={color}
           />
         </Group>
       </SVG>
@@ -78,7 +51,7 @@ PieChart.propTypes = {
     left: PropTypes.number
   }),
   color: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  ...Pie.propTypes
+  ...generateAxisPropTypes(Pie.propTypes, ["left", "top"])
 };
 PieChart.defaultProps = {
   ...DEFAULT_PROPS

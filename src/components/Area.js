@@ -62,5 +62,6 @@ Area.propTypes = {
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Area.defaultProps = {
-  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
+  stroke: "none"
 };

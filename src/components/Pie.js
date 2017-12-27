@@ -79,5 +79,6 @@ Pie.propTypes = {
 };
 Pie.defaultProps = {
   innerRadius: 0,
-  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
+  stroke: "white"
 };

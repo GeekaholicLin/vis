@@ -9,14 +9,30 @@ export default class Group extends Component {
     super(props);
   }
   render() {
-    const { className, children, left, top, ...rest } = this.props;
+    const {
+      className,
+      children,
+      data, //special for left and top func
+      left,
+      top,
+      childMappingProps,
+      ...rest
+    } = this.props;
     return (
       <g
         className={cx(`${PREFIX}-group`, className)}
-        transform={`translate(${left},${top})`}
+        transform={`translate(${_.isFunction(left) ? left(data) : left},${
+          _.isFunction(top) ? top(data) : top
+        })`}
         {...rest}
       >
-        {children}
+        {childMappingProps
+          ? React.Children.map(children, child => {
+              return React.cloneElement(child, {
+                ...childMappingProps[children.type.name]
+              });
+            })
+          : children}
       </g>
     );
   }
@@ -25,7 +41,17 @@ Group.displayName = `${PREFIX}Group`;
 Group.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
-  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
+  left: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+    PropTypes.func
+  ]),
+  top: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+    PropTypes.func
+  ]),
+  childMappingProps: PropTypes.object
 };
 Group.defaultProps = {
   ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])

@@ -57,5 +57,7 @@ Bar.propTypes = {
   color: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
 Bar.defaultProps = {
-  ...Rect.defaultProps
+  ...Rect.defaultProps,
+  color: "steelblue",
+  stroke: "none"
 };

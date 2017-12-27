@@ -28,6 +28,7 @@ export default class Stack extends Component {
       order,
       offset,
       color,
+      childMappingProps,
       ...rest
     } = this.props;
     let stackGenerator = stack();
@@ -51,16 +52,18 @@ export default class Stack extends Component {
         {stackDataArr.map((stackData, i) => {
           let displayName = children.displayName || "anonyComponent";
           //clone the children
+
           return React.cloneElement(
             children,
             {
               key: `stack-${displayName}-${i}`,
               className: cx(
                 `stack-${displayName}-${i}`,
-                children.props.className
+                children.props && children.props.className
               ),
               data: stackData,
               fill: _.isFunction(color) ? color(stackData.key) : color,
+              ...childMappingProps[children.type.name],
               ...rest
             },
             children.children
@@ -86,6 +89,7 @@ Stack.propTypes = {
     PropTypes.oneOf(Object.keys(STACK_OFFSET_MAP)),
     PropTypes.func
   ]),
+  childMappingProps: PropTypes.object, //the props must map to child with the specified key while ...rest props is the common props mapping to all the children components
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top", "color"])
 };
 Stack.defaultProps = {

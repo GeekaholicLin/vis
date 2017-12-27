@@ -1,127 +1,51 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { max } from "d3-array";
-import SVG from "../components/SVG";
-import Group from "../components/Group";
-import { Area, Axis, Stack } from "../components/index";
-import { PREFIX, DEFAULT_PROPS } from "../constant";
-export default class AreaChart extends Component {
+import Chart from "./Chart";
+import { Area, XAxis, YAxis, Stack } from "../components/index";
+import {
+  generateAxisMappingProps,
+  generateAxisPropTypes,
+  mappingPropsWithKeys,
+  generateComponentPropTypes
+} from "../ultis";
+import { PREFIX } from "../constant";
+export default class StackAreaChart extends Component {
   constructor(props) {
     super(props);
   }
   render() {
-    let {
-      className,
-      width,
-      height,
-      margin,
-      data,
-      x,
-      x0,
-      x1,
-      y,
-      y0,
-      y1,
-      xScale,
-      yScale,
-      xDomain,
-      yDomain,
-      xRange,
-      yRange,
-      defined,
-      curve,
-      xTickFormat,
-      yTickFormat,
-      tickPadding,
-      keys,
-      value,
-      order,
-      offset,
-      stackLeft,
-      stackTop,
-      color,
-      ...rest
-    } = this.props;
-    let areaProps = Object.keys(Area.propTypes);
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-    let xNewScale = xScale
-      .domain(xDomain || [0, max(data, x)])
-      .range(xRange || [margin.left, width - margin.right]);
-    let yNewScale = yScale
-      .domain(yDomain || [0, max(data, y)])
-      .range(yRange || [height - margin.top, margin.bottom]);
     return (
-      <SVG
-        className={cx(`${PREFIX}-area-chart`, className)}
-        width={width}
-        height={height}
+      <Chart
+        {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
       >
-        <Group>
-          <Stack
-            className="stacked-area-chart"
-            left={stackLeft}
-            top={stackTop}
-            data={data}
-            keys={keys}
-            value={value}
-            order={order}
-            offset={offset}
-            color={color}
-          >
-            <Area
-              className="stacked-area-chart-area"
-              x={x}
-              x0={x0}
-              x1={x1}
-              y={y}
-              y0={y0}
-              y1={y1}
-              defined={defined}
-              curve={curve}
-              xScale={xScale}
-              yScale={yScale}
-              stroke={"none"}
-            />
-          </Stack>
-          <Axis
-            key={"x"}
-            className={"vis-app-xAxis"}
-            scale={xScale}
-            tickFormat={xTickFormat}
-            tickPadding={tickPadding}
-            transform={`translate(0,${innerHeight + margin.top})`}
+        <Stack
+          {...mappingPropsWithKeys(this.props, Object.keys(Stack.propTypes), [
+            "left",
+            "top"
+          ])}
+        >
+          <Area
+            {...mappingPropsWithKeys(this.props, Object.keys(Area.propTypes), [
+              "left",
+              "top"
+            ])}
           />
-          <Axis
-            key={"y"}
-            orientation={"left"}
-            className={"vis-app-yAxis"}
-            ticks={[10, "%"]}
-            scale={yScale}
-            tickFormat={yTickFormat}
-            tickPadding={tickPadding}
-            transform={`translate(${margin.left},0)`}
-          />
-        </Group>
-      </SVG>
+        </Stack>
+        <XAxis {...generateAxisMappingProps(this.props, "x")} />
+        <YAxis {...generateAxisMappingProps(this.props, "y")} />
+      </Chart>
     );
   }
 }
 
-AreaChart.displayName = `${PREFIX}-AreaChart`;
-AreaChart.propTypes = {
-  className: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  margin: PropTypes.shape({
-    top: PropTypes.number,
-    right: PropTypes.number,
-    bottom: PropTypes.number,
-    left: PropTypes.number
-  }),
-  ...Area.propTypes
+StackAreaChart.displayName = `${PREFIX}StackAreaChart`;
+StackAreaChart.propTypes = {
+  ...Chart.propTypes,
+  ...generateComponentPropTypes(Area.propTypes, ["left", "top"]),
+  ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
+  ...generateAxisPropTypes(YAxis.propTypes, "y") //yAxis
 };
-AreaChart.defaultProps = {
-  ...DEFAULT_PROPS
+StackAreaChart.defaultProps = {
+  ...Chart.defaultProps
 };

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import Chart from "./Chart";
-import { SVG, Group, Curve, XAxis, YAxis } from "../components/index";
+import { Curve, XAxis, YAxis } from "../components/index";
 import {
   generateAxisMappingProps,
   generateAxisPropTypes,
@@ -24,7 +24,6 @@ export default class LineChart extends Component {
             "left",
             "top"
           ])}
-          className={"line-chart-curve"}
         />
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
         <YAxis {...generateAxisMappingProps(this.props, "y")} />
@@ -38,7 +37,7 @@ LineChart.propTypes = {
   defined: PropTypes.func, //curve
   curve: PropTypes.func,
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
-  ...generateAxisPropTypes(XAxis.propTypes, "y") //yAxis
+  ...generateAxisPropTypes(YAxis.propTypes, "y") //yAxis
 };
 LineChart.defaultProps = {
   ...Chart.defaultProps

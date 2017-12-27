@@ -25,7 +25,10 @@ export default class Chart extends Component {
       yDomain,
       xRange,
       yRange,
-      grid
+      grid,
+      x1 = d => d.key, //special prop for group bar chart
+      x1Domain,
+      x1Scale
     } = this.props;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -33,6 +36,16 @@ export default class Chart extends Component {
     yScale
       .domain(yDomain || [0, max(data, y)])
       .range(yRange || [innerHeight, 0]);
+    /* special prop for group bar chart */
+    x1Domain && x1Scale
+      ? x1Scale
+          .domain(x1Domain)
+          .rangeRound([0, xScale ? xScale.bandwidth() : 1])
+      : null;
+    /**
+     * override current props or adding props to the certain component
+     * it seems like default props for component mapping down from Chart props
+     */
     let mappingProps = {
       XAxis: {
         scale: xScale,
@@ -50,8 +63,40 @@ export default class Chart extends Component {
       Area: {
         xScale,
         yScale
+      },
+      Bar: {
+        left: d => xScale(x(d)),
+        top: d => yScale(y(d)),
+        width: xScale.bandwidth ? xScale.bandwidth() : 0, //fix xScale.bandwidth() is not a function bug
+        height: d => innerHeight - yScale(y(d))
+      },
+      Stack: {
+        childMappingProps: {
+          Area: {
+            xScale,
+            yScale
+          },
+          Bar: {
+            left: d => xScale(x(d)),
+            top: d => yScale(y(d)),
+            width: xScale.bandwidth ? xScale.bandwidth() : 1, //fix xScale.bandwidth() is not a function bug
+            height: d => yScale(d[0]) - yScale(d[1])
+          }
+        }
+      },
+      Group: {
+        left: d => xScale(x(d)),
+        childMappingProps: {
+          Bar: {
+            top: d => yScale(y(d)),
+            left: d => (x1Scale && x1 ? x1Scale(x1(d)) : 0),
+            width: x1Scale && x1Scale.bandwidth ? x1Scale.bandwidth() : 1,
+            height: d => innerHeight - yScale(y(d))
+          }
+        }
       }
     };
+
     return (
       <SVG
         className={cx(`${PREFIX}-chart`, className)}
@@ -61,6 +106,7 @@ export default class Chart extends Component {
         <Group left={margin.left} top={margin.top}>
           {React.Children.map(children, el => {
             return React.cloneElement(el, {
+              className: className ? _.kebabCase(className + el.type.name) : "", //inject className automatically
               ...mappingProps[el.type.name]
             });
           })}
@@ -70,6 +116,7 @@ export default class Chart extends Component {
   }
 }
 Chart.displayName = `${PREFIX}Chart`;
+//Chart propTypes should not have `x1`
 Chart.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
@@ -82,8 +129,8 @@ Chart.propTypes = {
     left: PropTypes.number
   }),
   data: PropTypes.array, //the following prop with map to all of children
-  x: PropTypes.func.isRequired, //accessor func
-  y: PropTypes.func.isRequired,
+  x: PropTypes.func, //accessor func
+  y: PropTypes.func,
   xScale: PropTypes.func,
   yScale: PropTypes.func,
   xDomain: PropTypes.array,

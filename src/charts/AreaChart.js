@@ -25,7 +25,6 @@ export default class AreaChart extends Component {
             "top"
           ])}
           y1={this.props.y1 || this.props.y}
-          className="area-chart-area"
           fill={"steelblue"}
           stroke={"none"}
         />
@@ -41,7 +40,7 @@ AreaChart.propTypes = {
   ...Chart.propTypes,
   ...generateComponentPropTypes(Area.propTypes, ["left", "top"]),
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
-  ...generateAxisPropTypes(XAxis.propTypes, "y") //yAxis
+  ...generateAxisPropTypes(YAxis.propTypes, "y") //yAxis
 };
 AreaChart.defaultProps = {
   ...Chart.defaultProps,
