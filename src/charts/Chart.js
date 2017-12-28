@@ -52,6 +52,11 @@ export default class Chart extends Component {
         tickSizeInner: ["column", "auto"].indexOf(grid) > -1 ? -innerHeight : 6,
         top: innerHeight
       },
+      CustomAxis: {
+        scale: xScale,
+        tickSizeInner: ["column", "auto"].indexOf(grid) > -1 ? -innerHeight : 6,
+        top: innerHeight
+      },
       YAxis: {
         scale: yScale,
         tickSizeInner: ["row", "auto"].indexOf(grid) > -1 ? -innerWidth : 6

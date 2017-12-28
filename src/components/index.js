@@ -1,6 +1,6 @@
 export { default as Arc } from "./Arc";
 export { default as Area } from "./Area";
-export { default as Axis } from "./Axis";
+export { default as D3Axis } from "./D3Axis";
 export { default as Bar } from "./Bar";
 export { default as Circle } from "./Circle";
 export { default as ClipPath } from "./ClipPath";
@@ -13,5 +13,8 @@ export { default as Rect } from "./Rect";
 export { default as Stack } from "./Stack";
 export { default as SVG } from "./SVG";
 export { default as Text } from "./Text";
+export { default as D3XAxis } from "./D3XAxis";
+export { default as D3YAxis } from "./D3YAxis";
+export { default as Axis } from "./Axis";
 export { default as XAxis } from "./XAxis";
 export { default as YAxis } from "./YAxis";
