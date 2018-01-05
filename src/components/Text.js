@@ -17,7 +17,7 @@ export default class Text extends Component {
     let { left, top, className, ...rest } = this.props;
     return (
       <Label
-        className={cx(`{PREFIX}-text`, className)}
+        className={cx(`${PREFIX}-text`, className)}
         x={left}
         y={top}
         {...rest}
@@ -28,8 +28,8 @@ export default class Text extends Component {
 Text.displayName = `${PREFIX}Text`;
 Text.propTypes = {
   className: PropTypes.string,
-  top: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
-  left: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  top: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  left: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   dx: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   dy: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   lineHeight: PropTypes.string,
@@ -47,5 +47,6 @@ Text.defaultProps = {
   capHeight: "0.71em", // Magic number from d3
   scaleToFit: false,
   textAnchor: "start",
-  verticalAnchor: "end" // default SVG behavior
+  verticalAnchor: "end", // default SVG behavior
+  fontSize: 12
 };

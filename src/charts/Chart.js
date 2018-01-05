@@ -49,17 +49,16 @@ export default class Chart extends Component {
     let mappingProps = {
       XAxis: {
         scale: xScale,
-        tickSizeInner: ["column", "auto"].indexOf(grid) > -1 ? -innerHeight : 6,
-        top: innerHeight
-      },
-      CustomAxis: {
-        scale: xScale,
-        tickSizeInner: ["column", "auto"].indexOf(grid) > -1 ? -innerHeight : 6,
         top: innerHeight
       },
       YAxis: {
-        scale: yScale,
-        tickSizeInner: ["row", "auto"].indexOf(grid) > -1 ? -innerWidth : 6
+        scale: yScale
+      },
+      Grid: {
+        xScale,
+        yScale,
+        width: ["auto", "row"].indexOf(grid) > -1 ? innerWidth : 0,
+        height: ["auto", "column"].indexOf(grid) > -1 ? innerHeight : 0
       },
       Curve: {
         xScale,
@@ -99,6 +98,14 @@ export default class Chart extends Component {
             height: d => innerHeight - yScale(y(d))
           }
         }
+      },
+      Marker: {
+        xScale,
+        yScale,
+        width,
+        height,
+        innerHeight,
+        innerWidth
       }
     };
 

@@ -18,3 +18,5 @@ export { default as D3YAxis } from "./D3YAxis";
 export { default as Axis } from "./Axis";
 export { default as XAxis } from "./XAxis";
 export { default as YAxis } from "./YAxis";
+export { default as Grid } from "./Grid";
+export { default as Marker } from "./Marker";
