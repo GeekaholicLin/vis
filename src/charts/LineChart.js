@@ -28,8 +28,19 @@ export default class LineChart extends Component {
         />
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
         <YAxis {...generateAxisMappingProps(this.props, "y")} />
-        <Marker value={110} label={"平均值"} />
-        <Marker type="x" value={new Date("3/1/2016")} />
+        <Marker value={110} label={"平均值"} labelAnchor="start" />
+        <Marker
+          type="x"
+          label={"最小年月"}
+          labelAnchor="middle"
+          value={new Date("2/1/2016")}
+        />
+        <Marker
+          type="x"
+          label={"最大年月"}
+          labelAnchor="middle"
+          value={new Date("2/1/2017")}
+        />
       </Chart>
     );
   }

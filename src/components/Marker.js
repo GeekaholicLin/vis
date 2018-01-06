@@ -6,6 +6,7 @@ import Line from "./Line";
 import Text from "./Text";
 import { PREFIX } from "../constant";
 
+const TEXT_OFFSET = 5;
 export default class Marker extends Component {
   constructor(props) {
     super(props);
@@ -40,6 +41,50 @@ export default class Marker extends Component {
       x: isKeyFromX ? xScale(value) : innerWidth,
       y: isKeyFromX ? innerHeight : yScale(value)
     };
+    let defaultTextStyle = {
+      x: {
+        start: {
+          textAnchor: "end",
+          left: from.x,
+          top: innerHeight - TEXT_OFFSET,
+          dx: TEXT_OFFSET,
+          angle: 90
+        },
+        middle: {
+          textAnchor: "middle",
+          left: from.x,
+          top: innerHeight / 2,
+          dx: TEXT_OFFSET,
+          angle: 90
+        },
+        end: {
+          textAnchor: "start",
+          left: from.x,
+          top: TEXT_OFFSET,
+          dx: TEXT_OFFSET,
+          angle: 90
+        }
+      },
+      y: {
+        start: {
+          textAnchor: "start",
+          left: from.x,
+          top: from.y - TEXT_OFFSET,
+          dx: TEXT_OFFSET
+        },
+        middle: {
+          textAnchor: "middle",
+          left: innerWidth / 2,
+          top: from.y - TEXT_OFFSET
+        },
+        end: {
+          textAnchor: "end",
+          left: innerWidth,
+          top: from.y - TEXT_OFFSET,
+          dx: -TEXT_OFFSET
+        }
+      }
+    };
     return (
       <Group
         top={top}
@@ -54,10 +99,9 @@ export default class Marker extends Component {
           fill="none"
         />
         {_.isString(label) ? (
-          <svg fill="#ccc" stroke="none">
+          <svg>
             <Text
-              left={from.x}
-              top={from.y}
+              {...defaultTextStyle[type][labelAnchor]}
               {...textProps}
               className={`${PREFIX}-marker-label`}
             >
@@ -82,8 +126,9 @@ Marker.propTypes = {
 Marker.defaultProps = {
   ...Line.defaultProps,
   type: "y",
-  stroke: "steelblue",
-  strokeWidth: 1,
+  stroke: "none",
+  fill: "#000",
+  strokeWidth: 0,
   label: "",
-  labelAnchor: "end"
+  labelAnchor: "start"
 };
