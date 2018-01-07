@@ -24,7 +24,7 @@ export default class Bar extends Component {
       height,
       rx,
       ry,
-      color,
+      fill,
       ...rest
     } = this.props;
     return (
@@ -40,7 +40,7 @@ export default class Bar extends Component {
               height={_.isFunction(height) ? height(d) : height}
               rx={_.isFunction(rx) ? rx(d) : rx}
               ry={_.isFunction(ry) ? ry(d) : ry}
-              fill={_.isFunction(color) ? color(d) : color}
+              fill={_.isFunction(fill) ? fill(d) : fill}
               {...rest}
             />
           );
@@ -54,10 +54,10 @@ Bar.propTypes = {
   className: PropTypes.string,
   data: PropTypes.array,
   ...Rect.propTypes,
-  color: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
+  fill: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
 };
 Bar.defaultProps = {
   ...Rect.defaultProps,
-  color: "steelblue",
+  fill: "steelblue",
   stroke: "none"
 };

@@ -28,9 +28,11 @@ export default class Group extends Component {
       >
         {childMappingProps
           ? React.Children.map(children, child => {
-              return React.cloneElement(child, {
-                ...childMappingProps[children.type.name]
-              });
+              if (child) {
+                return React.cloneElement(child, {
+                  ...childMappingProps[child.type.name]
+                });
+              }
             })
           : children}
       </g>

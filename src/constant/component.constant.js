@@ -8,8 +8,7 @@ export const DEFAULT_PROPS = {
 
 export const ALL_COMMON_PROPTYPES = {
   top: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  left: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  color: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
+  left: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 export const ALL_DEFAULT_PROPS = {

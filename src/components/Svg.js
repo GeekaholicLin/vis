@@ -12,7 +12,8 @@ export default class SVG extends Component {
     return (
       <svg
         className={cx(`${PREFIX}-svg`, className)}
-        transform={`translate(${left},${top})`}
+        x={left}
+        y={top}
         {...rest}
       >
         {children}

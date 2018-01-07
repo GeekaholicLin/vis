@@ -15,15 +15,29 @@ export default class StackAreaChart extends Component {
     super(props);
   }
   render() {
+    let { fill } = this.props;
     return (
       <Chart
         {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
       >
+        {_.isArray(fill) &&
+          fill.map(
+            (Ele, i) =>
+              React.isValidElement(Ele) &&
+              React.cloneElement(Ele, { key: `fill-${i}` })
+          )}
         <Stack
           {...mappingPropsWithKeys(this.props, Object.keys(Stack.propTypes), [
             "left",
             "top"
           ])}
+          fill={
+            _.isArray(fill)
+              ? fill.map(
+                  (el, i) => (_.isString(el) ? el : `url('#${el.props.id}')`)
+                )
+              : fill
+          }
         >
           <Area
             {...mappingPropsWithKeys(this.props, Object.keys(Area.propTypes), [
@@ -44,7 +58,8 @@ StackAreaChart.propTypes = {
   ...Chart.propTypes,
   ...generateComponentPropTypes(Area.propTypes, ["left", "top"]),
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
-  ...generateAxisPropTypes(YAxis.propTypes, "y") //yAxis
+  ...generateAxisPropTypes(YAxis.propTypes, "y"), //yAxis
+  fill: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
 };
 StackAreaChart.defaultProps = {
   ...Chart.defaultProps

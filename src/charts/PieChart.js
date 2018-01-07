@@ -14,7 +14,7 @@ export default class PieChart extends Component {
       className,
       width,
       height,
-      color,
+      fill,
       data,
       innerRadius,
       outerRadius
@@ -25,6 +25,12 @@ export default class PieChart extends Component {
         width={width}
         height={height}
       >
+        {_.isArray(fill) &&
+          fill.map(
+            (Ele, i) =>
+              React.isValidElement(Ele) &&
+              React.cloneElement(Ele, { key: `fill-${i}` })
+          )}
         <Group left={width / 2} top={height / 2}>
           <Pie
             {...mappingPropsWithKeys(this.props, Object.keys(Pie.propTypes), [
@@ -32,6 +38,13 @@ export default class PieChart extends Component {
               "top"
             ])}
             className="pie-chart"
+            fill={
+              _.isArray(fill)
+                ? fill.map(
+                    (el, i) => (_.isString(el) ? el : `url('#${el.props.id}')`)
+                  )
+                : fill
+            }
           />
         </Group>
       </SVG>
@@ -50,7 +63,7 @@ PieChart.propTypes = {
     bottom: PropTypes.number,
     left: PropTypes.number
   }),
-  color: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  fill: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   ...generateAxisPropTypes(Pie.propTypes, ["left", "top"])
 };
 PieChart.defaultProps = {

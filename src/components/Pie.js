@@ -27,7 +27,7 @@ export default class Pie extends Component {
       outerRadius,
       cornerRadius,
       padRadius,
-      color,
+      fill,
       ...rest
     } = this.props;
     let arcGenerator = arc();
@@ -56,7 +56,11 @@ export default class Pie extends Component {
               className={`${PREFIX}-pie-arc`}
               d={arcGenerator(pieArc)}
               {...rest}
-              fill={_.isFunction(color) ? color(pieArc.data) : color}
+              fill={
+                _.isFunction(fill)
+                  ? fill(pieArc.data)
+                  : _.isArray(fill) ? fill[i % fill.length] : fill
+              }
             />
           );
         })}
@@ -75,7 +79,8 @@ Pie.propTypes = {
   endAngle: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   padAngle: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   ...Arc.propTypes,
-  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top", "color"])
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"]),
+  fill: PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.func])
 };
 Pie.defaultProps = {
   innerRadius: 0,

@@ -21,6 +21,7 @@ import {
   StackBarChart,
   GroupBarChart
 } from "./charts";
+import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
 export default class App extends Component {
@@ -180,6 +181,16 @@ export default class App extends Component {
             xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
             title={CustomTitle}
+            fill={
+              <PatternLines
+                id="lines"
+                height={5}
+                width={5}
+                stroke={"black"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />
+            }
           />
         </div>
         <div id="stacked-area-chart">
@@ -195,6 +206,24 @@ export default class App extends Component {
             keys={stackAreaKeys}
             color={scaleOrdinal(schemeCategory20)}
             yTicks={[10, "%"]}
+            fill={[
+              <PatternLines
+                id="lines1"
+                height={5}
+                width={5}
+                stroke={"black"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines2"
+                height={5}
+                width={5}
+                stroke={"red"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />
+            ]}
           />
         </div>
         <div id="bar-chart">
@@ -210,6 +239,16 @@ export default class App extends Component {
             xDomain={barData.map(d => d.letter)}
             xTickPadding={0.1}
             yTickPadding={0.1}
+            fill={
+              <PatternLines
+                id="lines"
+                height={5}
+                width={5}
+                stroke={"black"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />
+            }
           />
         </div>
         <div id="stacked-bar-chart">
@@ -229,15 +268,64 @@ export default class App extends Component {
             tTickPadding={0.1}
             keys={stackBarKeys}
             offset={"expand"}
-            color={scaleOrdinal().range([
-              "#98abc5",
-              "#8a89a6",
-              "#7b6888",
-              "#6b486b",
-              "#a05d56",
-              "#d0743c",
-              "#ff8c00"
-            ])}
+            fill={[
+              <PatternLines
+                id="lines1"
+                height={5}
+                width={5}
+                stroke={"black"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines2"
+                height={5}
+                width={5}
+                stroke={"red"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines3"
+                height={5}
+                width={5}
+                stroke={"blue"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines4"
+                height={5}
+                width={5}
+                stroke={"yellow"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines5"
+                height={5}
+                width={5}
+                stroke={"green"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines6"
+                height={5}
+                width={5}
+                stroke={"grey"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines7"
+                height={5}
+                width={5}
+                stroke={"pink"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />
+            ]}
           />
         </div>
 
@@ -249,7 +337,24 @@ export default class App extends Component {
             height={500}
             innerRadius={50}
             outerRadius={150}
-            color={scaleOrdinal(schemeCategory20)}
+            fill={[
+              <PatternLines
+                id="lines1"
+                height={5}
+                width={5}
+                stroke={"black"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines2"
+                height={5}
+                width={5}
+                stroke={"red"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />
+            ]}
           />
         </div>
 
@@ -268,7 +373,24 @@ export default class App extends Component {
               0,
               max(groupBarData, d => max(groupBarKeys, key => d[key]))
             ]}
-            color={scaleOrdinal(schemeCategory10)}
+            fill={[
+              <PatternLines
+                id="lines1"
+                height={5}
+                width={5}
+                stroke={"black"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />,
+              <PatternLines
+                id="lines2"
+                height={5}
+                width={5}
+                stroke={"red"}
+                strokeWidth={1}
+                orientation={["diagonal"]}
+              />
+            ]}
           />
         </div>
       </div>

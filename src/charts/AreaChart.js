@@ -15,17 +15,19 @@ export default class AreaChart extends Component {
     super(props);
   }
   render() {
+    let { fill } = this.props;
     return (
       <Chart
         {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
       >
+        {React.isValidElement(fill) && !_.isString(fill) && fill}
         <Area
           {...mappingPropsWithKeys(this.props, Object.keys(Area.propTypes), [
             "left",
             "top"
           ])}
           y1={this.props.y1 || this.props.y}
-          fill={"steelblue"}
+          fill={_.isString(fill) ? fill : `url('#${fill.props.id}')`}
           stroke={"none"}
         />
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
@@ -40,7 +42,8 @@ AreaChart.propTypes = {
   ...Chart.propTypes,
   ...generateComponentPropTypes(Area.propTypes, ["left", "top"]),
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
-  ...generateAxisPropTypes(YAxis.propTypes, "y") //yAxis
+  ...generateAxisPropTypes(YAxis.propTypes, "y"), //yAxis
+  fill: PropTypes.oneOfType([PropTypes.string, PropTypes.element]) //do not have PropTypes.func because AreaChart is only one color
 };
 AreaChart.defaultProps = {
   ...Chart.defaultProps,

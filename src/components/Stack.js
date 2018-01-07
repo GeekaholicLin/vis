@@ -27,7 +27,7 @@ export default class Stack extends Component {
       value,
       order,
       offset,
-      color,
+      fill,
       childMappingProps,
       ...rest
     } = this.props;
@@ -62,7 +62,9 @@ export default class Stack extends Component {
                 children.props && children.props.className
               ),
               data: stackData,
-              fill: _.isFunction(color) ? color(stackData.key) : color,
+              fill: _.isFunction(fill)
+                ? fill(stackData.key)
+                : _.isArray(fill) ? fill[i % fill.length] : fill,
               ...childMappingProps[children.type.name],
               ...rest
             },
@@ -90,7 +92,8 @@ Stack.propTypes = {
     PropTypes.func
   ]),
   childMappingProps: PropTypes.object, //the props must map to child with the specified key while ...rest props is the common props mapping to all the children components
-  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top", "color"])
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"]),
+  fill: PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.func])
 };
 Stack.defaultProps = {
   ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])

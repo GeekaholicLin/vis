@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import _ from "lodash";
 import Chart from "./Chart";
 import { Group, Bar, XAxis, YAxis, Stack } from "../components/index";
 import {
@@ -9,15 +10,20 @@ import {
   generateComponentPropTypes,
   mappingPropsWithKeys
 } from "../ultis";
-import { scaleBand } from "d3-scale";
+import { scaleBand, scaleOrdinal } from "d3-scale";
 import { PREFIX } from "../constant";
 export default class GroupBarChart extends Component {
   constructor(props) {
     super(props);
   }
   render() {
-    let { color, keys, data } = this.props;
+    let { fill, keys, data } = this.props;
     let x1 = d => d.key;
+    let colorItems = _.isArray(fill) ? [...fill] : [fill];
+    let colors = colorItems.map(
+      (item, i) => (_.isString(item) ? item : `url(#${item.props.id})`)
+    ); //check the item is Element or normal color string
+    let fillFunc = scaleOrdinal(colors);
     return (
       <Chart
         {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
@@ -26,6 +32,11 @@ export default class GroupBarChart extends Component {
         x1Domain={keys}
         x1Scale={scaleBand().padding(0.05)}
       >
+        {colorItems.map(
+          (El, i) =>
+            React.isValidElement(El) &&
+            React.cloneElement(El, { key: `fill-${i}` })
+        )}
         {data.map((barGroupArr, i) => {
           return (
             <Group
@@ -38,7 +49,7 @@ export default class GroupBarChart extends Component {
                   key: cate,
                   value: barGroupArr[cate]
                 }))}
-                color={d => color(x1(d))}
+                fill={d => fillFunc(x1(d))}
               />
             </Group>
           );
@@ -57,7 +68,7 @@ GroupBarChart.propTypes = {
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
   ...generateAxisPropTypes(YAxis.propTypes, "y"), //yAxis
   ...generateComponentPropTypes(Bar.propTypes, ["left"], ["top"]),
-  color: PropTypes.func.isRequired,
+  fill: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   keys: PropTypes.array.isRequired
 };
 GroupBarChart.defaultProps = {

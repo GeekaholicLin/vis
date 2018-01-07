@@ -133,10 +133,15 @@ export default class Chart extends Component {
         {titleEle}
         <Group left={margin.left} top={margin.top}>
           {React.Children.map(children, el => {
-            return React.cloneElement(el, {
-              className: className ? _.kebabCase(className + el.type.name) : "", //inject className automatically
-              ...mappingProps[el.type.name]
-            });
+            //skip null
+            if (el) {
+              return React.cloneElement(el, {
+                className: className
+                  ? _.kebabCase(className + el.type.name)
+                  : "", //inject className automatically
+                ...mappingProps[el.type.name]
+              });
+            }
           })}
         </Group>
       </SVG>
