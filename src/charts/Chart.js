@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import _ from "lodash";
 import { extent, max } from "d3-array";
-import { Group, SVG } from "../components/index";
+import { Group, SVG, Text } from "../components/index";
 import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
 
 export default class Chart extends Component {
@@ -26,6 +27,7 @@ export default class Chart extends Component {
       xRange,
       yRange,
       grid,
+      title,
       x1 = d => d.key, //special prop for group bar chart
       x1Domain,
       x1Scale
@@ -109,12 +111,26 @@ export default class Chart extends Component {
       }
     };
 
+    let titleEle = _.isString(title) ? (
+      <Text
+        fontSize={20}
+        verticalAnchor="start"
+        top={10}
+        left={innerWidth / 2 + margin.left}
+        textAnchor="middle"
+      >
+        {title}
+      </Text>
+    ) : (
+      title
+    );
     return (
       <SVG
         className={cx(`${PREFIX}-chart`, className)}
         width={width}
         height={height}
       >
+        {titleEle}
         <Group left={margin.left} top={margin.top}>
           {React.Children.map(children, el => {
             return React.cloneElement(el, {
@@ -149,7 +165,8 @@ Chart.propTypes = {
   yDomain: PropTypes.array,
   xRange: PropTypes.array,
   yRange: PropTypes.array,
-  grid: PropTypes.oneOf(["row", "column", "none", "auto"])
+  grid: PropTypes.oneOf(["row", "column", "none", "auto"]),
+  title: PropTypes.node
 };
 Chart.defaultProps = {
   ...DEFAULT_PROPS,

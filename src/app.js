@@ -138,11 +138,26 @@ export default class App extends Component {
       groupBarData,
       groupBarKeys
     } = this.state;
+    let CustomTitle = (
+      <svg width="140" height="30" x="430" y="10">
+        <a
+          style={{ cursor: "pointer" }}
+          href="https://developer.mozilla.org/en-US/docs/SVG"
+          target="_blank"
+        >
+          <rect height="30" width="120" y="0" x="0" rx="15" />
+          <text fill="white" textAnchor="middle" y="21" x="60">
+            面积图
+          </text>
+        </a>
+      </svg>
+    );
     return (
       <div>
         <div id="line-chart">
           <LineChart
             className="vis-app-line-chart"
+            margin={{ top: 50, right: 50, bottom: 30, left: 50 }}
             data={lineData}
             x={d => d.date}
             y={d => d.price}
@@ -152,16 +167,19 @@ export default class App extends Component {
             grid={"auto"}
             xTickPadding={10}
             yTickPadding={10}
+            title={"折线图"}
           />
         </div>
         <div id="area-chart">
           <AreaChart
+            margin={{ top: 50, right: 50, bottom: 30, left: 50 }}
             className="vis-app-area-chart"
             data={areaData}
             x={d => d.date}
             y={d => d.close}
             xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
+            title={CustomTitle}
           />
         </div>
         <div id="stacked-area-chart">

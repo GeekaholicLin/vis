@@ -48,5 +48,8 @@ Text.defaultProps = {
   scaleToFit: false,
   textAnchor: "start",
   verticalAnchor: "end", // default SVG behavior
-  fontSize: 12
+  fontSize: 12,
+  stroke: "none",
+  fill: "#000",
+  strokeWidth: 0
 };

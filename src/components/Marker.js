@@ -99,15 +99,13 @@ export default class Marker extends Component {
           fill="none"
         />
         {_.isString(label) ? (
-          <svg>
-            <Text
-              {...defaultTextStyle[type][labelAnchor]}
-              {...textProps}
-              className={`${PREFIX}-marker-label`}
-            >
-              {label}
-            </Text>
-          </svg>
+          <Text
+            {...defaultTextStyle[type][labelAnchor]}
+            {...textProps}
+            className={`${PREFIX}-marker-label`}
+          >
+            {label}
+          </Text>
         ) : (
           { label }
         )}
@@ -126,9 +124,6 @@ Marker.propTypes = {
 Marker.defaultProps = {
   ...Line.defaultProps,
   type: "y",
-  stroke: "none",
-  fill: "#000",
-  strokeWidth: 0,
   label: "",
   labelAnchor: "start"
 };

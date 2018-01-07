@@ -25,7 +25,6 @@ SVG.propTypes = {
   className: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  children: PropTypes.node.isRequired,
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 SVG.defaultProps = {
