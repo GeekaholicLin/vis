@@ -162,13 +162,14 @@ export default class App extends Component {
             data={lineData}
             x={d => d.date}
             y={d => d.price}
-            xScale={scaleTime().nice()}
+            xScale={scaleTime()}
             yScale={scaleLinear().nice()}
             xTickFormat={timeFormat("%x")}
             grid={"auto"}
             xTickPadding={10}
             yTickPadding={10}
             title={"折线图"}
+            zoom={true}
           />
         </div>
         <div id="area-chart">

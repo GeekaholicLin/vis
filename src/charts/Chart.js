@@ -3,12 +3,46 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import { extent, max } from "d3-array";
-import { Group, SVG, Text } from "../components/index";
+import { select } from "d3-selection";
+import { zoom as zoomBehaviorGenerator, zoomTransform } from "d3-zoom";
+import { Group, SVG, Text, Rect, ClipPath } from "../components/index";
 import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
 
 export default class Chart extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      zoom: this.getZoomBehavior(props.zoom),
+      transform: null
+    };
+    this.node = null;
+  }
+  componentDidMount() {
+    let { zoom, transform } = this.state;
+    zoom && zoom(select(this.node)); //zoom may be null
+    zoom &&
+      this.setState({
+        transform: zoomTransform(this.node) //get init transform
+      });
+  }
+
+  getZoomBehavior(zoom) {
+    if (_.isFunction(zoom)) return zoom;
+    if (zoom) {
+      return zoomBehaviorGenerator()
+        .scaleExtent([1, 2])
+        .translateExtent([[0, 0], [innerWidth, innerHeight]])
+        .extent([[0, 0], [innerWidth, innerHeight]])
+        .on("zoom", this.zoomed.bind(this));
+    }
+    return null;
+  }
+  zoomed() {
+    let { zoom } = this.state;
+    zoom &&
+      this.setState({
+        transform: zoomTransform(this.node) //update transform state
+      });
   }
   render() {
     const {
@@ -28,13 +62,24 @@ export default class Chart extends Component {
       yRange,
       grid,
       title,
+      zoom,
+      clip,
       x1 = d => d.key, //special prop for group bar chart
       x1Domain,
       x1Scale
     } = this.props;
+    let { transform } = this.state;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-    xScale.domain(xDomain || extent(data, x)).range(xRange || [0, innerWidth]);
+    xScale
+      .domain(xDomain || extent(data, x))
+      .range(xRange || [0, width - margin.left - margin.right]);
+    let transformedXScale = xScale.copy();
+    transform &&
+      transformedXScale.domain(
+        transform.rescaleX(transformedXScale).domain()
+      ) &&
+      console.log("transform", transform.toString());
     yScale
       .domain(yDomain || [0, max(data, y)])
       .range(yRange || [innerHeight, 0]);
@@ -50,21 +95,22 @@ export default class Chart extends Component {
      */
     let mappingProps = {
       XAxis: {
-        scale: xScale,
+        scale: transformedXScale,
         top: innerHeight
       },
       YAxis: {
         scale: yScale
       },
       Grid: {
-        xScale,
+        xScale: transformedXScale,
         yScale,
         width: ["auto", "row"].indexOf(grid) > -1 ? innerWidth : 0,
         height: ["auto", "column"].indexOf(grid) > -1 ? innerHeight : 0
       },
       Curve: {
-        xScale,
-        yScale
+        xScale: transformedXScale,
+        yScale,
+        clipPath: "url(#chart-clip-path)"
       },
       Area: {
         xScale,
@@ -102,7 +148,7 @@ export default class Chart extends Component {
         }
       },
       Marker: {
-        xScale,
+        xScale: transformedXScale,
         yScale,
         width,
         height,
@@ -130,7 +176,24 @@ export default class Chart extends Component {
         width={width}
         height={height}
       >
+        {zoom || clip ? (
+          <ClipPath id="chart-clip-path">
+            <Rect width={innerWidth} height={innerHeight} fill={"none"} />
+          </ClipPath>
+        ) : null}
         {titleEle}
+        {zoom ? (
+          <Rect
+            className="chart-zoom-area"
+            width={innerWidth}
+            height={innerHeight}
+            left={margin.left}
+            top={margin.top}
+            fill={"none"}
+            getInnerRef={node => (this.node = node)}
+            style={{ pointerEvents: "all", cursor: "move" }}
+          />
+        ) : null}
         <Group left={margin.left} top={margin.top}>
           {React.Children.map(children, el => {
             //skip null
@@ -171,9 +234,13 @@ Chart.propTypes = {
   xRange: PropTypes.array,
   yRange: PropTypes.array,
   grid: PropTypes.oneOf(["row", "column", "none", "auto"]),
-  title: PropTypes.node
+  title: PropTypes.node,
+  zoom: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+  clip: PropTypes.bool
 };
 Chart.defaultProps = {
   ...DEFAULT_PROPS,
-  grid: "none"
+  grid: "none",
+  zoom: false,
+  clip: true
 };
