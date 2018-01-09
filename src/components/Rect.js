@@ -17,6 +17,7 @@ export default class Rect extends Component {
       height,
       rx,
       ry,
+      getInnerRef,
       ...rest
     } = this.props;
     return (
@@ -28,6 +29,7 @@ export default class Rect extends Component {
         height={_.isFunction(height) ? height(data) : height}
         rx={_.isFunction(rx) ? rx(data) : rx}
         ry={_.isFunction(ry) ? ry(data) : ry}
+        ref={node => getInnerRef(node)}
         {...rest}
       />
     );
@@ -57,8 +59,10 @@ Rect.propTypes = {
     PropTypes.string
   ]),
   rx: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.string]),
-  ry: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.string])
+  ry: PropTypes.oneOfType([PropTypes.number, PropTypes.func, PropTypes.string]),
+  getInnerRef: PropTypes.func
 };
 Rect.defaultProps = {
-  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
+  getInnerRef: () => {}
 };

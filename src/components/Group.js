@@ -16,6 +16,7 @@ export default class Group extends Component {
       left,
       top,
       childMappingProps,
+      getInnerRef,
       ...rest
     } = this.props;
     return (
@@ -24,6 +25,7 @@ export default class Group extends Component {
         transform={`translate(${_.isFunction(left) ? left(data) : left},${
           _.isFunction(top) ? top(data) : top
         })`}
+        ref={node => getInnerRef(node)}
         {...rest}
       >
         {childMappingProps
@@ -53,8 +55,10 @@ Group.propTypes = {
     PropTypes.string,
     PropTypes.func
   ]),
-  childMappingProps: PropTypes.object
+  childMappingProps: PropTypes.object,
+  getInnerRef: PropTypes.func
 };
 Group.defaultProps = {
-  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
+  getInnerRef: () => {}
 };

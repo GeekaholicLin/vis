@@ -8,12 +8,13 @@ export default class SVG extends Component {
     super(props);
   }
   render() {
-    let { className, children, left, top, ...rest } = this.props;
+    let { className, children, left, top, getInnerRef, ...rest } = this.props;
     return (
       <svg
         className={cx(`${PREFIX}-svg`, className)}
         x={left}
         y={top}
+        ref={node => getInnerRef(node)}
         {...rest}
       >
         {children}
@@ -26,8 +27,10 @@ SVG.propTypes = {
   className: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"]),
+  getInnerRef: PropTypes.func
 };
 SVG.defaultProps = {
-  ..._.pick(ALL_DEFAULT_PROPS, ["width", "height", "left", "top"])
+  ..._.pick(ALL_DEFAULT_PROPS, ["width", "height", "left", "top"]),
+  getInnerRef: () => {}
 };
