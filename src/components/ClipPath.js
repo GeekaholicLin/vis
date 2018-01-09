@@ -8,7 +8,7 @@ export default class ClipPath extends Component {
     super(props);
   }
   render() {
-    let { id, children, ...rest } = this.props;
+    let { id, children, left, top, className, ...rest } = this.props;
     return (
       <defs transform={`translate(${left},${top})`}>
         <clipPath
