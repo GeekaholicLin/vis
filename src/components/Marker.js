@@ -26,6 +26,7 @@ export default class Marker extends Component {
       height,
       innerWidth,
       innerHeight,
+      clipPath,
       ...textProps
     } = this.props;
     let isKeyFromX = type === "x";
@@ -90,6 +91,7 @@ export default class Marker extends Component {
         top={top}
         left={left}
         className={cx(`${PREFIX}-marker-group`, className)}
+        clipPath={clipPath}
       >
         <Line
           from={from}
@@ -119,7 +121,8 @@ Marker.propTypes = {
   value: PropTypes.any,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   labelAnchor: PropTypes.oneOf(["start", "middle", "end"]),
-  ...Line.propTypes
+  ...Line.propTypes,
+  clipPath: PropTypes.string
 };
 Marker.defaultProps = {
   ...Line.defaultProps,

@@ -8,9 +8,9 @@ export default class ClipPath extends Component {
     super(props);
   }
   render() {
-    let { id, children, left, top, className, ...rest } = this.props;
+    let { id, children, className, ...rest } = this.props;
     return (
-      <defs transform={`translate(${left},${top})`}>
+      <defs>
         <clipPath
           id={id}
           className={cx(`${PREFIX}-clippath`, className)}
@@ -26,9 +26,6 @@ ClipPath.displayName = `${PREFIX}Clippath`;
 ClipPath.propTypes = {
   id: PropTypes.string.isRequired,
   className: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
+  children: PropTypes.node.isRequired
 };
-ClipPath.defaultProps = {
-  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
-};
+ClipPath.defaultProps = {};

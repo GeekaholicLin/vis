@@ -162,19 +162,17 @@ export default class App extends Component {
             data={lineData}
             x={d => d.date}
             y={d => d.price}
-            xScale={scaleTime()}
+            xScale={scaleTime().nice()}
             yScale={scaleLinear().nice()}
             xTickFormat={timeFormat("%x")}
             grid={"auto"}
             xTickPadding={10}
             yTickPadding={10}
             title={"折线图"}
-            zoom={true}
           />
         </div>
         <div id="area-chart">
           <AreaChart
-            margin={{ top: 50, right: 50, bottom: 30, left: 50 }}
             className="vis-app-area-chart"
             data={areaData}
             x={d => d.date}
@@ -192,6 +190,7 @@ export default class App extends Component {
                 orientation={["diagonal"]}
               />
             }
+            zoom={true}
           />
         </div>
         <div id="stacked-area-chart">
@@ -207,24 +206,8 @@ export default class App extends Component {
             keys={stackAreaKeys}
             color={scaleOrdinal(schemeCategory20)}
             yTicks={[10, "%"]}
-            fill={[
-              <PatternLines
-                id="lines1"
-                height={5}
-                width={5}
-                stroke={"black"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines2"
-                height={5}
-                width={5}
-                stroke={"red"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />
-            ]}
+            fill={schemeCategory10}
+            zoom={true}
           />
         </div>
         <div id="bar-chart">

@@ -7,6 +7,7 @@ import { select } from "d3-selection";
 import { zoom as zoomBehaviorGenerator, zoomTransform } from "d3-zoom";
 import { Group, SVG, Text, Rect, ClipPath } from "../components/index";
 import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
+const OUTERCONTENTNAMES = ["XAxis", "YAxis"];
 
 export default class Chart extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ export default class Chart extends Component {
       transform: null
     };
     this.node = null;
+    this.chartId = this.props.id || _.uniqueId("__chart__");
   }
   componentDidMount() {
     let { zoom, transform } = this.state;
@@ -27,10 +29,13 @@ export default class Chart extends Component {
   }
 
   getZoomBehavior(zoom) {
+    let { width, height, margin } = this.props;
+    let innerWidth = width - margin.left - margin.right;
+    let innerHeight = height - margin.top - margin.bottom;
     if (_.isFunction(zoom)) return zoom;
     if (zoom) {
       return zoomBehaviorGenerator()
-        .scaleExtent([1, 2])
+        .scaleExtent([1, Infinity])
         .translateExtent([[0, 0], [innerWidth, innerHeight]])
         .extent([[0, 0], [innerWidth, innerHeight]])
         .on("zoom", this.zoomed.bind(this));
@@ -43,6 +48,38 @@ export default class Chart extends Component {
       this.setState({
         transform: zoomTransform(this.node) //update transform state
       });
+  }
+
+  splitChartContent(props, mappingProps, innerOrOuter = "inner", clip = false) {
+    let { children, className, margin } = props;
+
+    return (
+      <Group
+        left={margin.left}
+        top={margin.top}
+        className={`chart-clip-${innerOrOuter}`}
+        clipPath={
+          clip && innerOrOuter === "inner"
+            ? `url(#chart-clip-path-${this.chartId})`
+            : ""
+        }
+      >
+        {React.Children.map(children, el => {
+          //skip null
+          if (
+            el &&
+            (innerOrOuter === "inner"
+              ? OUTERCONTENTNAMES.indexOf(el.type.name) < 0
+              : OUTERCONTENTNAMES.indexOf(el.type.name) > -1)
+          ) {
+            return React.cloneElement(el, {
+              className: className ? _.kebabCase(className + el.type.name) : "", //inject className automatically
+              ...mappingProps[el.type.name]
+            });
+          }
+        })}
+      </Group>
+    );
   }
   render() {
     const {
@@ -71,15 +108,9 @@ export default class Chart extends Component {
     let { transform } = this.state;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-    xScale
-      .domain(xDomain || extent(data, x))
-      .range(xRange || [0, width - margin.left - margin.right]);
+    xScale.domain(xDomain || extent(data, x)).range(xRange || [0, innerWidth]);
     let transformedXScale = xScale.copy();
-    transform &&
-      transformedXScale.domain(
-        transform.rescaleX(transformedXScale).domain()
-      ) &&
-      console.log("transform", transform.toString());
+    transform && transformedXScale.domain(transform.rescaleX(xScale).domain());
     yScale
       .domain(yDomain || [0, max(data, y)])
       .range(yRange || [innerHeight, 0]);
@@ -87,7 +118,10 @@ export default class Chart extends Component {
     x1Domain && x1Scale
       ? x1Scale
           .domain(x1Domain)
-          .rangeRound([0, xScale ? xScale.bandwidth() : 1])
+          .rangeRound([
+            0,
+            transformedXScale ? transformedXScale.bandwidth() : 1
+          ])
       : null;
     /**
      * override current props or adding props to the certain component
@@ -109,11 +143,10 @@ export default class Chart extends Component {
       },
       Curve: {
         xScale: transformedXScale,
-        yScale,
-        clipPath: "url(#chart-clip-path)"
+        yScale
       },
       Area: {
-        xScale,
+        xScale: transformedXScale,
         yScale
       },
       Bar: {
@@ -125,7 +158,7 @@ export default class Chart extends Component {
       Stack: {
         childMappingProps: {
           Area: {
-            xScale,
+            xScale: transformedXScale,
             yScale
           },
           Bar: {
@@ -156,7 +189,7 @@ export default class Chart extends Component {
         innerWidth
       }
     };
-
+    let outerClipContent = ["XAxis", "YAxis"];
     let titleEle = _.isString(title) ? (
       <Text
         fontSize={20}
@@ -177,11 +210,29 @@ export default class Chart extends Component {
         height={height}
       >
         {zoom || clip ? (
-          <ClipPath id="chart-clip-path">
-            <Rect width={innerWidth} height={innerHeight} fill={"none"} />
+          <ClipPath id={`chart-clip-path-${this.chartId}`}>
+            <Rect
+              width={innerWidth}
+              height={innerHeight}
+              fill={"none"}
+              left={0}
+              top={0}
+            />
           </ClipPath>
         ) : null}
         {titleEle}
+        {this.splitChartContent(
+          this.props,
+          mappingProps,
+          "inner",
+          zoom || clip
+        )}
+        {this.splitChartContent(
+          this.props,
+          mappingProps,
+          "outer",
+          zoom || clip
+        )}
         {zoom ? (
           <Rect
             className="chart-zoom-area"
@@ -194,19 +245,6 @@ export default class Chart extends Component {
             style={{ pointerEvents: "all", cursor: "move" }}
           />
         ) : null}
-        <Group left={margin.left} top={margin.top}>
-          {React.Children.map(children, el => {
-            //skip null
-            if (el) {
-              return React.cloneElement(el, {
-                className: className
-                  ? _.kebabCase(className + el.type.name)
-                  : "", //inject className automatically
-                ...mappingProps[el.type.name]
-              });
-            }
-          })}
-        </Group>
       </SVG>
     );
   }
@@ -236,11 +274,12 @@ Chart.propTypes = {
   grid: PropTypes.oneOf(["row", "column", "none", "auto"]),
   title: PropTypes.node,
   zoom: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-  clip: PropTypes.bool
+  clip: PropTypes.bool,
+  id: PropTypes.string
 };
 Chart.defaultProps = {
   ...DEFAULT_PROPS,
   grid: "none",
   zoom: false,
-  clip: true
+  clip: false
 };
