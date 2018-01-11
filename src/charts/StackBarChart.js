@@ -8,7 +8,7 @@ import {
   mappingPropsWithKeys,
   generateComponentPropTypes
 } from "../ultis";
-import { Bar, XAxis, YAxis, Stack } from "../components/index";
+import { Bar, XAxis, YAxis, Stack, Grid } from "../components/index";
 import { PREFIX } from "../constant";
 export default class StackBarChart extends Component {
   constructor(props) {
@@ -20,6 +20,8 @@ export default class StackBarChart extends Component {
       <Chart
         {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
       >
+        <Grid />
+
         {_.isArray(fill) &&
           fill.map(
             (Ele, i) =>

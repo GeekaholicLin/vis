@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import Chart from "./Chart";
-import { Group, Bar, XAxis, YAxis, Stack } from "../components/index";
+import { Group, Bar, XAxis, YAxis, Stack, Grid } from "../components/index";
 import {
   generateAxisMappingProps,
   generateAxisPropTypes,
@@ -32,6 +32,7 @@ export default class GroupBarChart extends Component {
         x1Domain={keys}
         x1Scale={scaleBand().padding(0.05)}
       >
+        <Grid />
         {colorItems.map(
           (El, i) =>
             React.isValidElement(El) &&

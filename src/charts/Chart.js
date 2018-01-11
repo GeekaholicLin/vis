@@ -136,7 +136,7 @@ export default class Chart extends Component {
         scale: yScale
       },
       Grid: {
-        xScale: transformedXScale,
+        xScale,
         yScale,
         width: ["auto", "row"].indexOf(grid) > -1 ? innerWidth : 0,
         height: ["auto", "column"].indexOf(grid) > -1 ? innerHeight : 0

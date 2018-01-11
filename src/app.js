@@ -218,6 +218,7 @@ export default class App extends Component {
             y={d => d.frequency}
             xScale={scaleBand()
               .round(true)
+              .align(1)
               .padding(0.1)}
             yScale={scaleLinear()}
             xDomain={barData.map(d => d.letter)}
@@ -233,6 +234,7 @@ export default class App extends Component {
                 orientation={["diagonal"]}
               />
             }
+            grid={"auto"}
           />
         </div>
         <div id="stacked-bar-chart">
@@ -310,6 +312,7 @@ export default class App extends Component {
                 orientation={["diagonal"]}
               />
             ]}
+            grid={"auto"}
           />
         </div>
 
@@ -375,6 +378,7 @@ export default class App extends Component {
                 orientation={["diagonal"]}
               />
             ]}
+            grid={"auto"}
           />
         </div>
       </div>

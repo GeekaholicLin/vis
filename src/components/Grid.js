@@ -50,6 +50,34 @@ export default class Grid extends Component {
                 />
               );
             })}
+          {!xScale.ticks &&
+            xScale.step &&
+            xScale.domain().map((category, i) => {
+              //inspired by d3 bandScale rescale source code
+              //https://github.com/d3/d3-scale/blob/master/src/band.js#L18
+              let n = xScale.domain().length;
+              let range = xScale.range();
+              let round = xScale.round();
+              let paddingInner = xScale.paddingInner();
+              let align = xScale.align();
+              let reverse = range[1] < range[0],
+                start = range[reverse - 0],
+                stop = range[1 - reverse],
+                step = xScale.step(),
+                bandwidth = xScale.bandwidth();
+              start += (stop - start - step * (n - paddingInner)) * align;
+              if (round) start = Math.round(start);
+              let x = start + +step * i + bandwidth / 2;
+              return (
+                <Line
+                  key={`${PREFIX}-grid-col-${i}`}
+                  className={`${PREFIX}-grid-col`}
+                  from={{ x, y: 0 }}
+                  to={{ x, y: height }}
+                  {...rest}
+                />
+              );
+            })}
         </Group>
       </Group>
     );

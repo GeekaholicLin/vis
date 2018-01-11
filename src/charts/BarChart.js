@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { Bar, XAxis, YAxis } from "../components/index";
+import { Bar, XAxis, YAxis, Grid } from "../components/index";
 import Chart from "./Chart";
 import {
   generateAxisMappingProps,
@@ -20,6 +20,8 @@ export default class BarChart extends Component {
       <Chart
         {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
       >
+        <Grid />
+
         {React.isValidElement(fill) && !_.isString(fill) && fill}
         <Bar
           {...mappingPropsWithKeys(this.props, Object.keys(Bar.propTypes), [
