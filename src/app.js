@@ -21,6 +21,7 @@ import {
   StackBarChart,
   GroupBarChart
 } from "./charts";
+import { Text } from "./components";
 import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
@@ -169,6 +170,18 @@ export default class App extends Component {
             xTickPadding={10}
             yTickPadding={10}
             title={"折线图"}
+            xLabel={"年月"}
+            yLabel={
+              <Text
+                top={-10}
+                left={0}
+                textAnchor={"middle"}
+                verticalAnchor={"end"}
+              >
+                成绩自定义标签
+              </Text>
+            }
+            zoom={true}
           />
         </div>
         <div id="area-chart">

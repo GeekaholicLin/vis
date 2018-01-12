@@ -14,6 +14,7 @@ import {
   ALL_DEFAULT_PROPS
 } from "../constant";
 import Group from "./Group";
+import Label from "./Text";
 export default class Axis extends Component {
   constructor(props) {
     super(props);
@@ -32,6 +33,7 @@ export default class Axis extends Component {
       tickSizeInner,
       tickSizeOuter,
       tickPadding,
+      label,
       ...rest
     } = this.props;
     var translateX = x => "translate(" + (x + 0.5) + ",0)",
@@ -68,6 +70,21 @@ export default class Axis extends Component {
       x2: { x2: k * tickSizeInner },
       y2: { y2: k * tickSizeInner }
     }; //depend on [x]'s value
+    let labelType = ["top", "bottom"].indexOf(orientation) > -1 ? "x" : "y";
+    let defaultLabelProps = {
+      x: {
+        top: 0,
+        left: range1 + 10,
+        textAnchor: "start",
+        verticalAnchor: "middle"
+      },
+      y: {
+        top: -10,
+        left: 0,
+        textAnchor: "middle",
+        verticalAnchor: "end"
+      }
+    };
     return (
       <Group
         className={cx(`${PREFIX}-axis`, className)}
@@ -123,11 +140,16 @@ export default class Axis extends Component {
             </Group>
           );
         })}
+        {_.isString(label) ? (
+          <Label {...defaultLabelProps[labelType]}>{label}</Label>
+        ) : (
+          label
+        )}
       </Group>
     );
   }
 }
-Axis.displayName = `${PREFIX}CustomAxis`;
+Axis.displayName = `${PREFIX}Axis`;
 Axis.propTypes = {
   className: PropTypes.string,
   orientation: PropTypes.oneOf(Object.keys(ORIENTATION_MAP)),
@@ -139,7 +161,8 @@ Axis.propTypes = {
   tickSizeInner: PropTypes.number,
   tickSizeOuter: PropTypes.number,
   tickPadding: PropTypes.number,
-  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
+  ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"]),
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
 };
 Axis.defaultProps = {
   orientation: "bottom",
@@ -149,5 +172,6 @@ Axis.defaultProps = {
   tickSizeInner: 6,
   tickSizeOuter: 6,
   tickPadding: 3,
-  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"])
+  ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
+  label: ""
 };

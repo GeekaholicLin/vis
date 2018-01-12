@@ -109,7 +109,7 @@ export default class Marker extends Component {
             {label}
           </Text>
         ) : (
-          { label }
+          label
         )}
       </Group>
     );
