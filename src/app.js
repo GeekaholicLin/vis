@@ -235,6 +235,7 @@ export default class App extends Component {
               />
             }
             grid={"auto"}
+            zoom={true}
           />
         </div>
         <div id="stacked-bar-chart">
@@ -313,6 +314,7 @@ export default class App extends Component {
               />
             ]}
             grid={"auto"}
+            zoom={true}
           />
         </div>
 
@@ -379,6 +381,7 @@ export default class App extends Component {
               />
             ]}
             grid={"auto"}
+            zoom={true}
           />
         </div>
       </div>

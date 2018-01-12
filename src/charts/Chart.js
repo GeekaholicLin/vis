@@ -6,6 +6,7 @@ import { extent, max } from "d3-array";
 import { select } from "d3-selection";
 import { zoom as zoomBehaviorGenerator, zoomTransform } from "d3-zoom";
 import { Group, SVG, Text, Rect, ClipPath } from "../components/index";
+import { addInvertForScale } from "../ultis";
 import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
 const OUTERCONTENTNAMES = ["XAxis", "YAxis"];
 
@@ -110,7 +111,21 @@ export default class Chart extends Component {
     const innerHeight = height - margin.top - margin.bottom;
     xScale.domain(xDomain || extent(data, x)).range(xRange || [0, innerWidth]);
     let transformedXScale = xScale.copy();
-    transform && transformedXScale.domain(transform.rescaleX(xScale).domain());
+    if (transform) {
+      let isOridalScale =
+        !transformedXScale.invert && transformedXScale.bandwidth;
+      let transformedDomain = isOridalScale
+        ? addInvertForScale(xScale.copy()).invertExtent.apply(
+            null,
+            xScale
+              .copy()
+              .range()
+              .map(transform.invertX, transform)
+          )
+        : transform.rescaleX(xScale).domain();
+      transformedDomain && transformedXScale.domain(transformedDomain);
+    }
+
     yScale
       .domain(yDomain || [0, max(data, y)])
       .range(yRange || [innerHeight, 0]);
@@ -136,7 +151,7 @@ export default class Chart extends Component {
         scale: yScale
       },
       Grid: {
-        xScale,
+        xScale: zoom ? transformedXScale : xScale,
         yScale,
         width: ["auto", "row"].indexOf(grid) > -1 ? innerWidth : 0,
         height: ["auto", "column"].indexOf(grid) > -1 ? innerHeight : 0
@@ -150,9 +165,11 @@ export default class Chart extends Component {
         yScale
       },
       Bar: {
-        left: d => xScale(x(d)),
+        left: d => {
+          return transformedXScale(x(d)) || 9999;
+        },
         top: d => yScale(y(d)),
-        width: xScale.bandwidth ? xScale.bandwidth() : 0, //fix xScale.bandwidth() is not a function bug
+        width: transformedXScale.bandwidth ? transformedXScale.bandwidth() : 0, //fix xScale.bandwidth() is not a function bug
         height: d => innerHeight - yScale(y(d))
       },
       Stack: {
@@ -162,15 +179,17 @@ export default class Chart extends Component {
             yScale
           },
           Bar: {
-            left: d => xScale(x(d)),
+            left: d => transformedXScale(x(d)) || 9999,
             top: d => yScale(y(d)),
-            width: xScale.bandwidth ? xScale.bandwidth() : 1, //fix xScale.bandwidth() is not a function bug
+            width: transformedXScale.bandwidth
+              ? transformedXScale.bandwidth()
+              : 1, //fix xScale.bandwidth() is not a function bug
             height: d => yScale(d[0]) - yScale(d[1])
           }
         }
       },
       Group: {
-        left: d => xScale(x(d)),
+        left: d => transformedXScale(x(d)) || 9999,
         childMappingProps: {
           Bar: {
             top: d => yScale(y(d)),
