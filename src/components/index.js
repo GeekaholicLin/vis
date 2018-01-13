@@ -20,3 +20,4 @@ export { default as XAxis } from "./XAxis";
 export { default as YAxis } from "./YAxis";
 export { default as Grid } from "./Grid";
 export { default as Marker } from "./Marker";
+export { default as Gradient } from "./Gradient";

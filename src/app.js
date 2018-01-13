@@ -21,10 +21,11 @@ import {
   StackBarChart,
   GroupBarChart
 } from "./charts";
-import { Text } from "./components";
+import { Text, Gradient } from "./components";
 import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
+import { getRandomGradientColor } from "./ultis";
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -194,14 +195,7 @@ export default class App extends Component {
             yScale={scaleLinear().nice()}
             title={CustomTitle}
             fill={
-              <PatternLines
-                id="lines"
-                height={5}
-                width={5}
-                stroke={"black"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />
+              <Gradient id="linear-chart" colors={getRandomGradientColor()} />
             }
             zoom={true}
           />
@@ -219,7 +213,13 @@ export default class App extends Component {
             keys={stackAreaKeys}
             color={scaleOrdinal(schemeCategory20)}
             yTicks={[10, "%"]}
-            fill={schemeCategory10}
+            fill={[
+              <Gradient id="linear-chart" colors={["#5EFCE8", "#736EFE"]} />,
+              <Gradient id="linear-chart2" colors={["#FDD819", "#E80505"]} />,
+              <Gradient id="linear-chart3" colors={["#FFFE9F", "#FCA180"]} />,
+              <Gradient id="linear-chart4" colors={["#FFF3B0", "#CA26FF"]} />,
+              <Gradient id="linear-chart5" colors={["#ABDCFF", "#0396FF"]} />
+            ]}
             zoom={true}
           />
         </div>

@@ -15,13 +15,15 @@ import { PREFIX } from "../constant";
 export default class GroupBarChart extends Component {
   constructor(props) {
     super(props);
+    this.chartId = this.props.id || _.uniqueId("__group-bar-chart__");
   }
   render() {
     let { fill, keys, data } = this.props;
     let x1 = d => d.key;
     let colorItems = _.isArray(fill) ? [...fill] : [fill];
     let colors = colorItems.map(
-      (item, i) => (_.isString(item) ? item : `url(#${item.props.id})`)
+      (item, i) =>
+        _.isString(item) ? item : `url('#${this.chartId}-${item.props.id}')`
     ); //check the item is Element or normal color string
     let fillFunc = scaleOrdinal(colors);
     return (
@@ -36,7 +38,10 @@ export default class GroupBarChart extends Component {
         {colorItems.map(
           (El, i) =>
             React.isValidElement(El) &&
-            React.cloneElement(El, { key: `fill-${i}` })
+            React.cloneElement(El, {
+              key: `fill-${i}`,
+              id: this.chartId + "-" + El.props.id
+            })
         )}
         {data.map((barGroupArr, i) => {
           return (
@@ -70,6 +75,7 @@ GroupBarChart.propTypes = {
   ...generateAxisPropTypes(YAxis.propTypes, "y"), //yAxis
   ...generateComponentPropTypes(Bar.propTypes, ["left"], ["top"]),
   fill: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  id: PropTypes.string,
   keys: PropTypes.array.isRequired
 };
 GroupBarChart.defaultProps = {

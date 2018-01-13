@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import _ from "lodash";
 import Chart from "./Chart";
 import {
   generateAxisMappingProps,
@@ -13,6 +14,7 @@ import { PREFIX } from "../constant";
 export default class StackBarChart extends Component {
   constructor(props) {
     super(props);
+    this.chartId = this.props.id || _.uniqueId("__stack-bar-chart__");
   }
   render() {
     let { fill } = this.props;
@@ -26,7 +28,10 @@ export default class StackBarChart extends Component {
           fill.map(
             (Ele, i) =>
               React.isValidElement(Ele) &&
-              React.cloneElement(Ele, { key: `fill-${i}` })
+              React.cloneElement(Ele, {
+                key: `fill-${i}`,
+                id: this.chartId + "-" + Ele.props.id
+              })
           )}
 
         <Stack
@@ -37,7 +42,10 @@ export default class StackBarChart extends Component {
           fill={
             _.isArray(fill)
               ? fill.map(
-                  (el, i) => (_.isString(el) ? el : `url('#${el.props.id}')`)
+                  (el, i) =>
+                    _.isString(el)
+                      ? el
+                      : `url('#${this.chartId}-${el.props.id}')`
                 )
               : fill
           }
@@ -65,7 +73,8 @@ StackBarChart.propTypes = {
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
   ...generateAxisPropTypes(YAxis.propTypes, "y"), //yAxis
   ...Chart.propTypes,
-  fill: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
+  fill: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  id: PropTypes.string
 };
 StackBarChart.defaultProps = {
   ...Chart.defaultProps,

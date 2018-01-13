@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import _ from "lodash";
 import Chart from "./Chart";
 import { Curve, XAxis, YAxis, Grid, Marker } from "../components/index";
 import {
@@ -13,6 +14,7 @@ import { PREFIX } from "../constant";
 export default class LineChart extends Component {
   constructor(props) {
     super(props);
+    this.chartId = this.props.id || _.uniqueId("__line-chart__");
   }
   render() {
     return (
@@ -50,6 +52,7 @@ LineChart.propTypes = {
   ...Chart.propTypes, //chart
   defined: PropTypes.func, //curve
   curve: PropTypes.func,
+  id: PropTypes.string,
   ...generateAxisPropTypes(XAxis.propTypes, "x"), //xAxis
   ...generateAxisPropTypes(YAxis.propTypes, "y") //yAxis
 };
