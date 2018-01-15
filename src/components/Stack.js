@@ -16,6 +16,9 @@ export default class Stack extends Component {
   constructor(props) {
     super(props);
   }
+  removePrefix(displayName, prefix = `${PREFIX}`) {
+    return displayName ? displayName.slice(prefix.length) : "";
+  }
   render() {
     let {
       className,
@@ -65,7 +68,9 @@ export default class Stack extends Component {
               fill: _.isFunction(fill)
                 ? fill(stackData.key)
                 : _.isArray(fill) ? fill[i % fill.length] : fill,
-              ...childMappingProps[children.type.name],
+              ...childMappingProps[
+                this.removePrefix(children.type.displayName)
+              ],
               ...rest
             },
             children.children

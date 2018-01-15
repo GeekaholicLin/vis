@@ -28,7 +28,9 @@ export default class Chart extends Component {
         transform: zoomTransform(this.node) //get init transform
       });
   }
-
+  removePrefix(displayName, prefix = `${PREFIX}`) {
+    return displayName ? displayName.slice(prefix.length) : "";
+  }
   getZoomBehavior(zoom) {
     let { width, height, margin } = this.props;
     let innerWidth = width - margin.left - margin.right;
@@ -66,16 +68,17 @@ export default class Chart extends Component {
         }
       >
         {React.Children.map(children, el => {
+          let nameKey = this.removePrefix(el.type.displayName);
           //skip null
           if (
             el &&
             (innerOrOuter === "inner"
-              ? OUTERCONTENTNAMES.indexOf(el.type.name) < 0
-              : OUTERCONTENTNAMES.indexOf(el.type.name) > -1)
+              ? OUTERCONTENTNAMES.indexOf(nameKey) < 0
+              : OUTERCONTENTNAMES.indexOf(nameKey) > -1)
           ) {
             return React.cloneElement(el, {
-              className: className ? _.kebabCase(className + el.type.name) : "", //inject className automatically
-              ...mappingProps[el.type.name]
+              className: className ? _.kebabCase(className + nameKey) : "", //inject className automatically
+              ...mappingProps[nameKey]
             });
           }
         })}

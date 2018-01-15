@@ -8,6 +8,9 @@ export default class Group extends Component {
   constructor(props) {
     super(props);
   }
+  removePrefix(displayName, prefix = `${PREFIX}`) {
+    return displayName ? displayName.slice(prefix.length) : "";
+  }
   render() {
     const {
       className,
@@ -32,7 +35,9 @@ export default class Group extends Component {
           ? React.Children.map(children, child => {
               if (child) {
                 return React.cloneElement(child, {
-                  ...childMappingProps[child.type.name]
+                  ...childMappingProps[
+                    this.removePrefix(children.type.displayName)
+                  ]
                 });
               }
             })
