@@ -11,7 +11,7 @@ export { default as Line } from "./Line";
 export { default as Pie } from "./Pie";
 export { default as Rect } from "./Rect";
 export { default as Stack } from "./Stack";
-export { default as SVG } from "./SVG";
+export { default as SVG } from "./Svg";
 export { default as Text } from "./Text";
 export { default as D3XAxis } from "./D3XAxis";
 export { default as D3YAxis } from "./D3YAxis";
