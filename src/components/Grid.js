@@ -23,7 +23,8 @@ export default class Grid extends Component {
     return (
       <Group left={left} top={top} className={className}>
         <Group className={`${PREFIX}-grid-rows`}>
-          {yScale.ticks &&
+          {yScale &&
+            yScale.ticks &&
             yScale.ticks().map((d, i) => {
               let y = yScale(d) + 0.5;
               return (
@@ -38,7 +39,8 @@ export default class Grid extends Component {
             })}
         </Group>
         <Group className={`${PREFIX}-grid-cols`}>
-          {xScale.ticks &&
+          {xScale &&
+            xScale.ticks &&
             xScale.ticks().map((d, i) => {
               let x = xScale(d) + 0.5;
               return (
@@ -51,7 +53,8 @@ export default class Grid extends Component {
                 />
               );
             })}
-          {!xScale.ticks &&
+          {xScale &&
+            !xScale.ticks &&
             xScale.step &&
             getOrinalRange(xScale).map((value, i) => {
               let x = value + xScale.bandwidth() / 2;
