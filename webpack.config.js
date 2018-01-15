@@ -104,7 +104,8 @@ module.exports = {
     new webpack.NoEmitOnErrorsPlugin(),
     new copyWebpackPlugin([
       { from: "lib", to: "lib" },
-      { from: "assets", to: "assets" }
+      { from: "assets", to: "assets" },
+      { from: "data", to: "data" }
     ]),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.UglifyJsPlugin({
