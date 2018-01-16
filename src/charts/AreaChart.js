@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import Chart from "./Chart";
-import { Area, XAxis, YAxis, Group } from "../components";
+import { Area, XAxis, YAxis, Group, Brush } from "../components";
 import {
   generateAxisMappingProps,
   generateAxisPropTypes,
@@ -40,6 +40,22 @@ export default class AreaChart extends Component {
         />
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
         <YAxis {...generateAxisMappingProps(this.props, "y")} />
+        <Brush className={"area-chart-brush"} type={"x"}>
+          <XAxis {...generateAxisMappingProps(this.props, "x")} />
+          <Area
+            {...mappingPropsWithKeys(this.props, Object.keys(Area.propTypes), [
+              "left",
+              "top"
+            ])}
+            y1={this.props.y1 || this.props.y}
+            fill={
+              _.isString(fill)
+                ? fill
+                : `url('#${this.chartId}-${fill.props.id}')`
+            }
+            stroke={"none"}
+          />
+        </Brush>
       </Chart>
     );
   }

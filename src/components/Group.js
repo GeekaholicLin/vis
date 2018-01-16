@@ -36,7 +36,7 @@ export default class Group extends Component {
               if (child) {
                 return React.cloneElement(child, {
                   ...childMappingProps[
-                    this.removePrefix(children.type.displayName)
+                    this.removePrefix(child.type.displayName)
                   ]
                 });
               }

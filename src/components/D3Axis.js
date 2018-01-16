@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import {
   PREFIX,
-  ORIENTATION_MAP,
+  AXIS_ORIENTATION_MAP,
   SCALES,
   ALL_COMMON_PROPTYPES,
   ALL_DEFAULT_PROPS
@@ -31,7 +31,7 @@ export default class D3Axis extends Component {
       tickPadding,
       ...rest
     } = this.props;
-    let axisGenerator = ORIENTATION_MAP[orientation](scale);
+    let axisGenerator = AXIS_ORIENTATION_MAP[orientation](scale);
     if (_.isFunction(axisGenerator)) {
       axisGenerator.tickArguments(ticks);
       tickValues && axisGenerator.tickValues(tickValues);
@@ -55,7 +55,7 @@ export default class D3Axis extends Component {
 D3Axis.displayName = `${PREFIX}D3Axis`;
 D3Axis.propTypes = {
   className: PropTypes.string,
-  orientation: PropTypes.oneOf(Object.keys(ORIENTATION_MAP)),
+  orientation: PropTypes.oneOf(Object.keys(AXIS_ORIENTATION_MAP)),
   scale: PropTypes.func,
   ticks: PropTypes.array,
   tickValues: PropTypes.array,

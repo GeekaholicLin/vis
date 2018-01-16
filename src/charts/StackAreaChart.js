@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import Chart from "./Chart";
-import { Area, XAxis, YAxis, Stack } from "../components/index";
+import { Area, XAxis, YAxis, Stack, Brush } from "../components/index";
 import {
   generateAxisMappingProps,
   generateAxisPropTypes,
@@ -56,6 +56,33 @@ export default class StackAreaChart extends Component {
         </Stack>
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
         <YAxis {...generateAxisMappingProps(this.props, "y")} />
+        <Brush class={"stack-area-chart"} type={"x"}>
+          <XAxis {...generateAxisMappingProps(this.props, "x")} />
+          <Stack
+            {...mappingPropsWithKeys(this.props, Object.keys(Stack.propTypes), [
+              "left",
+              "top"
+            ])}
+            fill={
+              _.isArray(fill)
+                ? fill.map(
+                    (el, i) =>
+                      _.isString(el)
+                        ? el
+                        : `url('#${this.chartId}-${el.props.id}')`
+                  )
+                : fill
+            }
+          >
+            <Area
+              {...mappingPropsWithKeys(
+                this.props,
+                Object.keys(Area.propTypes),
+                ["left", "top"]
+              )}
+            />
+          </Stack>
+        </Brush>
       </Chart>
     );
   }

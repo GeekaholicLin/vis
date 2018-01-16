@@ -160,7 +160,7 @@ export default class App extends Component {
         <div id="line-chart">
           <LineChart
             className="vis-app-line-chart"
-            margin={{ top: 50, right: 50, bottom: 30, left: 50 }}
+            margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
             data={lineData}
             x={d => d.date}
             y={d => d.price}
@@ -183,11 +183,13 @@ export default class App extends Component {
               </Text>
             }
             zoom={true}
+            brush={true}
           />
         </div>
         <div id="area-chart">
           <AreaChart
             className="vis-app-area-chart"
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             data={areaData}
             x={d => d.date}
             y={d => d.close}
@@ -198,10 +200,12 @@ export default class App extends Component {
               <Gradient id="linear-chart" colors={getRandomGradientColor()} />
             }
             zoom={true}
+            brush={true}
           />
         </div>
         <div id="stacked-area-chart">
           <StackAreaChart
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             data={stackAreaData}
             x={d => d.data.date}
             y0={d => d[0]}
@@ -221,6 +225,7 @@ export default class App extends Component {
               <Gradient id="linear-chart5" colors={["#ABDCFF", "#0396FF"]} />
             ]}
             zoom={true}
+            brush={true}
           />
         </div>
         <div id="bar-chart">

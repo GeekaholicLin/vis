@@ -18,6 +18,7 @@ import {
   stackOffsetSilhouette,
   stackOffsetWiggle
 } from "d3-shape";
+import { brushX, brushY, brush } from "d3-brush";
 export const SCALES = [
   "auto",
   "linear",
@@ -58,9 +59,14 @@ export const STACK_OFFSET_MAP = {
   silhouette: stackOffsetSilhouette,
   wiggle: stackOffsetWiggle
 };
-export const ORIENTATION_MAP = {
+export const AXIS_ORIENTATION_MAP = {
   top: axisTop,
   right: axisRight,
   left: axisLeft,
   bottom: axisBottom
+};
+export const BRUSH_TYPE_MAP = {
+  x: brushX,
+  y: brushY,
+  xy: brush
 };

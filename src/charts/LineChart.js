@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import Chart from "./Chart";
-import { Curve, XAxis, YAxis, Grid, Marker } from "../components/index";
+import { Curve, XAxis, YAxis, Grid, Marker, Brush } from "../components/index";
 import {
   generateAxisMappingProps,
   generateAxisPropTypes,
@@ -43,6 +43,15 @@ export default class LineChart extends Component {
           labelAnchor="middle"
           value={new Date("2/1/2017")}
         />
+        <Brush className={"line-chart-brush"} type={"x"} top={380}>
+          <XAxis {...generateAxisMappingProps(this.props, "x")} label={""} />
+          <Curve
+            {...mappingPropsWithKeys(this.props, Object.keys(Curve.propTypes), [
+              "left",
+              "top"
+            ])}
+          />
+        </Brush>
       </Chart>
     );
   }

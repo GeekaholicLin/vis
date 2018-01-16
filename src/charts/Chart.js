@@ -3,12 +3,16 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import { extent, max } from "d3-array";
-import { select } from "d3-selection";
-import { zoom as zoomBehaviorGenerator, zoomTransform } from "d3-zoom";
+import { select, event as currentEvent } from "d3-selection";
+import {
+  zoom as zoomBehaviorGenerator,
+  zoomTransform,
+  zoomIdentity
+} from "d3-zoom";
 import { Group, SVG, Text, Rect, ClipPath } from "../components/index";
 import { addInvertForScale } from "../ultis";
 import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
-const OUTERCONTENTNAMES = ["XAxis", "YAxis"];
+const OUTERCONTENTNAMES = ["XAxis", "YAxis", "Brush"];
 
 export default class Chart extends Component {
   constructor(props) {
@@ -18,6 +22,7 @@ export default class Chart extends Component {
       transform: null
     };
     this.node = null;
+    this.innerWidth = props.width - props.margin.left - props.margin.right;
     this.chartId = this.props.id || _.uniqueId("__chart__");
   }
   componentDidMount() {
@@ -47,12 +52,42 @@ export default class Chart extends Component {
   }
   zoomed() {
     let { zoom } = this.state;
+    if (currentEvent.sourceEvent && currentEvent.sourceEvent.type === "brush")
+      return;
     zoom &&
       this.setState({
         transform: zoomTransform(this.node) //update transform state
       });
   }
+  brushed = (d, i, node) => {
+    let { transform, zoom } = this.state;
+    //!currentEvent.sourceEvent is to skip init render side-effect
+    if (
+      (currentEvent.sourceEvent && currentEvent.sourceEvent.type === "zoom") ||
+      !currentEvent.sourceEvent
+    )
+      return;
+    let s = currentEvent.selection || [0, this.innerWidth];
+    let t = zoomIdentity
+      .scale(this.innerWidth / (s[1] - s[0]))
+      .translate(-s[0], 0);
 
+    //to judge transform and t is important.Or it will cause circular render
+    if (
+      zoom &&
+      transform &&
+      (transform.k !== t.k || transform.x !== t.x || transform.y !== t.y)
+    ) {
+      this.setState(
+        {
+          transform: t
+        },
+        () => {
+          zoom.transform(select(this.node), t); //fix: update the __zoom
+        }
+      );
+    }
+  };
   splitChartContent(props, mappingProps, innerOrOuter = "inner", clip = false) {
     let { children, className, margin } = props;
 
@@ -105,6 +140,7 @@ export default class Chart extends Component {
       title,
       zoom,
       clip,
+      brush,
       x1 = d => d.key, //special prop for group bar chart
       x1Domain,
       x1Scale
@@ -114,10 +150,12 @@ export default class Chart extends Component {
     const innerHeight = height - margin.top - margin.bottom;
     xScale.domain(xDomain || extent(data, x)).range(xRange || [0, innerWidth]);
     let transformedXScale = xScale.copy();
+    let transformedDomain = null;
+    let transformedRange = null;
     if (transform) {
       let isOridalScale =
         !transformedXScale.invert && transformedXScale.bandwidth;
-      let transformedDomain = isOridalScale
+      transformedDomain = isOridalScale
         ? addInvertForScale(xScale.copy()).invertExtent.apply(
             null,
             xScale
@@ -126,7 +164,12 @@ export default class Chart extends Component {
               .map(transform.invertX, transform)
           )
         : transform.rescaleX(xScale).domain();
-      transformedDomain && transformedXScale.domain(transformedDomain);
+      if (transformedDomain) {
+        transformedXScale.domain(transformedDomain);
+        let r1 = xScale(transformedDomain[0]);
+        let r2 = xScale(transformedDomain[1]);
+        transformedRange = [isNaN(r1) ? 0 : r1, isNaN(r2) ? 0 : r2];
+      }
     }
 
     yScale
@@ -182,7 +225,7 @@ export default class Chart extends Component {
             yScale
           },
           Bar: {
-            left: d => transformedXScale(x(d)) || 9999,
+            left: d => transformedXScale(x(d)) || 9999, //to avoid when zooming in, left is undefined
             top: d => yScale(y(d)),
             width: transformedXScale.bandwidth
               ? transformedXScale.bandwidth()
@@ -211,6 +254,70 @@ export default class Chart extends Component {
         innerWidth
       }
     };
+    if (brush) {
+      let brushHeight = 40;
+      let brushScale = yScale.copy().range([brushHeight, 0]);
+      let brushX1Scale =
+        x1Scale &&
+        x1Scale.copy().rangeRound([0, xScale ? xScale.bandwidth() : 1]);
+      mappingProps["Brush"] = {
+        width: innerWidth,
+        move: transformedRange,
+        listener: {
+          "brush end": this.brushed
+        },
+        childMappingProps: {
+          XAxis: {
+            scale: xScale,
+            top: brushHeight
+          },
+          Area: {
+            xScale: xScale,
+            yScale: brushScale
+          },
+          Bar: {
+            left: d => {
+              return xScale(x(d));
+            },
+            top: d => brushScale(y(d)),
+            width: xScale.bandwidth ? xScale.bandwidth() : 0, //fix xScale.bandwidth() is not a function bug
+            height: d => brushHeight - brushScale(y(d))
+          },
+          Curve: {
+            xScale: xScale,
+            yScale: brushScale
+          },
+          Stack: {
+            childMappingProps: {
+              Area: {
+                xScale: xScale,
+                yScale: brushScale
+              },
+              Bar: {
+                left: d => xScale(x(d)),
+                top: d => brushScale(y(d)),
+                width: xScale.bandwidth ? xScale.bandwidth() : 1, //fix xScale.bandwidth() is not a function bug
+                height: d => brushScale(d[0]) - brushScale(d[1])
+              }
+            }
+          },
+          Group: {
+            left: d => xScale(x(d)) || 9999,
+            childMappingProps: {
+              Bar: {
+                top: d => brushScale(y(d)),
+                left: d => (brushX1Scale && x1 ? x1Scale(x1(d)) : 0),
+                width:
+                  brushX1Scale && brushX1Scale.bandwidth
+                    ? brushX1Scale.bandwidth()
+                    : 1,
+                height: d => brushHeight - brushScale(y(d))
+              }
+            }
+          }
+        }
+      };
+    }
     let outerClipContent = ["XAxis", "YAxis"];
     let titleEle = _.isString(title) ? (
       <Text
@@ -297,11 +404,13 @@ Chart.propTypes = {
   title: PropTypes.node,
   zoom: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   clip: PropTypes.bool,
-  id: PropTypes.string
+  id: PropTypes.string,
+  brush: PropTypes.bool //for caculating  height and margin
 };
 Chart.defaultProps = {
   ...DEFAULT_PROPS,
   grid: "none",
   zoom: false,
-  clip: false
+  clip: false,
+  brush: false
 };

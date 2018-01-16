@@ -11,7 +11,8 @@ export {
   SYMBOLS_MAP,
   STACK_ORDER_MAP,
   STACK_OFFSET_MAP,
-  ORIENTATION_MAP
+  AXIS_ORIENTATION_MAP,
+  BRUSH_TYPE_MAP
 } from "./d3.constant";
 
 /**
