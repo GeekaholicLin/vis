@@ -10,7 +10,7 @@ import {
   zoomIdentity
 } from "d3-zoom";
 import { Group, SVG, Text, Rect, ClipPath } from "../components/index";
-import { addInvertForScale } from "../ultis";
+import { addInvertForScale, getOrinalRange } from "../ultis";
 import { PREFIX, ORIENTATION, SCALES, DEFAULT_PROPS } from "../constant";
 const OUTERCONTENTNAMES = ["XAxis", "YAxis", "Brush"];
 
@@ -19,7 +19,8 @@ export default class Chart extends Component {
     super(props);
     this.state = {
       zoom: this.getZoomBehavior(props.zoom),
-      transform: null
+      transform: null,
+      updateMove: false
     };
     this.node = null;
     this.innerWidth = props.width - props.margin.left - props.margin.right;
@@ -56,7 +57,8 @@ export default class Chart extends Component {
       return;
     zoom &&
       this.setState({
-        transform: zoomTransform(this.node) //update transform state
+        transform: zoomTransform(this.node), //update transform state
+        updateMove: true
       });
   }
   brushed = (d, i, node) => {
@@ -67,27 +69,25 @@ export default class Chart extends Component {
       !currentEvent.sourceEvent
     )
       return;
+    let isEnd = currentEvent.type === "end";
     let s = currentEvent.selection || [0, this.innerWidth];
     let t = zoomIdentity
       .scale(this.innerWidth / (s[1] - s[0]))
       .translate(-s[0], 0);
-
     //to judge transform and t is important.Or it will cause circular render
     if (
       zoom &&
       transform &&
       (transform.k !== t.k || transform.x !== t.x || transform.y !== t.y)
     ) {
-      this.setState(
-        {
-          transform: t
-        },
-        () => {
-          zoom.transform(select(this.node), t); //fix: update the __zoom
-        }
-      );
+      this.setState({
+        transform: t,
+        updateMove: isEnd
+      });
     }
+    isEnd && zoom.transform(select(this.node), t); //fix: update the __zoom
   };
+
   splitChartContent(props, mappingProps, innerOrOuter = "inner", clip = false) {
     let { children, className, margin } = props;
 
@@ -145,7 +145,7 @@ export default class Chart extends Component {
       x1Domain,
       x1Scale
     } = this.props;
-    let { transform } = this.state;
+    let { transform, updateMove } = this.state;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     xScale.domain(xDomain || extent(data, x)).range(xRange || [0, innerWidth]);
@@ -166,9 +166,35 @@ export default class Chart extends Component {
         : transform.rescaleX(xScale).domain();
       if (transformedDomain) {
         transformedXScale.domain(transformedDomain);
-        let r1 = xScale(transformedDomain[0]);
-        let r2 = xScale(transformedDomain[1]);
-        transformedRange = [isNaN(r1) ? 0 : r1, isNaN(r2) ? 0 : r2];
+        //important: only update `move` in brusn-end or zoom in React
+        //if not it will cause much render
+        //(brush can hold change move internally in d3)
+        if (updateMove) {
+          let domainLength = transformedDomain.length;
+          let originalLength = xScale.domain().length;
+          let bandwidth = 0;
+          let paddingInner = 0;
+          let step = 0;
+          let isFirst = transformedDomain[0] === xScale.domain()[0];
+          let isLast =
+            transformedDomain[domainLength - 1] ===
+            xScale.domain()[originalLength - 1];
+
+          if (xScale.bandwidth) {
+            bandwidth = xScale.bandwidth();
+            paddingInner = xScale.paddingInner();
+            step = xScale.step();
+          }
+          let r1 = isFirst
+            ? 0
+            : xScale(transformedDomain[0]) - paddingInner * step;
+          let r2 = isLast
+            ? innerWidth
+            : xScale(transformedDomain[domainLength - 1]) +
+              bandwidth +
+              paddingInner * step;
+          transformedRange = [isNaN(r1) ? 0 : r1, isNaN(r2) ? 0 : r2];
+        }
       }
     }
 
@@ -302,11 +328,11 @@ export default class Chart extends Component {
             }
           },
           Group: {
-            left: d => xScale(x(d)) || 9999,
+            left: d => xScale(x(d)),
             childMappingProps: {
               Bar: {
                 top: d => brushScale(y(d)),
-                left: d => (brushX1Scale && x1 ? x1Scale(x1(d)) : 0),
+                left: d => (brushX1Scale && x1 ? brushX1Scale(x1(d)) : 0),
                 width:
                   brushX1Scale && brushX1Scale.bandwidth
                     ? brushX1Scale.bandwidth()

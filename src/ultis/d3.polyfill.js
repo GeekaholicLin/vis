@@ -2,7 +2,7 @@ import { range as sequence, bisectRight } from "d3-array";
 import { scaleOrdinal } from "d3-scale";
 //inspired by d3 bandScale rescale source code
 //https://github.com/d3/d3-scale/blob/master/src/band.js#L18
-export function getOrinalRange(scale) {
+export function getOrinalRange(scale, extra = 0) {
   let n = scale.domain().length,
     range = scale.range(),
     round = scale.round(),
@@ -17,7 +17,7 @@ export function getOrinalRange(scale) {
   start += (stop - start - step * (n - paddingInner)) * align;
   if (round) start = Math.round(start);
   var values = sequence(n).map(function(i) {
-    return start + step * i;
+    return start + step * i - extra;
   });
   return reverse ? values.reverse() : values;
 }

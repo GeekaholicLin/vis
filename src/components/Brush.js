@@ -39,7 +39,6 @@ export default class Brush extends Component {
     this.brush = brush;
     this.move = move || defaultMoveProp[type];
     brush.move(select(this.node), this.move);
-    console.log("this.move", this.move);
   }
   componentWillUpdate(nextProps) {
     //update move func only when `move` is not equal
@@ -97,7 +96,7 @@ Brush.propTypes = {
   childMappingProps: PropTypes.object
 };
 Brush.defaultProps = {
-  type: "xy",
+  type: "x",
   handleSize: 6,
   height: 40,
   width: DEFAULT_PROPS["width"],

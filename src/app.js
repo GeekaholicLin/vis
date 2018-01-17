@@ -230,6 +230,7 @@ export default class App extends Component {
         </div>
         <div id="bar-chart">
           <BarChart
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             className="vis-app-area-chart"
             data={barData}
             x={d => d.letter}
@@ -254,10 +255,12 @@ export default class App extends Component {
             }
             grid={"auto"}
             zoom={true}
+            brush={true}
           />
         </div>
         <div id="stacked-bar-chart">
           <StackBarChart
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             className="stacked-bar-chart"
             data={stackBarData}
             x={d => d.data.State}
@@ -333,6 +336,7 @@ export default class App extends Component {
             ]}
             grid={"auto"}
             zoom={true}
+            brush={true}
           />
         </div>
 
@@ -367,6 +371,7 @@ export default class App extends Component {
 
         <div id="group-bar-chart">
           <GroupBarChart
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             className="grouped-bar-chart"
             data={groupBarData}
             x={d => d.Education}
@@ -400,6 +405,7 @@ export default class App extends Component {
             ]}
             grid={"auto"}
             zoom={true}
+            brush={true}
           />
         </div>
       </div>

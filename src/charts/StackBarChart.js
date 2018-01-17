@@ -9,7 +9,7 @@ import {
   mappingPropsWithKeys,
   generateComponentPropTypes
 } from "../ultis";
-import { Bar, XAxis, YAxis, Stack, Grid } from "../components/index";
+import { Bar, XAxis, YAxis, Stack, Grid, Brush } from "../components/index";
 import { PREFIX } from "../constant";
 export default class StackBarChart extends Component {
   constructor(props) {
@@ -18,12 +18,37 @@ export default class StackBarChart extends Component {
   }
   render() {
     let { fill } = this.props;
+    let StackBar = (
+      <Stack
+        {...mappingPropsWithKeys(this.props, Object.keys(Stack.propTypes), [
+          "left",
+          "top"
+        ])}
+        fill={
+          _.isArray(fill)
+            ? fill.map(
+                (el, i) =>
+                  _.isString(el) ? el : `url('#${this.chartId}-${el.props.id}')`
+              )
+            : fill
+        }
+      >
+        <Bar
+          {...mappingPropsWithKeys(this.props, Object.keys(Bar.propTypes), [
+            "left",
+            "top",
+            "width",
+            "height",
+            "fill"
+          ])}
+        />
+      </Stack>
+    );
     return (
       <Chart
         {...mappingPropsWithKeys(this.props, Object.keys(Chart.propTypes))}
       >
         <Grid />
-
         {_.isArray(fill) &&
           fill.map(
             (Ele, i) =>
@@ -34,34 +59,13 @@ export default class StackBarChart extends Component {
               })
           )}
 
-        <Stack
-          {...mappingPropsWithKeys(this.props, Object.keys(Stack.propTypes), [
-            "left",
-            "top"
-          ])}
-          fill={
-            _.isArray(fill)
-              ? fill.map(
-                  (el, i) =>
-                    _.isString(el)
-                      ? el
-                      : `url('#${this.chartId}-${el.props.id}')`
-                )
-              : fill
-          }
-        >
-          <Bar
-            {...mappingPropsWithKeys(this.props, Object.keys(Bar.propTypes), [
-              "left",
-              "top",
-              "width",
-              "height",
-              "fill"
-            ])}
-          />
-        </Stack>
+        {StackBar}
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
         <YAxis {...generateAxisMappingProps(this.props, "y")} />
+        <Brush>
+          {StackBar}
+          <XAxis {...generateAxisMappingProps(this.props, "x")} />
+        </Brush>
       </Chart>
     );
   }

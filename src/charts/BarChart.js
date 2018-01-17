@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
-import { Bar, XAxis, YAxis, Grid } from "../components/index";
+import { Bar, XAxis, YAxis, Grid, Brush } from "../components/index";
 import Chart from "./Chart";
 import {
   generateAxisMappingProps,
@@ -42,6 +42,22 @@ export default class BarChart extends Component {
         />
         <XAxis {...generateAxisMappingProps(this.props, "x")} />
         <YAxis {...generateAxisMappingProps(this.props, "y")} />
+        <Brush type="x">
+          <Bar
+            {...mappingPropsWithKeys(this.props, Object.keys(Bar.propTypes), [
+              "left",
+              "top",
+              "width",
+              "height"
+            ])}
+            fill={
+              _.isString(fill)
+                ? fill
+                : `url('#${this.chartId}-${fill.props.id}')`
+            }
+          />
+          <XAxis {...generateAxisMappingProps(this.props, "x")} />
+        </Brush>
       </Chart>
     );
   }
