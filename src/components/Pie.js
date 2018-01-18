@@ -43,7 +43,6 @@ export default class Pie extends PureComponent {
     !_.isNil(sortValues) && pieGenerator.sortValues(sortValues);
     !_.isNil(padAngle) && pieGenerator.padAngle(padAngle);
     let pieArcs = pieGenerator(data);
-    console.log("pieArcs", pieArcs);
     return (
       <Group
         className={cx(`${PREFIX}-pie-group`, className)}

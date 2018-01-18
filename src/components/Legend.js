@@ -8,9 +8,9 @@ import { PREFIX } from "../constant";
 export default class Legend extends Component {
   constructor(props) {
     super(props);
-    let { data } = this.props;
+    let { items } = this.props;
     this.state = {
-      selectedArr: data.map(d => !!d.selected)
+      selectedArr: items.map(d => !!d.selected)
     };
   }
 
