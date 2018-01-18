@@ -12,9 +12,10 @@ export default class SVG extends Component {
     return (
       <svg
         className={cx(`${PREFIX}-svg`, className)}
-        x={left}
-        y={top}
         ref={node => getInnerRef(node)}
+        style={{
+          transform: `translate(${left}px,${top}px)`
+        }}
         {...rest}
       >
         {children}

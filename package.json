@@ -94,7 +94,6 @@
     "d3-transition": "^1.1.1",
     "d3-zoom": "^1.7.1",
     "lodash": "^4.17.4",
-    "normalize.css": "^7.0.0",
     "number-picture": "^0.4.2",
     "react-faux-dom": "^4.1.0",
     "react-svg-text": "^0.1.2",

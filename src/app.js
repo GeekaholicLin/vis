@@ -130,7 +130,14 @@ export default class App extends Component {
       price: obj.price,
       date: timeParse("%d.%m.%Y")(obj.date)
     }));
-    let pieData = [1, 1, 2, 3, 5, 8, 13, 21];
+    let pieData = [
+      { name: "1", value: 20, selected: true },
+      { name: "2", value: 10 },
+      { name: "3", value: 30 },
+      { name: "4", value: 10 },
+      { name: "5", value: 20 },
+      { name: "6", value: 5 }
+    ];
     let {
       areaData,
       barData,
@@ -343,29 +350,19 @@ export default class App extends Component {
         <div id="pie-chart">
           <PieChart
             className="vis-app-pie-chart"
-            data={pieData}
+            data={[20, 10, 5, 10, 20, 30, 10, 5].sort((a, b) => b - a)}
             width={960}
             height={500}
             innerRadius={50}
             outerRadius={150}
-            fill={[
-              <PatternLines
-                id="lines1"
-                height={5}
-                width={5}
-                stroke={"black"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines2"
-                height={5}
-                width={5}
-                stroke={"red"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />
-            ]}
+            fill={schemeCategory20}
+            // fill={[
+            //   <Gradient id="linear-chart" colors={["#5EFCE8", "#736EFE"]} />,
+            //   <Gradient id="linear-chart2" colors={["#FDD819", "#E80505"]} />,
+            //   <Gradient id="linear-chart3" colors={["#FFFE9F", "#FCA180"]} />,
+            //   <Gradient id="linear-chart4" colors={["#FFF3B0", "#CA26FF"]} />,
+            //   <Gradient id="linear-chart5" colors={["#ABDCFF", "#0396FF"]} />
+            // ]}
           />
         </div>
 

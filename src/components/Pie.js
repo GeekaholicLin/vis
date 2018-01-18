@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { arc, pie } from "d3-shape";
@@ -6,7 +6,7 @@ import _ from "lodash";
 import Group from "./Group";
 import Arc from "./Arc";
 import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
-export default class Pie extends Component {
+export default class Pie extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -18,7 +18,7 @@ export default class Pie extends Component {
       left,
       value,
       sort,
-      sortValue,
+      sortValues,
       startAngle,
       endAngle,
       padAngle,
@@ -40,9 +40,10 @@ export default class Pie extends Component {
     let pieGenerator = pie();
     !_.isNil(sort) && pieGenerator.sort(sort);
     !_.isNil(value) && pieGenerator.value(value);
-    !_.isNil(sortValue) && pieGenerator.sortValue(sortValue);
+    !_.isNil(sortValues) && pieGenerator.sortValues(sortValues);
     !_.isNil(padAngle) && pieGenerator.padAngle(padAngle);
     let pieArcs = pieGenerator(data);
+    console.log("pieArcs", pieArcs);
     return (
       <Group
         className={cx(`${PREFIX}-pie-group`, className)}
@@ -74,7 +75,7 @@ Pie.propTypes = {
   data: PropTypes.arrayOf(PropTypes.number).isRequired,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   sort: PropTypes.func,
-  sortValue: PropTypes.func,
+  sortValues: PropTypes.func,
   startAngle: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   endAngle: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   padAngle: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
@@ -85,5 +86,6 @@ Pie.propTypes = {
 Pie.defaultProps = {
   innerRadius: 0,
   ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
-  stroke: "white"
+  stroke: "white",
+  sortValues: (a, b) => 0 //do not sort pie by values, just original order
 };
