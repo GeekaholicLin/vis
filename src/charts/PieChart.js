@@ -92,7 +92,7 @@ export default class PieChart extends Component {
   }
 }
 
-PieChart.displayName = `${PREFIX}-PieChart`;
+PieChart.displayName = `${PREFIX}PieChart`;
 PieChart.propTypes = {
   className: PropTypes.string,
   width: PropTypes.number,

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Broadcast, Subscriber } from "react-broadcast";
 import points from "./data/points.data";
 import {
   scaleLinear,
@@ -21,7 +22,8 @@ import {
   StackBarChart,
   GroupBarChart
 } from "./charts";
-import { Text, Gradient } from "./components";
+import { Text, Gradient, Pie, Group, SVG } from "./components";
+import { ChartProvider } from "./HOC";
 import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "./constant";
 import salesData from "./data/sales.data";
@@ -364,6 +366,36 @@ export default class App extends Component {
             //   <Gradient id="linear-chart5" colors={["#ABDCFF", "#0396FF"]} />
             // ]}
           />
+        </div>
+        <div id="pie-chart2">
+          <ChartProvider
+            channel="provider"
+            className="vis-app-pie-chart2"
+            width={960}
+            height={500}
+            data={[20, 10, 5, 10, 20, 30, 10, 5].sort((a, b) => b - a)}
+          >
+            <Gradient id="pie-chart" colors={["#5EFCE8", "#736EFE"]} />
+            <Gradient id="pie-chart2" colors={["#FDD819", "#E80505"]} />
+            <Gradient id="pie-chart3" colors={["#FFFE9F", "#FCA180"]} />
+            <Gradient id="pie-chart4" colors={["#FFF3B0", "#CA26FF"]} />
+            <Gradient id="pie-chart5" colors={["#ABDCFF", "#0396FF"]} />
+            <Subscriber channel="provider">
+              {context => {
+                return (
+                  <Pie
+                    className="pie-chart"
+                    fill={schemeCategory20}
+                    innerRadius={50}
+                    outerRadius={150}
+                    data={context.data}
+                    left={960 / 2}
+                    top={500 / 2}
+                  />
+                );
+              }}
+            </Subscriber>
+          </ChartProvider>
         </div>
 
         <div id="group-bar-chart">

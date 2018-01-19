@@ -2,6 +2,7 @@
  * build-in constant
  */
 export const PREFIX = "vix";
+export const CHANNEL = "vix-chart";
 
 /**
  * constant about d3
