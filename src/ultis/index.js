@@ -1,7 +1,12 @@
 export { generateAxisMappingProps, generateAxisPropTypes } from "./axis.tool";
 export {
   mappingPropsWithKeys,
-  generateComponentPropTypes
+  generateComponentPropTypes,
+  getDisplayName,
+  getChartColors,
+  renderStaticComponentWithId,
+  getValueByKeyOrFunc,
+  getValuesArrByKeyOrFunc
 } from "./components.tool";
 export { addInvertForScale, getOrinalRange } from "./d3.polyfill";
 

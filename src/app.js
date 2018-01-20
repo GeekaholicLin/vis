@@ -22,12 +22,12 @@ import {
   StackBarChart,
   GroupBarChart
 } from "./charts";
-import { Text, Gradient, Pie, Group, SVG } from "./components";
-import { ChartProvider } from "./HOC";
+import { Text, Gradient, Group, SVG } from "components";
+import { ChartProvider, Pie, Legend } from "HOC";
 import { PatternLines } from "@vx/pattern";
-import { PREFIX } from "./constant";
-import salesData from "./data/sales.data";
-import { getRandomGradientColor } from "./ultis";
+import { PREFIX } from "constant";
+import salesData from "data/sales.data";
+import { getRandomGradientColor } from "ultis";
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -349,52 +349,27 @@ export default class App extends Component {
           />
         </div>
 
-        <div id="pie-chart">
-          <PieChart
-            className="vis-app-pie-chart"
-            data={[20, 10, 5, 10, 20, 30, 10, 5].sort((a, b) => b - a)}
-            width={960}
-            height={500}
-            innerRadius={50}
-            outerRadius={150}
-            fill={schemeCategory20}
-            // fill={[
-            //   <Gradient id="linear-chart" colors={["#5EFCE8", "#736EFE"]} />,
-            //   <Gradient id="linear-chart2" colors={["#FDD819", "#E80505"]} />,
-            //   <Gradient id="linear-chart3" colors={["#FFFE9F", "#FCA180"]} />,
-            //   <Gradient id="linear-chart4" colors={["#FFF3B0", "#CA26FF"]} />,
-            //   <Gradient id="linear-chart5" colors={["#ABDCFF", "#0396FF"]} />
-            // ]}
-          />
-        </div>
         <div id="pie-chart2">
           <ChartProvider
-            channel="provider"
             className="vis-app-pie-chart2"
             width={960}
             height={500}
-            data={[20, 10, 5, 10, 20, 30, 10, 5].sort((a, b) => b - a)}
+            data={[
+              { value: 335, name: "直达" },
+              { value: 310, name: "邮件营销" },
+              { value: 234, name: "联盟广告" },
+              { value: 135, name: "视频广告" },
+              { value: 1048, name: "百度" },
+              { value: 251, name: "谷歌" },
+              { value: 147, name: "必应" },
+              { value: 102, name: "其他" }
+            ]}
+            dataKey={d => d.value}
+            nameKey={"name"}
+            fill={schemeCategory20}
           >
-            <Gradient id="pie-chart" colors={["#5EFCE8", "#736EFE"]} />
-            <Gradient id="pie-chart2" colors={["#FDD819", "#E80505"]} />
-            <Gradient id="pie-chart3" colors={["#FFFE9F", "#FCA180"]} />
-            <Gradient id="pie-chart4" colors={["#FFF3B0", "#CA26FF"]} />
-            <Gradient id="pie-chart5" colors={["#ABDCFF", "#0396FF"]} />
-            <Subscriber channel="provider">
-              {context => {
-                return (
-                  <Pie
-                    className="pie-chart"
-                    fill={schemeCategory20}
-                    innerRadius={50}
-                    outerRadius={150}
-                    data={context.data}
-                    left={960 / 2}
-                    top={500 / 2}
-                  />
-                );
-              }}
-            </Subscriber>
+            <Pie className="pie-chart" innerRadius={50} outerRadius={150} />
+            <Legend title="饼图图例" />
           </ChartProvider>
         </div>
 

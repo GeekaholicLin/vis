@@ -1,4 +1,5 @@
 import _ from "lodash";
+import React from "react";
 /**
  * @description
  * return object that with keys of componentKeys depending on componentProps
@@ -42,3 +43,69 @@ export let generateComponentPropTypes = (
     )
   );
 };
+/**
+ * get wrappedComponent displayName for easy debugging
+ * @param {*} WrappedComponent
+ */
+export function getDisplayName(WrappedComponent) {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+}
+
+export function getChartColors(colors, namespace = "") {
+  return _.isArray(colors)
+    ? colors.map(
+        (el, i) =>
+          _.isString(el)
+            ? el
+            : `url('#${namespace ? namespace + "-" : ""}${el.props.id}')`
+      )
+    : [colors];
+}
+export function renderStaticComponentWithId(components, namespace = "") {
+  return (
+    _.isArray(components) &&
+    components.map(
+      (component, i) =>
+        React.isValidElement(component) &&
+        React.cloneElement(component, {
+          key: `static-component-render-${i}`,
+          id: namespace + "-" + component.props.id //change id
+        })
+    )
+  );
+}
+
+/**
+ * misc
+ */
+/**
+ * return the key wrapper
+ * @param {string or func} key
+ * @param {object} data
+ * if key is function,return it
+ * or key is string, return a wrapper function with data as args
+ */
+function keyWrapper(key, data) {
+  return _.isFunction(key) ? key : data => data[key];
+}
+/**
+ *
+ * @param {string or func} func
+ * @param {object} data
+ * if key is function ,exec it with data
+ * or if key is not function ,return it directly
+ */
+function valueGetter(func, data) {
+  return _.isFunction(func) ? func(data) : func;
+}
+/**
+ * giving key name or key function, get the relative data
+ * @param {string or func} key
+ * @param {object} data
+ */
+export function getValuesArrByKeyOrFunc(key, dataArr = []) {
+  return dataArr.map(d => (_.isFunction(key) ? key(d) : d[key]));
+}
+export function getValueByKeyOrFunc(key, data) {
+  return _.isFunction(key) ? key(data) : data[key];
+}

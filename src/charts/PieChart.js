@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
-import { generateAxisPropTypes, mappingPropsWithKeys } from "../ultis";
-import { SVG, Group, Pie, Legend, Gradient } from "../components/index";
-import { PREFIX, DEFAULT_PROPS } from "../constant";
+import { generateAxisPropTypes, mappingPropsWithKeys } from "ultis";
+import { SVG, Group, Pie, Legend, Gradient } from "components";
+import { PREFIX, DEFAULT_PROPS } from "constant";
 
 export default class PieChart extends Component {
   constructor(props) {
