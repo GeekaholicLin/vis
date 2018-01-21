@@ -85,7 +85,7 @@ export function renderStaticComponentWithId(components, namespace = "") {
  * if key is function,return it
  * or key is string, return a wrapper function with data as args
  */
-function keyWrapper(key, data) {
+export function keyWrapper(key, data) {
   return _.isFunction(key) ? key : data => data[key];
 }
 /**
@@ -95,17 +95,22 @@ function keyWrapper(key, data) {
  * if key is function ,exec it with data
  * or if key is not function ,return it directly
  */
-function valueGetter(func, data) {
+export function valueGetter(func, data) {
   return _.isFunction(func) ? func(data) : func;
+}
+/**
+ * giving key name or key function, get the relative data array
+ * @param {string or func} key
+ * @param {array} data
+ */
+export function getValuesArrByKeyOrFunc(key, dataArr = []) {
+  return dataArr.map(d => (_.isFunction(key) ? key(d) : d[key]));
 }
 /**
  * giving key name or key function, get the relative data
  * @param {string or func} key
  * @param {object} data
  */
-export function getValuesArrByKeyOrFunc(key, dataArr = []) {
-  return dataArr.map(d => (_.isFunction(key) ? key(d) : d[key]));
-}
 export function getValueByKeyOrFunc(key, data) {
   return _.isFunction(key) ? key(data) : data[key];
 }
