@@ -11,4 +11,14 @@ const mapContextToProps = ({ data, y, height, margin, yScale }) => {
     scale: newYScale
   };
 };
-export default withSubscriber(mapContextToProps)(YAxis);
+const hoistPropsToContext = props => {
+  return {
+    hoistingYDataKey: props.dataKey
+  };
+};
+const skipPropsKeys = ["dataKey"];
+export default withSubscriber({
+  mapContextToProps,
+  hoistPropsToContext,
+  skipPropsKeys
+})(YAxis);

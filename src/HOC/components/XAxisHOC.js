@@ -12,4 +12,14 @@ const mapContextToProps = ({ data, x, width, height, margin, xScale }) => {
     top: height - margin.top - margin.bottom
   };
 };
-export default withSubscriber(mapContextToProps)(XAxis);
+const hoistPropsToContext = props => {
+  return {
+    hoistingXDataKey: props.dataKey
+  };
+};
+const skipPropsKeys = ["dataKey"];
+export default withSubscriber({
+  mapContextToProps,
+  hoistPropsToContext,
+  skipPropsKeys
+})(XAxis);

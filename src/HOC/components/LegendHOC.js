@@ -34,4 +34,7 @@ const mapContextToProps = ({
     }
   };
 };
-export default withSubscriber(mapContextToProps, true)(Legend);
+const shouldRenderOutside = true;
+export default withSubscriber({ mapContextToProps, shouldRenderOutside })(
+  Legend
+);

@@ -13,6 +13,16 @@ export default class ChartProvider extends Component {
       updatedState: {},
       mergedProps: {}
     };
+    this.hoistingProps = {};
+    React.Children.map(this.props.children, child => {
+      if (child && child.props && _.isFunction(child.props.__hoistingProps__)) {
+        this.hoistingProps = Object.assign(
+          {},
+          this.hoistingProps,
+          child.props.__hoistingProps__(child.props)
+        );
+      }
+    });
   }
   //use it in a callback prop in mappingStateToProps
   //for example onLegendItemClick
@@ -58,11 +68,12 @@ export default class ChartProvider extends Component {
         channel={channel}
         compareValues={compareValues}
         value={{
+          ...this.hoistingProps, //lowest
           ...contextProps,
           ...mergedProps,
+          __updated__: updatedState,
           __updateStateInContext__: this.updateStateInContext.bind(this),
-          __addedPropsToContext__: this.addPropsToContext.bind(this),
-          __updated__: updatedState
+          __addedPropsToContext__: this.addPropsToContext.bind(this)
         }}
       >
         <div

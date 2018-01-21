@@ -18,4 +18,4 @@ const mapContextToProps = ({
     fill: getChartColors(fill, chartNamespace)
   };
 };
-export default withSubscriber(mapContextToProps)(Pie);
+export default withSubscriber({ mapContextToProps })(Pie);

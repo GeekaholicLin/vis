@@ -14,6 +14,7 @@ const mapContextToProps = ({
   fill,
   xScale,
   yScale,
+  hoistingXDataKey,
   chartNamespace
 }) => {
   let newXScale = xScale
@@ -35,4 +36,4 @@ const mapContextToProps = ({
     fill: getChartColors(fill, chartNamespace)
   };
 };
-export default withSubscriber(mapContextToProps)(Area);
+export default withSubscriber({ mapContextToProps })(Area);

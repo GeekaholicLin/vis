@@ -98,6 +98,7 @@ export default class Axis extends Component {
             ? "start"
             : orientation === "left" ? "end" : "middle"
         }
+        {...rest}
       >
         <path
           className={`${PREFIX}-axis-domain`}

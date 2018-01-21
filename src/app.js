@@ -228,8 +228,8 @@ export default class App extends Component {
           >
             <Area stroke={"none"} />
             <Zoom />
-            <XAxis />
-            <YAxis />
+            <XAxis dataKey={"date"} />
+            <YAxis dataKey={"close"} />
           </ChartProvider>
         </div>
         <div id="stacked-area-chart">

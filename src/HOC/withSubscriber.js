@@ -1,27 +1,34 @@
 import React, { Component } from "react";
 import { Subscriber } from "react-broadcast";
 import { CHANNEL } from "constant";
-import { getDisplayName } from "ultis";
+import { getDisplayName, mappingPropsWithKeys } from "ultis";
+
 export default (
-  mapContextToProps = () => ({}), //default empty object
-  shouldRenderOutside = false,
-  channel = CHANNEL
+  {
+    mapContextToProps = () => ({}), //default empty object
+    hoistPropsToContext = () => ({}),
+    skipPropsKeys = [],
+    shouldRenderOutside = false,
+    channel = CHANNEL
+  } = {}
 ) => BasicComponent => {
   class WithSubscriber extends Component {
-    constructor(props) {
-      super(props);
-      this.context = null;
-    }
     render() {
-      let { __outside__, ...restProps } = this.props; //skip render flag
+      //Skip render flag, hoist function and [skipPropsKeys]
+      //And pass hoist function directly to Provider
       return (
         <Subscriber channel={channel}>
           {context => {
-            this.context = context;
             return (
               <BasicComponent
                 {...mapContextToProps(context, this)}
-                {...restProps}
+                {...mappingPropsWithKeys(this.props, Object.keys(this.props), [
+                  "__outside__",
+                  "__hoistingProps__",
+                  ...(_.isArray(skipPropsKeys)
+                    ? skipPropsKeys
+                    : [skipPropsKeys])
+                ])}
               />
             );
           }}
@@ -33,7 +40,8 @@ export default (
     BasicComponent
   )})`;
   WithSubscriber.defaultProps = {
-    __outside__: shouldRenderOutside
+    __outside__: shouldRenderOutside,
+    __hoistingProps__: hoistPropsToContext
   };
   return WithSubscriber;
 };

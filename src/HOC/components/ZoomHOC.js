@@ -13,4 +13,4 @@ const mapContextToProps = ({ width, xScale, x, data, height, margin }) => {
     }
   };
 };
-export default withSubscriber(mapContextToProps)(Zoom);
+export default withSubscriber({ mapContextToProps })(Zoom);
