@@ -2,7 +2,7 @@ import React from "react";
 import { Legend } from "components";
 import withSubscriber from "../withSubscriber";
 import { getChartColors, getValueByKeyOrFunc } from "ultis";
-const mappingStateToProps = ({
+const mapContextToProps = ({
   data,
   width,
   height,
@@ -10,8 +10,8 @@ const mappingStateToProps = ({
   nameKey = "name",
   label,
   chartNamespace,
-  __updateBroadcast__,
-  __updatedProps__
+  __updateStateInContext__,
+  __updated__
 }) => {
   return {
     items: data.map((d, i) => {
@@ -25,13 +25,13 @@ const mappingStateToProps = ({
       };
     }),
     onLegendItemClick: ({ index, selected }) => {
-      let updatedData = __updatedProps__.data || data;
+      let updatedData = __updated__.data || data;
       let result = [...updatedData];
-      result[index] = selected ? data[index] : 0;
-      __updateBroadcast__({
+      result[index] = selected ? data[index] : {};
+      __updateStateInContext__({
         data: [...result]
       });
     }
   };
 };
-export default withSubscriber(mappingStateToProps, true)(Legend);
+export default withSubscriber(mapContextToProps, true)(Legend);

@@ -51,7 +51,7 @@ export function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export function getChartColors(colors, namespace = "") {
+export function getChartColors(colors = ["steelblue"], namespace = "") {
   return _.isArray(colors)
     ? colors.map(
         (el, i) =>
@@ -59,19 +59,19 @@ export function getChartColors(colors, namespace = "") {
             ? el
             : `url('#${namespace ? namespace + "-" : ""}${el.props.id}')`
       )
-    : [colors];
+    : _.isString(colors)
+      ? colors
+      : `url('#${namespace ? namespace + "-" : ""}${colors.props.id}')`;
 }
 export function renderStaticComponentWithId(components, namespace = "") {
-  return (
-    _.isArray(components) &&
-    components.map(
-      (component, i) =>
-        React.isValidElement(component) &&
-        React.cloneElement(component, {
-          key: `static-component-render-${i}`,
-          id: namespace + "-" + component.props.id //change id
-        })
-    )
+  let componentsArr = _.isArray(components) ? components : [components];
+  return componentsArr.map(
+    (component, i) =>
+      React.isValidElement(component) &&
+      React.cloneElement(component, {
+        key: `static-component-render-${i}`,
+        id: namespace + "-" + component.props.id //change id
+      })
   );
 }
 
@@ -108,4 +108,12 @@ export function getValuesArrByKeyOrFunc(key, dataArr = []) {
 }
 export function getValueByKeyOrFunc(key, data) {
   return _.isFunction(key) ? key(data) : data[key];
+}
+
+export function hoistAxisPropsToProvider(axisComponent) {
+  let id = axisComponent.props.id || axisComponent.displayName;
+  let orientation = axisComponent.props.orientation;
+  return {
+    scale: axisComponent.props.scale
+  };
 }

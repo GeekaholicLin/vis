@@ -3,19 +3,24 @@ import { Subscriber } from "react-broadcast";
 import { CHANNEL } from "constant";
 import { getDisplayName } from "ultis";
 export default (
-  mapStateToProps,
+  mapContextToProps = () => ({}), //default empty object
   shouldRenderOutside = false,
   channel = CHANNEL
 ) => BasicComponent => {
   class WithSubscriber extends Component {
+    constructor(props) {
+      super(props);
+      this.context = null;
+    }
     render() {
       let { __outside__, ...restProps } = this.props; //skip render flag
       return (
         <Subscriber channel={channel}>
           {context => {
+            this.context = context;
             return (
               <BasicComponent
-                {...mapStateToProps(context, this)}
+                {...mapContextToProps(context, this)}
                 {...restProps}
               />
             );

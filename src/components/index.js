@@ -23,3 +23,4 @@ export { default as Marker } from "./Marker";
 export { default as Gradient } from "./Gradient";
 export { default as Brush } from "./Brush";
 export { default as Legend } from "./Legend";
+export { default as Zoom } from "./Zoom";
