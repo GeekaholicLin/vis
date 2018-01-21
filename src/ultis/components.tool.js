@@ -109,11 +109,3 @@ export function getValuesArrByKeyOrFunc(key, dataArr = []) {
 export function getValueByKeyOrFunc(key, data) {
   return _.isFunction(key) ? key(data) : data[key];
 }
-
-export function hoistAxisPropsToProvider(axisComponent) {
-  let id = axisComponent.props.id || axisComponent.displayName;
-  let orientation = axisComponent.props.orientation;
-  return {
-    scale: axisComponent.props.scale
-  };
-}

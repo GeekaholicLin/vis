@@ -5,6 +5,8 @@ export {
   getDisplayName,
   getChartColors,
   renderStaticComponentWithId,
+  keyWrapper,
+  valueGetter,
   getValueByKeyOrFunc,
   getValuesArrByKeyOrFunc
 } from "./components.tool";
