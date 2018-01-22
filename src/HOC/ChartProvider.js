@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
 import { Broadcast } from "react-broadcast";
-import { SVG, Group, Text } from "components";
+import { SVG, Group, Text, ClipPath, Rect } from "components";
 import { DEFAULT_PROPS, PREFIX, CHANNEL } from "constant";
 import { renderStaticComponentWithId } from "ultis";
 export default class ChartProvider extends Component {
@@ -11,18 +11,29 @@ export default class ChartProvider extends Component {
     super(props);
     this.state = {
       updatedState: {},
-      mergedProps: {}
+      mergedProps: {},
+      originProps: { ...props }
     };
     this.hoistingProps = {};
+    this.updateHoistingProps(this.props);
+  }
+  updateHoistingProps(props) {
     React.Children.map(this.props.children, child => {
       if (child && child.props && _.isFunction(child.props.__hoistingProps__)) {
+        //maybe this.props as second args is helpful
         this.hoistingProps = Object.assign(
           {},
           this.hoistingProps,
-          child.props.__hoistingProps__(child.props)
+          child.props.__hoistingProps__(child.props, props)
         );
       }
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    //optimize: normally its data changes in ChartProvider, like async data
+    if (nextProps.data && nextProps.data.length !== this.props.data.length) {
+      this.updateHoistingProps(nextProps);
+    }
   }
   //use it in a callback prop in mappingStateToProps
   //for example onLegendItemClick
@@ -36,6 +47,38 @@ export default class ChartProvider extends Component {
       mergedProps: context
     });
   }
+  splitChartContent(props, innerOrOuter = "inner", clip = false) {
+    let { children, margin, chartNamespace } = props;
+    return (
+      <Group
+        left={margin.left}
+        top={margin.top}
+        className={`chart-clip-${innerOrOuter}`}
+        clipPath={
+          clip && innerOrOuter === "inner"
+            ? `url(#${chartNamespace}-clip-path)`
+            : ""
+        }
+      >
+        {React.Children.map(children, child => {
+          //skip null(child)
+          //skip not svg element(child.props.__outside__)
+          //render conditionally
+          //if innerOrOuter === "inner", render inner(child.props.__clip__ === "inner")
+          if (
+            child &&
+            child.props &&
+            child.props.__outside__ !== true &&
+            (innerOrOuter === "inner"
+              ? child.props.__clip__ === "inner"
+              : child.props.__clip__ === "outer")
+          ) {
+            return child;
+          }
+        })}
+      </Group>
+    );
+  }
   render() {
     let {
       channel,
@@ -46,10 +89,13 @@ export default class ChartProvider extends Component {
       wrapperProps,
       title,
       children,
+      clip,
       ...contextProps
     } = this.props;
     let { width, height, margin, fill, chartNamespace } = contextProps;
-    let { updatedState, mergedProps } = this.state;
+    let { updatedState, mergedProps, originProps } = this.state;
+    let innerWidth = width - margin.left - margin.right;
+    let innerHeight = height - margin.top - margin.bottom;
     let titleEle = _.isString(title) ? (
       <Text
         fontSize={20}
@@ -68,12 +114,13 @@ export default class ChartProvider extends Component {
         channel={channel}
         compareValues={compareValues}
         value={{
-          ...this.hoistingProps, //lowest
-          ...contextProps,
-          ...mergedProps,
-          __updated__: updatedState,
-          __updateStateInContext__: this.updateStateInContext.bind(this),
-          __addedPropsToContext__: this.addPropsToContext.bind(this)
+          ...this.hoistingProps, //lowest props. subscriber components' __hoistingProps__ object when initing subscribers
+          ...contextProps, // context props which can provide to subscriber
+          ...mergedProps, // added object by __addedPropsToContext__ api
+          __updatedState__: updatedState, // sometimes it is helpful handle chart-scoped event like onLegendItemClick updating chart state
+          __originalProps__: originProps, // the original this.props of ChartProvider
+          __updateStateInContext__: this.updateStateInContext.bind(this), // api for subscriber to change context
+          __addedPropsToContext__: this.addPropsToContext.bind(this) // api for subscriber to change context.Use it in callback function
         }}
       >
         <div
@@ -83,14 +130,18 @@ export default class ChartProvider extends Component {
         >
           <SVG width={width} height={height} {...wrapperProps}>
             {renderStaticComponentWithId(fill, chartNamespace)}
+            <ClipPath id={`${chartNamespace}-clip-path`}>
+              <Rect
+                width={innerWidth}
+                height={innerHeight}
+                fill={"none"}
+                left={0}
+                top={0}
+              />
+            </ClipPath>
             {titleEle}
-            <Group left={margin.left} top={margin.top}>
-              {React.Children.map(children, child => {
-                if (child && child.props && child.props.__outside__ !== true) {
-                  return child;
-                }
-              })}
-            </Group>
+            {this.splitChartContent(this.props, "inner", clip)}
+            {this.splitChartContent(this.props, "outer", clip)}
           </SVG>
           {React.Children.map(children, child => {
             if (child && child.props && child.props.__outside__ === true) {
