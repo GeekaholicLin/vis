@@ -13,13 +13,21 @@ import { DEFAULT_PROPS, PREFIX } from "constant";
 export default class Zoom extends PureComponent {
   constructor(props) {
     super(props);
-    this.zoom = this.getZoomBehavior(props.zoom);
+    this.zoom = this.getZoomBehavior(props.zoom, this.props);
     this.transform = null;
     this.node = null;
+    this.counter = 0;
   }
   componentDidMount() {
     this.zoom(select(this.node));
     this.transform = zoomTransform(this.node);
+  }
+  componentWillReceiveProps(nextProps) {
+    //optimize: update zoomBehavior once
+    if (nextProps.dataLength > 0 && this.counter === 0) {
+      this.zoom = this.getZoomBehavior(nextProps.zoom, nextProps);
+      this.counter++;
+    }
   }
   componentWillUnmount() {
     let { listener } = this.props;
@@ -31,8 +39,8 @@ export default class Zoom extends PureComponent {
     }
     this.zoom.on("zoom.__internal__", null);
   }
-  getZoomBehavior(zoom) {
-    let { width, height } = this.props;
+  getZoomBehavior(zoom, props) {
+    let { width, height, dataLength } = props;
     let {
       constrain,
       filter,
@@ -45,27 +53,30 @@ export default class Zoom extends PureComponent {
       duration,
       interpolate,
       listener
-    } = this.props;
+    } = props;
     let zoomBehavior = zoomBehaviorGenerator();
-    let listenerEvents = Object.keys(listener);
-
-    constrain && zoomBehavior.constrain(constrain);
-    filter && zoomBehavior.filter(filter);
-    touchable && zoomBehavior.touchable(touchable);
-    wheelDelta && zoomBehavior.wheelDelta(wheelDelta);
-    interpolate && zoomBehavior.interpolate(interpolate);
-    !_.isNil(clickDistance) && zoomBehavior.clickDistance(clickDistance);
-    !_.isNil(duration) && zoomBehavior.duration(duration);
-
+    //internal init
     zoomBehavior
       .scaleExtent(scaleExtent || [1, Infinity])
       .translateExtent(translateExtent || [[0, 0], [width, height]])
       .extent(extent || [[0, 0], [width, height]]);
+    //listen zoom.__internal__ first because listenerEvents can get the latest transform
     zoomBehavior.on("zoom.__internal__", this.zoomed.bind(this));
-    if (listenerEvents.length > 0) {
-      listenerEvents.forEach((e, i) => {
-        zoomBehavior.on(e, listener[e](this));
-      });
+    if (dataLength > 0) {
+      let listenerEvents = Object.keys(listener);
+
+      constrain && zoomBehavior.constrain(constrain);
+      filter && zoomBehavior.filter(filter);
+      touchable && zoomBehavior.touchable(touchable);
+      wheelDelta && zoomBehavior.wheelDelta(wheelDelta);
+      interpolate && zoomBehavior.interpolate(interpolate);
+      !_.isNil(clickDistance) && zoomBehavior.clickDistance(clickDistance);
+      !_.isNil(duration) && zoomBehavior.duration(duration);
+      if (listenerEvents.length > 0) {
+        listenerEvents.forEach((e, i) => {
+          zoomBehavior.on(e, listener[e](this));
+        });
+      }
     }
     return zoomBehavior;
   }
@@ -74,7 +85,6 @@ export default class Zoom extends PureComponent {
       return;
     this.zoom(select(this.node));
     this.transform = zoomTransform(this.node);
-    console.log("this.transform ", this.transform);
   }
   render() {
     let { className, width, height, left, top } = this.props;
@@ -95,6 +105,7 @@ export default class Zoom extends PureComponent {
 Zoom.displayName = `${PREFIX}Zoom`;
 Zoom.propTypes = {
   className: PropTypes.string,
+  dataLength: PropTypes.number,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   left: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -113,5 +124,6 @@ Zoom.propTypes = {
 };
 Zoom.defaultProps = {
   ...DEFAULT_PROPS,
-  listener: {}
+  listener: {},
+  data: 0
 };
