@@ -9,10 +9,10 @@ const mapContextToProps = ({
   height,
   dataKey = "value",
   chartNamespace,
-  __updated__
+  __updatedState__
 }) => {
   return {
-    data: getValuesArrByKeyOrFunc(dataKey, __updated__.data || data),
+    data: getValuesArrByKeyOrFunc(dataKey, __updatedState__.data || data),
     left: width / 2,
     top: height / 2,
     fill: getChartColors(fill, chartNamespace)

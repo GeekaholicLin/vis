@@ -4,28 +4,29 @@ import cx from "classnames";
 import _ from "lodash";
 import { Broadcast } from "react-broadcast";
 import { SVG, Group, Text, ClipPath, Rect } from "components";
-import { DEFAULT_PROPS, PREFIX, CHANNEL } from "constant";
+import { DEFAULT_PROPS, PREFIX, CHARTCHANNEL } from "constant";
 import { renderStaticComponentWithId } from "ultis";
 export default class ChartProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
       updatedState: {},
-      mergedProps: {},
-      originProps: { ...props }
+      mergedProps: {}
     };
     this.hoistingProps = {};
+    this.originalProps = {};
     this.updateHoistingProps(this.props);
   }
   updateHoistingProps(props) {
     React.Children.map(this.props.children, child => {
       if (child && child.props && _.isFunction(child.props.__hoistingProps__)) {
-        //maybe this.props as second args is helpful
+        //maybe this.props as second args is helpful(for XAxisHOC and YAxisHOC etc.)
         this.hoistingProps = Object.assign(
           {},
           this.hoistingProps,
           child.props.__hoistingProps__(child.props, props)
         );
+        this.originalProps = Object.assign({}, this.hoistingProps, props);
       }
     });
   }
@@ -62,13 +63,13 @@ export default class ChartProvider extends Component {
       >
         {React.Children.map(children, child => {
           //skip null(child)
-          //skip not svg element(child.props.__outside__)
+          //skip not svg element(child.props.__notSvg__)
           //render conditionally
           //if innerOrOuter === "inner", render inner(child.props.__clip__ === "inner")
           if (
             child &&
             child.props &&
-            child.props.__outside__ !== true &&
+            child.props.__notSvg__ !== true &&
             (innerOrOuter === "inner"
               ? child.props.__clip__ === "inner"
               : child.props.__clip__ === "outer")
@@ -90,10 +91,10 @@ export default class ChartProvider extends Component {
       title,
       children,
       clip,
-      ...contextProps
+      ...componentProps
     } = this.props;
-    let { width, height, margin, fill, chartNamespace } = contextProps;
-    let { updatedState, mergedProps, originProps } = this.state;
+    let { width, height, margin, fill, chartNamespace } = componentProps;
+    let { updatedState, mergedProps } = this.state;
     let innerWidth = width - margin.left - margin.right;
     let innerHeight = height - margin.top - margin.bottom;
     let titleEle = _.isString(title) ? (
@@ -114,13 +115,22 @@ export default class ChartProvider extends Component {
         channel={channel}
         compareValues={compareValues}
         value={{
-          ...this.hoistingProps, //lowest props. subscriber components' __hoistingProps__ object when initing subscribers
-          ...contextProps, // context props which can provide to subscriber
+          ...this.hoistingProps, // lowest props. provided by XAxisHOC etc. which has __hoistingProps__ property
+          ...componentProps, // original on-component props which can provide to subscriber
           ...mergedProps, // added object by __addedPropsToContext__ api
-          __updatedState__: updatedState, // sometimes it is helpful handle chart-scoped event like onLegendItemClick updating chart state
-          __originalProps__: originProps, // the original this.props of ChartProvider
-          __updateStateInContext__: this.updateStateInContext.bind(this), // api for subscriber to change context
-          __addedPropsToContext__: this.addPropsToContext.bind(this) // api for subscriber to change context.Use it in callback function
+          // sometimes it is helpful handle chart-scoped event like onLegendItemClick updating chart state
+          __updatedState__: { ...updatedState },
+          // props combined by hoistingProps and contextProps, which is not changed or updated
+          __originalProps__: { ...this.originalProps },
+
+          // the following two api is a export function to subscriber to change provider
+          // api for subscriber to change provider __updatedState__
+          // it is just like a chart-scoped state
+          __updateStateInContext__: this.updateStateInContext.bind(this),
+          // api for subscriber to change mergedProps.Use it in callback function.
+          // Mostly it is used to override provider props like xScale
+          // to force re-render component which based on chart context props
+          __addedPropsToContext__: this.addPropsToContext.bind(this)
         }}
       >
         <div
@@ -144,7 +154,7 @@ export default class ChartProvider extends Component {
             {this.splitChartContent(this.props, "outer", clip)}
           </SVG>
           {React.Children.map(children, child => {
-            if (child && child.props && child.props.__outside__ === true) {
+            if (child && child.props && child.props.__notSvg__ === true) {
               return child;
             }
           })}
@@ -162,6 +172,6 @@ ChartProvider.propTypes = {
 };
 ChartProvider.defaultProps = {
   ...DEFAULT_PROPS,
-  channel: CHANNEL,
+  channel: CHARTCHANNEL,
   chartNamespace: _.uniqueId("__chart__")
 };

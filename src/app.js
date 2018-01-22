@@ -23,7 +23,16 @@ import {
   GroupBarChart
 } from "./charts";
 import { Text, Gradient, Group, SVG } from "components";
-import { ChartProvider, Pie, Legend, Area, XAxis, YAxis, Zoom } from "HOC";
+import {
+  ChartProvider,
+  Pie,
+  Legend,
+  Area,
+  XAxis,
+  YAxis,
+  Zoom,
+  Brush
+} from "HOC";
 import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "constant";
 import salesData from "data/sales.data";
@@ -217,19 +226,17 @@ export default class App extends Component {
             className="vis-app-pie-chart2"
             margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             data={areaData}
-            x={d => d.date}
-            y={d => d.close}
-            xScale={scaleTime()}
-            yScale={scaleLinear().nice()}
             fill={
               <Gradient id="linear-chart" colors={getRandomGradientColor()} />
             }
             title={CustomTitle}
+            clip={true}
           >
             <Area stroke={"none"} />
             <Zoom />
-            <XAxis dataKey={"date"} />
-            <YAxis dataKey={"close"} />
+            <Brush data-key={"test-brush"} />
+            <XAxis dataKey={"date"} scale={scaleTime()} />
+            <YAxis dataKey={"close"} scale={scaleLinear().nice()} />
           </ChartProvider>
         </div>
         <div id="stacked-area-chart">

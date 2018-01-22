@@ -17,23 +17,24 @@ const mapContextToProps = ({
   hoistingXDataKey,
   chartNamespace
 }) => {
-  let newXScale = xScale
-    .copy()
-    .domain(extent(data, x))
-    .range([0, width - margin.left - margin.right]);
-  let newYScale = yScale
-    .copy()
-    .domain([0, max(data, y)])
-    .range([height - margin.top - margin.bottom, 0]);
+  console.log("mapContextToProps");
   return {
     data,
     x,
     y,
-    xScale: newXScale,
-    yScale: newYScale,
+    xScale,
+    yScale,
     y0: () => 0,
     y1: y,
     fill: getChartColors(fill, chartNamespace)
   };
 };
-export default withSubscriber({ mapContextToProps })(Area);
+const mapPropsToBrush = (brushContext, brushProps) => {
+  console.log("mapPropsToBrush");
+  let { xScale, yScale, height: brushHeight } = brushContext;
+  return {
+    xScale: xScale.copy(),
+    yScale: yScale.copy().range([brushHeight, 0])
+  };
+};
+export default withSubscriber({ mapContextToProps, mapPropsToBrush })(Area);

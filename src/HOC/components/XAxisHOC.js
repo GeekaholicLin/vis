@@ -2,24 +2,41 @@ import React from "react";
 import { extent } from "d3-array";
 import { XAxis } from "components";
 import withSubscriber from "../withSubscriber";
+import { keyWrapper } from "ultis";
+
 const mapContextToProps = ({ data, x, width, height, margin, xScale }) => {
-  let newXScale = xScale
-    .copy()
-    .domain(extent(data, x))
-    .range([0, width - margin.left - margin.right]);
   return {
-    scale: newXScale,
+    scale: xScale, // must to map this because scale is copied in hoistPropsToContext
     top: height - margin.top - margin.bottom
   };
 };
-const hoistPropsToContext = props => {
+const hoistPropsToContext = (
+  { scale, domain, range, dataKey },
+  { data, width, margin }
+) => {
+  let xScale = scale
+    .copy()
+    .domain(domain || extent(data, keyWrapper(dataKey)))
+    .range(range || [0, width - margin.left - margin.right]);
   return {
-    hoistingXDataKey: props.dataKey
+    x: keyWrapper(dataKey),
+    xScale
   };
 };
-const skipPropsKeys = ["dataKey"];
+const mapPropsToBrush = (brushContext, brushProps) => {
+  let { xScale, height: brushHeight } = brushContext;
+  return {
+    scale: xScale.copy(),
+    top: brushHeight
+  };
+};
+const skipPropsKeys = ["dataKey", "scale", "domain", "range"];
+const componentRenderSide = "outer";
+
 export default withSubscriber({
   mapContextToProps,
   hoistPropsToContext,
-  skipPropsKeys
+  skipPropsKeys,
+  componentRenderSide,
+  mapPropsToBrush
 })(XAxis);

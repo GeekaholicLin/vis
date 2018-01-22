@@ -2,7 +2,8 @@
  * build-in constant
  */
 export const PREFIX = "vis";
-export const CHANNEL = "vis-chart";
+export const CHARTCHANNEL = "vis-chart-channel";
+export const BRUSHCHANNEL = "vis-brush-channel";
 
 /**
  * constant about d3

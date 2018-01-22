@@ -11,7 +11,7 @@ const mapContextToProps = ({
   label,
   chartNamespace,
   __updateStateInContext__,
-  __updated__
+  __updatedState__
 }) => {
   return {
     items: data.map((d, i) => {
@@ -25,7 +25,7 @@ const mapContextToProps = ({
       };
     }),
     onLegendItemClick: ({ index, selected }) => {
-      let updatedData = __updated__.data || data;
+      let updatedData = __updatedState__.data || data;
       let result = [...updatedData];
       result[index] = selected ? data[index] : {};
       __updateStateInContext__({

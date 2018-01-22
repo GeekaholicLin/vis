@@ -85,8 +85,9 @@ export function renderStaticComponentWithId(components, namespace = "") {
  * if key is function,return it
  * or key is string, return a wrapper function with data as args
  */
-export function keyWrapper(key, data) {
-  return _.isFunction(key) ? key : data => data[key];
+export function keyWrapper(key) {
+  let wrapper = key => data => data[key];
+  return _.isFunction(key) ? key : wrapper(key);
 }
 /**
  *

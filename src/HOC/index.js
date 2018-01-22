@@ -13,3 +13,4 @@ export { default as Area } from "./components/AreaHOC";
 export { default as XAxis } from "./components/XAxisHOC";
 export { default as YAxis } from "./components/YAxisHOC";
 export { default as Zoom } from "./components/ZoomHOC";
+export { default as Brush } from "./BrushProviderHOC";
