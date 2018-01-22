@@ -1,6 +1,6 @@
 The files in HOC directory do the things like simplifying component interaction.
 
-And the result and internal interaction using these HOCs can be simply shown as the followings.
+And the result and internal interaction using these HOCs can be simply shown as follows.
 
 ```bash
 /**
