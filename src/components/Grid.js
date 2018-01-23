@@ -18,6 +18,7 @@ export default class Grid extends Component {
       yScale,
       width,
       height,
+      grid,
       ...rest
     } = this.props;
     return (
@@ -85,11 +86,13 @@ Grid.propTypes = {
     PropTypes.func,
     PropTypes.number
   ]),
+  grid: PropTypes.oneOf(["row", "column", "auto"]),
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Grid.defaultProps = {
   ...Line.defaultProps,
   stroke: "#ccc",
   strokeWidth: 2,
-  fill: "none"
+  fill: "none",
+  grid: "auto"
 };

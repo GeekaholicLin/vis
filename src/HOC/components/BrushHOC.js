@@ -41,6 +41,7 @@ const mapContextToProps = ({
       paddingInner * step;
   let transformedRange = [isNaN(r1) ? 0 : r1, isNaN(r2) ? 0 : r2];
   return {
+    ...__brushProviderProps__, //map to Brush Basic component
     width: innerWidth,
     move: transformedRange,
     dataLoaded: data.length > 0,

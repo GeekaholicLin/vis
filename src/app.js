@@ -31,7 +31,9 @@ import {
   XAxis,
   YAxis,
   Zoom,
-  Brush
+  Brush,
+  Curve,
+  Grid
 } from "HOC";
 import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "constant";
@@ -203,6 +205,43 @@ export default class App extends Component {
             zoom={true}
             brush={true}
           />
+        </div>
+        <div id="line-chart2">
+          <ChartProvider
+            className="vis-app-line-chart2"
+            margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+            data={lineData}
+            title={"折线图"}
+            clip={true}
+          >
+            <Grid grid="row" />
+            <Curve stroke={"steelblue"} />
+            <Zoom />
+            <Brush top={380} />
+            <XAxis
+              label={"年月"}
+              tickPadding={10}
+              dataKey={"date"}
+              tickFormat={timeFormat("%x")}
+              scale={scaleTime().nice()}
+            />
+            <YAxis
+              label={
+                <Text
+                  top={-10}
+                  left={0}
+                  textAnchor={"middle"}
+                  verticalAnchor={"end"}
+                >
+                  成绩自定义标签
+                </Text>
+              }
+              domain={[80, 150]}
+              tickPadding={10}
+              dataKey={"price"}
+              scale={scaleLinear().nice()}
+            />
+          </ChartProvider>
         </div>
         <div id="area-chart">
           <AreaChart

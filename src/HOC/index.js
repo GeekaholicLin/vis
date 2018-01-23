@@ -14,3 +14,5 @@ export { default as XAxis } from "./components/XAxisHOC";
 export { default as YAxis } from "./components/YAxisHOC";
 export { default as Zoom } from "./components/ZoomHOC";
 export { default as Brush } from "./BrushProviderHOC";
+export { default as Curve } from "./components/CurveHOC";
+export { default as Grid } from "./components/GridHOC";
