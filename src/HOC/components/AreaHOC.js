@@ -17,7 +17,6 @@ const mapContextToProps = ({
   hoistingXDataKey,
   chartNamespace
 }) => {
-  console.log("mapContextToProps");
   return {
     data,
     x,
@@ -30,7 +29,6 @@ const mapContextToProps = ({
   };
 };
 const mapPropsToBrush = (brushContext, brushProps) => {
-  console.log("mapPropsToBrush");
   let { xScale, yScale, height: brushHeight } = brushContext;
   return {
     xScale: xScale.copy(),

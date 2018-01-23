@@ -290,7 +290,7 @@ export default class Chart extends Component {
         width: innerWidth,
         move: transformedRange,
         listener: {
-          "brush end": this.brushed
+          "brush end": () => this.brushed
         },
         childMappingProps: {
           XAxis: {

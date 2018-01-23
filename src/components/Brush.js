@@ -13,32 +13,40 @@ export default class Brush extends Component {
     this.brush = null;
     this.move = null;
     this.node = null;
+    this.counter = 0;
   }
 
   removePrefix(displayName, prefix = `${PREFIX}`) {
     return displayName ? displayName.slice(prefix.length) : "";
   }
   componentDidMount() {
-    let { type, move, filter, extent, width, height, listener } = this.props;
+    let {
+      type,
+      move,
+      filter,
+      handleSize,
+      extent,
+      width,
+      height,
+      listener,
+      dataLoaded
+    } = this.props;
     let defaultMoveProp = {
       x: [0, width],
       y: [0, height],
       xy: [[0, 0], [width, height]]
     };
-    let events = Object.keys(listener);
-    let brush = BRUSH_TYPE_MAP[type]().extent(
+    this.brush = BRUSH_TYPE_MAP[type]().extent(
       extent || [[0, 0], [width, height]]
     );
-    filter && brush.filter(filter);
-    if (events.length > 0) {
-      events.forEach((e, i) => {
-        brush.on(e, listener[e]);
-      });
+    filter && this.brush.filter(filter);
+    handleSize && this.brush.handleSize(handleSize);
+    if (dataLoaded) {
+      this.updateListener(this.brush, this.props);
     }
-    brush(select(this.node));
-    this.brush = brush;
     this.move = move || defaultMoveProp[type];
-    brush.move(select(this.node), this.move);
+    this.brush(select(this.node));
+    this.brush.move(select(this.node), this.move);
   }
   componentWillUpdate(nextProps) {
     //update move func only when `move` is not equal
@@ -48,13 +56,32 @@ export default class Brush extends Component {
         nextProps.move[1] === this.move[1]
       )
         return;
+      if (nextProps.dataLoaded && this.counter === 0) {
+        this.updateListener(this.brush, nextProps);
+        this.counter++;
+      }
       this.brush.move(select(this.node), nextProps.move);
       this.move = [...nextProps.move];
     }
   }
-  handleRef = node => {
-    this.node = node;
-  };
+  componentWillUnmount() {
+    let { listener } = this.props;
+    let events = Object.keys(listener);
+    if (events.length > 0) {
+      events.forEach((e, i) => {
+        this.brush.on(e, null);
+      });
+    }
+  }
+  updateListener(brush, props) {
+    let { listener } = props;
+    let events = Object.keys(listener);
+    if (events.length > 0) {
+      events.forEach((e, i) => {
+        brush.on(e, listener[e](this));
+      });
+    }
+  }
   render() {
     let { className, children, left, top, childMappingProps } = this.props;
     return (
@@ -62,7 +89,9 @@ export default class Brush extends Component {
         className={cx(`${PREFIX}-brush`, className)}
         left={left}
         top={top}
-        getInnerRef={this.handleRef}
+        getInnerRef={node => {
+          this.node = node;
+        }}
       >
         {childMappingProps
           ? React.Children.map(children, child => {
@@ -102,5 +131,6 @@ Brush.defaultProps = {
   width: DEFAULT_PROPS["width"],
   left: 0,
   top: 400,
-  listener: {}
+  listener: {},
+  dataLoaded: true
 };

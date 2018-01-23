@@ -39,13 +39,18 @@ export default class ChartProvider extends Component {
   //use it in a callback prop in mappingStateToProps
   //for example onLegendItemClick
   updateStateInContext(updatedState) {
-    this.setState({
-      updatedState: updatedState
+    //must use setState not this.updatedState to re-render boardcast values
+    this.setState(prevState => {
+      return {
+        updatedState: Object.assign({}, prevState.updatedState, updatedState)
+      };
     });
   }
-  addPropsToContext(context) {
-    this.setState({
-      mergedProps: context
+  addPropsToContext(mergedProps) {
+    this.setState(prevState => {
+      return {
+        mergedProps: Object.assign({}, prevState.mergedProps, mergedProps)
+      };
     });
   }
   splitChartContent(props, innerOrOuter = "inner", clip = false) {

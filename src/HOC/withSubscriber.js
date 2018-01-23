@@ -62,7 +62,7 @@ export default (
     __notSvg__: PropTypes.bool,
     __hoistingProps__: PropTypes.func, //two agrs(Subscriber self props and Provider newest props)
     __clip__: PropTypes.oneOf(["inner", "outer"]),
-    // two agrs(Provider's __originalProps__ merged with brush's props, brush's props)
+    // three agrs(Provider's __originalProps__ merged with brush's props, brush's props,chart context)
     //please see in BrushProviderHOC.js file
     __brushStoringProps__: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
   };

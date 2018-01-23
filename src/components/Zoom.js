@@ -13,7 +13,7 @@ import { DEFAULT_PROPS, PREFIX } from "constant";
 export default class Zoom extends PureComponent {
   constructor(props) {
     super(props);
-    this.zoom = this.getZoomBehavior(props.zoom, this.props);
+    this.zoom = this.getZoomBehavior(this.props);
     this.transform = null;
     this.node = null;
     this.counter = 0;
@@ -21,11 +21,13 @@ export default class Zoom extends PureComponent {
   componentDidMount() {
     this.zoom(select(this.node));
     this.transform = zoomTransform(this.node);
+    this.props.afterMounted(this);
   }
   componentWillReceiveProps(nextProps) {
     //optimize: update zoomBehavior once
-    if (nextProps.dataLength > 0 && this.counter === 0) {
-      this.zoom = this.getZoomBehavior(nextProps.zoom, nextProps);
+    if (nextProps.dataLoaded && this.counter === 0) {
+      this.zoom = this.getZoomBehavior(nextProps);
+      this.zoom(select(this.node));
       this.counter++;
     }
   }
@@ -39,8 +41,8 @@ export default class Zoom extends PureComponent {
     }
     this.zoom.on("zoom.__internal__", null);
   }
-  getZoomBehavior(zoom, props) {
-    let { width, height, dataLength } = props;
+  getZoomBehavior(props) {
+    let { width, height, dataLoaded } = props;
     let {
       constrain,
       filter,
@@ -62,7 +64,7 @@ export default class Zoom extends PureComponent {
       .extent(extent || [[0, 0], [width, height]]);
     //listen zoom.__internal__ first because listenerEvents can get the latest transform
     zoomBehavior.on("zoom.__internal__", this.zoomed.bind(this));
-    if (dataLength > 0) {
+    if (dataLoaded) {
       let listenerEvents = Object.keys(listener);
 
       constrain && zoomBehavior.constrain(constrain);
@@ -83,7 +85,6 @@ export default class Zoom extends PureComponent {
   zoomed() {
     if (currentEvent.sourceEvent && currentEvent.sourceEvent.type === "brush")
       return;
-    this.zoom(select(this.node));
     this.transform = zoomTransform(this.node);
   }
   render() {
@@ -105,7 +106,7 @@ export default class Zoom extends PureComponent {
 Zoom.displayName = `${PREFIX}Zoom`;
 Zoom.propTypes = {
   className: PropTypes.string,
-  dataLength: PropTypes.number,
+  dataLoaded: PropTypes.bool,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   left: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -120,10 +121,12 @@ Zoom.propTypes = {
   clickDistance: PropTypes.number,
   duration: PropTypes.number,
   interpolate: PropTypes.func,
-  listener: PropTypes.object
+  listener: PropTypes.object,
+  afterMounted: PropTypes.func
 };
 Zoom.defaultProps = {
   ...DEFAULT_PROPS,
   listener: {},
-  data: 0
+  dataLoaded: true, // it is helpful for async data
+  afterMounted: () => {}
 };

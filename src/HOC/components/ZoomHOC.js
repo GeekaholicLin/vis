@@ -2,9 +2,8 @@ import React from "react";
 import { Zoom } from "components";
 import { extent, max } from "d3-array";
 import withSubscriber from "../withSubscriber";
-import { addInvertForScale, getOrinalRange } from "ultis";
-
-const mapContextToProps = props => {
+import { addInvertForScale } from "ultis";
+const mapContextToProps = (context, props) => {
   let {
     width,
     xScale,
@@ -13,14 +12,13 @@ const mapContextToProps = props => {
     height,
     margin,
     __addedPropsToContext__
-  } = props;
+  } = context;
   let transformedXScale = xScale.copy();
   let isOridalScale = !transformedXScale.invert && transformedXScale.bandwidth;
-
   return {
     width: width - margin.left - margin.right,
     height: height - margin.top - margin.bottom,
-    dataLength: data.length, //only flag whether init or update zoomBehavior
+    dataLoaded: data.length > 0, // it is helpful for async data
     listener: {
       "zoom.zoomHOC": instance => () => {
         let { transform } = instance;
@@ -34,10 +32,14 @@ const mapContextToProps = props => {
             )
           : transform.rescaleX(xScale).domain();
         __addedPropsToContext__({
-          xScale: transformedXScale.copy().domain(transformedDomain)
+          xScale: transformedXScale.copy().domain(transformedDomain) //override
         });
       }
-    }
+    },
+    afterMounted: instance =>
+      __addedPropsToContext__({
+        __zoomInstance__: instance //export instance for brush to update transform
+      })
   };
 };
 export default withSubscriber({ mapContextToProps })(Zoom);
