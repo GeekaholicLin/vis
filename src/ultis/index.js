@@ -8,7 +8,8 @@ export {
   keyWrapper,
   valueGetter,
   getValueByKeyOrFunc,
-  getValuesArrByKeyOrFunc
+  getValuesArrByKeyOrFunc,
+  generatePropsWithDataKey
 } from "./components.tool";
 export { addInvertForScale, getOrinalRange } from "./d3.polyfill";
 

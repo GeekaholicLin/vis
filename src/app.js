@@ -215,7 +215,7 @@ export default class App extends Component {
             clip={true}
           >
             <Grid grid="row" />
-            <Curve stroke={"steelblue"} />
+            <Curve stroke={"steelblue"} dataKey={"price"} />
             <Zoom />
             <Brush top={380} />
             <XAxis
@@ -238,7 +238,6 @@ export default class App extends Component {
               }
               domain={[80, 150]}
               tickPadding={10}
-              dataKey={"price"}
               scale={scaleLinear().nice()}
             />
           </ChartProvider>
@@ -271,11 +270,12 @@ export default class App extends Component {
             title={CustomTitle}
             clip={true}
           >
-            <Area stroke={"none"} />
-            <Zoom />
-            <Brush data-key={"test-brush"} />
             <XAxis dataKey={"date"} scale={scaleTime()} />
             <YAxis dataKey={"close"} scale={scaleLinear().nice()} />
+            <Area dataKey={"close"} stroke={"none"} />
+            <Curve stroke={"steelblue"} dataKey={d => d.close} />
+            <Zoom />
+            <Brush />
           </ChartProvider>
         </div>
         <div id="stacked-area-chart">
@@ -302,6 +302,49 @@ export default class App extends Component {
             zoom={true}
             brush={true}
           />
+        </div>
+        <div id="stacked-area-chart2">
+          <ChartProvider
+            className="vis-app-chart2"
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
+            data={stackAreaData}
+            clip={true}
+            stackKeys={stackAreaKeys}
+          >
+            <Gradient id="stackarea-chart1" colors={["#5EFCE8", "#736EFE"]} />
+            <Gradient id="stackarea-chart2" colors={["#FDD819", "#E80505"]} />
+            <Gradient id="stackarea-chart3" colors={["#FFFE9F", "#FCA180"]} />
+            <Gradient id="stackarea-chart4" colors={["#FFF3B0", "#CA26FF"]} />
+            <Gradient id="stackarea-chart5" colors={["#ABDCFF", "#0396FF"]} />
+            <XAxis dataKey={"date"} scale={scaleTime()} />
+            <YAxis
+              scale={scaleLinear().nice()}
+              domain={[0, 1]}
+              ticks={[10, "%"]}
+            />
+            {[
+              "Google Chrome",
+              "Internet Explorer",
+              "Firefox",
+              "Safari",
+              "Microsoft Edge",
+              "Opera",
+              "Mozilla",
+              "Other/Unknown"
+            ].map((keyName, i) => {
+              return (
+                <Area
+                  dataKey={keyName}
+                  key={keyName}
+                  stroke={"none"}
+                  index={i}
+                  fill={`url(#stackarea-chart${i})`}
+                />
+              );
+            })}
+            <Zoom />
+            <Brush />
+          </ChartProvider>
         </div>
         <div id="bar-chart">
           <BarChart

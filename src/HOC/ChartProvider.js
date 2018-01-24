@@ -21,12 +21,12 @@ export default class ChartProvider extends Component {
     React.Children.map(this.props.children, child => {
       if (child && child.props && _.isFunction(child.props.__hoistingProps__)) {
         //maybe this.props as second args is helpful(for XAxisHOC and YAxisHOC etc.)
-        this.hoistingProps = Object.assign(
+        this.hoistingProps = _.merge(
           {},
           this.hoistingProps,
           child.props.__hoistingProps__(child.props, props)
         );
-        this.originalProps = Object.assign({}, this.hoistingProps, props);
+        this.originalProps = _.merge({}, this.hoistingProps, props);
       }
     });
   }
@@ -76,7 +76,7 @@ export default class ChartProvider extends Component {
             child.props &&
             child.props.__notSvg__ !== true &&
             (innerOrOuter === "inner"
-              ? child.props.__clip__ === "inner"
+              ? child.props.__clip__ !== "outer"
               : child.props.__clip__ === "outer")
           ) {
             return child;
@@ -148,7 +148,7 @@ export default class ChartProvider extends Component {
             <ClipPath id={`${chartNamespace}-clip-path`}>
               <Rect
                 width={innerWidth}
-                height={innerHeight}
+                height={height}
                 fill={"none"}
                 left={0}
                 top={0}

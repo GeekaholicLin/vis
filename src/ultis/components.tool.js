@@ -115,3 +115,19 @@ export function getValuesArrByKeyOrFunc(key, dataArr = []) {
 export function getValueByKeyOrFunc(key, data) {
   return _.isFunction(key) ? key(data) : data[key];
 }
+
+/**
+ * return originalProps when dataKey is undefined
+ * Or return merged object
+ * @param {string or function} dataKey
+ * @param {object} originalProps
+ */
+export function generatePropsWithDataKey(dataKey, originalProps = {}) {
+  if (dataKey) {
+    return Object.assign({}, originalProps, {
+      y: {
+        [dataKey]: keyWrapper(dataKey)
+      }
+    });
+  } else return originalProps;
+}
