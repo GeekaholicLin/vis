@@ -13,15 +13,6 @@ import { stackOffsetExpand } from "d3-shape";
 import { extent, max } from "d3-array";
 import { timeParse, timeFormat } from "d3-time-format";
 import { tsv, csv } from "d3-request";
-import {
-  LineChart,
-  AreaChart,
-  BarChart,
-  PieChart,
-  StackAreaChart,
-  StackBarChart,
-  GroupBarChart
-} from "./charts";
 import { Text, Gradient, Group, SVG } from "components";
 import {
   ChartProvider,
@@ -179,35 +170,6 @@ export default class App extends Component {
     );
     return (
       <div>
-        <div id="line-chart">
-          <LineChart
-            className="vis-app-line-chart"
-            margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
-            data={lineData}
-            x={d => d.date}
-            y={d => d.price}
-            xScale={scaleTime().nice()}
-            yScale={scaleLinear().nice()}
-            xTickFormat={timeFormat("%x")}
-            grid={"auto"}
-            xTickPadding={10}
-            yTickPadding={10}
-            title={"折线图"}
-            xLabel={"年月"}
-            yLabel={
-              <Text
-                top={-10}
-                left={0}
-                textAnchor={"middle"}
-                verticalAnchor={"end"}
-              >
-                成绩自定义标签
-              </Text>
-            }
-            zoom={true}
-            brush={true}
-          />
-        </div>
         <div id="line-chart2">
           <ChartProvider
             className="vis-app-line-chart2"
@@ -257,67 +219,25 @@ export default class App extends Component {
             />
           </ChartProvider>
         </div>
-        <div id="area-chart">
-          <AreaChart
-            className="vis-app-area-chart"
-            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
-            data={areaData}
-            x={d => d.date}
-            y={d => d.close}
-            xScale={scaleTime().nice()}
-            yScale={scaleLinear().nice()}
-            title={CustomTitle}
-            fill={
-              <Gradient id="linear-chart" colors={getRandomGradientColor()} />
-            }
-            zoom={true}
-            brush={true}
-          />
-        </div>
+
         <div id="area-chart2">
           <ChartProvider
             className="vis-app-pie-chart2"
             margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             data={areaData}
-            fill={
-              <Gradient id="linear-chart" colors={getRandomGradientColor()} />
-            }
             title={CustomTitle}
             clip={true}
           >
+            <Gradient id="area-chart" colors={getRandomGradientColor()} />
             <XAxis dataKey={"date"} scale={scaleTime()} />
             <YAxis dataKey={"close"} scale={scaleLinear().nice()} />
-            <Area dataKey={"close"} stroke={"none"} />
+            <Area dataKey={"close"} stroke={"none"} fill={`url(#area-chart)`} />
             <Curve stroke={"steelblue"} dataKey={d => d.close} />
             <Zoom />
             <Brush />
           </ChartProvider>
         </div>
-        <div id="stacked-area-chart">
-          <StackAreaChart
-            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
-            data={stackAreaData}
-            x={d => d.data.date}
-            y0={d => d[0]}
-            y1={d => d[1]}
-            xScale={scaleTime().nice()}
-            yScale={scaleLinear().nice()}
-            xDomain={extent(stackAreaData, d => d.date)}
-            yDomain={[0, 1]}
-            keys={stackAreaKeys}
-            color={scaleOrdinal(schemeCategory20)}
-            yTicks={[10, "%"]}
-            fill={[
-              <Gradient id="linear-chart" colors={["#5EFCE8", "#736EFE"]} />,
-              <Gradient id="linear-chart2" colors={["#FDD819", "#E80505"]} />,
-              <Gradient id="linear-chart3" colors={["#FFFE9F", "#FCA180"]} />,
-              <Gradient id="linear-chart4" colors={["#FFF3B0", "#CA26FF"]} />,
-              <Gradient id="linear-chart5" colors={["#ABDCFF", "#0396FF"]} />
-            ]}
-            zoom={true}
-            brush={true}
-          />
-        </div>
+
         <div id="stacked-area-chart2">
           <ChartProvider
             className="vis-app-chart2"
@@ -354,36 +274,7 @@ export default class App extends Component {
             <Brush />
           </ChartProvider>
         </div>
-        <div id="bar-chart">
-          <BarChart
-            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
-            className="vis-app-area-chart"
-            data={barData}
-            x={d => d.letter}
-            y={d => d.frequency}
-            xScale={scaleBand()
-              .round(true)
-              .align(1)
-              .padding(0.1)}
-            yScale={scaleLinear()}
-            xDomain={barData.map(d => d.letter)}
-            xTickPadding={0.1}
-            yTickPadding={0.1}
-            fill={
-              <PatternLines
-                id="lines"
-                height={5}
-                width={5}
-                stroke={"black"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />
-            }
-            grid={"auto"}
-            zoom={true}
-            brush={true}
-          />
-        </div>
+
         <div id="bar-chart2">
           <ChartProvider
             className="vis-app-bar-chart2"
@@ -419,87 +310,7 @@ export default class App extends Component {
             <Brush />
           </ChartProvider>
         </div>
-        <div id="stacked-bar-chart">
-          <StackBarChart
-            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
-            className="stacked-bar-chart"
-            data={stackBarData}
-            x={d => d.data.State}
-            y={d => d[1]}
-            xScale={scaleBand()
-              .round(true)
-              .padding(0.1)
-              .align(0.1)}
-            yScale={scaleLinear().nice()}
-            xDomain={stackBarData.map(d => d.State)}
-            yDomain={[0, 1]}
-            xTickPadding={0.1}
-            tTickPadding={0.1}
-            keys={stackBarKeys}
-            offset={"expand"}
-            fill={[
-              <PatternLines
-                id="lines1"
-                height={5}
-                width={5}
-                stroke={"black"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines2"
-                height={5}
-                width={5}
-                stroke={"red"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines3"
-                height={5}
-                width={5}
-                stroke={"blue"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines4"
-                height={5}
-                width={5}
-                stroke={"yellow"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines5"
-                height={5}
-                width={5}
-                stroke={"green"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines6"
-                height={5}
-                width={5}
-                stroke={"grey"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines7"
-                height={5}
-                width={5}
-                stroke={"pink"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />
-            ]}
-            grid={"auto"}
-            zoom={true}
-            brush={true}
-          />
-        </div>
+
         <div id="stacked-bar-chart2">
           <ChartProvider
             className="group-bar-chart3"
@@ -616,46 +427,6 @@ export default class App extends Component {
             <Pie className="pie-chart" innerRadius={50} outerRadius={150} />
             <Legend title="饼图图例" />
           </ChartProvider>
-        </div>
-
-        <div id="group-bar-chart">
-          <GroupBarChart
-            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
-            className="grouped-bar-chart"
-            data={groupBarData}
-            x={d => d.Education}
-            xScale={scaleBand()
-              .round(true)
-              .paddingInner(0.1)}
-            yScale={scaleLinear().nice()}
-            xDomain={groupBarData.map(d => d.Education)}
-            keys={groupBarKeys}
-            yDomain={[
-              0,
-              max(groupBarData, d => max(groupBarKeys, key => d[key]))
-            ]}
-            fill={[
-              <PatternLines
-                id="lines1"
-                height={5}
-                width={5}
-                stroke={"black"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />,
-              <PatternLines
-                id="lines2"
-                height={5}
-                width={5}
-                stroke={"red"}
-                strokeWidth={1}
-                orientation={["diagonal"]}
-              />
-            ]}
-            grid={"auto"}
-            zoom={true}
-            brush={true}
-          />
         </div>
         <div id="group-bar-chart2">
           <ChartProvider
