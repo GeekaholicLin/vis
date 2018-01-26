@@ -95,6 +95,7 @@
     "d3-zoom": "^1.7.1",
     "lodash": "^4.17.4",
     "number-picture": "^0.4.2",
+    "react-broadcast": "^0.6.1",
     "react-faux-dom": "^4.1.0",
     "react-svg-text": "^0.1.2",
     "styled-components": "^2.4.0"
