@@ -1,5 +1,8 @@
 import { range as sequence, bisectRight } from "d3-array";
 import { scaleOrdinal } from "d3-scale";
+import { stack } from "d3-shape";
+import { STACK_ORDER_MAP, STACK_OFFSET_MAP } from "constant";
+
 //inspired by d3 bandScale rescale source code
 //https://github.com/d3/d3-scale/blob/master/src/band.js#L18
 export function getOrinalRange(scale, extra = 0) {
@@ -50,4 +53,24 @@ export function addInvertForScale(scale) {
     return a > b ? undefined : domain().slice(a, b + 1);
   };
   return scale;
+}
+export function generateStackData(
+  data,
+  stackKeys,
+  stackValue,
+  stackOrder,
+  stackOffset = "expand"
+) {
+  let stackGenerator = stack();
+  stackGenerator.keys(stackKeys);
+  !_.isNil(stackValue) && stackGenerator.value(stackValue);
+  !_.isNil(stackOrder) &&
+    stackGenerator.order(
+      _.isFunction(stackOrder) ? stackOrder : STACK_ORDER_MAP[stackOrder]
+    );
+  !_.isNil(stackOffset) &&
+    stackGenerator.offset(
+      _.isFunction(stackOffset) ? stackOffset : STACK_OFFSET_MAP[stackOffset]
+    );
+  return stackGenerator(data); //generate data for area or bar
 }

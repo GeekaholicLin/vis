@@ -16,3 +16,5 @@ export { default as Zoom } from "./components/ZoomHOC";
 export { default as Brush } from "./BrushProviderHOC";
 export { default as Curve } from "./components/CurveHOC";
 export { default as Grid } from "./components/GridHOC";
+export { default as Bar } from "./components/BarHOC";
+export { default as Marker } from "./components/MarkerHOC";

@@ -12,7 +12,7 @@ const mapContextToProps = (
   let { __originalProps__ } = __chartProviderContext__;
   return {
     __brushProviderProps__,
-    __chartProviderContext__,
+    __chartProviderContext__, //update always sync with the latest chart context
     ...__originalProps__,
     ...__brushProviderProps__
   };

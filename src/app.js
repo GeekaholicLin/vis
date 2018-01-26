@@ -33,7 +33,9 @@ import {
   Zoom,
   Brush,
   Curve,
-  Grid
+  Grid,
+  Bar,
+  Marker
 } from "HOC";
 import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "constant";
@@ -240,6 +242,19 @@ export default class App extends Component {
               tickPadding={10}
               scale={scaleLinear().nice()}
             />
+            <Marker value={110} label={"平均值"} labelAnchor="start" />
+            <Marker
+              type="x"
+              label={"最小年月"}
+              labelAnchor="middle"
+              value={new Date("2/1/2016")}
+            />
+            <Marker
+              type="x"
+              label={"最大年月"}
+              labelAnchor="middle"
+              value={new Date("2/1/2017")}
+            />
           </ChartProvider>
         </div>
         <div id="area-chart">
@@ -309,36 +324,29 @@ export default class App extends Component {
             margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
             data={stackAreaData}
             clip={true}
-            stackKeys={stackAreaKeys}
           >
             <Gradient id="stackarea-chart1" colors={["#5EFCE8", "#736EFE"]} />
             <Gradient id="stackarea-chart2" colors={["#FDD819", "#E80505"]} />
             <Gradient id="stackarea-chart3" colors={["#FFFE9F", "#FCA180"]} />
             <Gradient id="stackarea-chart4" colors={["#FFF3B0", "#CA26FF"]} />
             <Gradient id="stackarea-chart5" colors={["#ABDCFF", "#0396FF"]} />
+            <Gradient id="stackarea-chart6" colors={["#5EFCE8", "#736EFE"]} />
+            <Gradient id="stackarea-chart7" colors={["#FDD819", "#E80505"]} />
+            <Gradient id="stackarea-chart8" colors={["#FFFE9F", "#FCA180"]} />
             <XAxis dataKey={"date"} scale={scaleTime()} />
             <YAxis
               scale={scaleLinear().nice()}
               domain={[0, 1]}
               ticks={[10, "%"]}
             />
-            {[
-              "Google Chrome",
-              "Internet Explorer",
-              "Firefox",
-              "Safari",
-              "Microsoft Edge",
-              "Opera",
-              "Mozilla",
-              "Other/Unknown"
-            ].map((keyName, i) => {
+            {stackAreaKeys.map((keyName, i) => {
               return (
                 <Area
                   dataKey={keyName}
                   key={keyName}
                   stroke={"none"}
-                  index={i}
-                  fill={`url(#stackarea-chart${i})`}
+                  fill={`url(#stackarea-chart${i + 1})`}
+                  stackId={"browser"}
                 />
               );
             })}
@@ -375,6 +383,41 @@ export default class App extends Component {
             zoom={true}
             brush={true}
           />
+        </div>
+        <div id="bar-chart2">
+          <ChartProvider
+            className="vis-app-bar-chart2"
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
+            data={barData}
+            clip={true}
+          >
+            <PatternLines
+              id="lines"
+              height={5}
+              width={5}
+              stroke={"steelblue"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <Grid />
+            <XAxis
+              dataKey={"letter"}
+              scale={scaleBand()
+                .round(true)
+                .align(1)
+                .padding(0.1)}
+              tickPadding={0.1}
+              domain={barData.map(d => d.letter)}
+            />
+            <YAxis
+              dataKey={"frequency"}
+              scale={scaleLinear()}
+              tickPadding={0.1}
+            />
+            <Bar dataKey={"frequency"} fill={"url(#lines)"} />
+            <Zoom />
+            <Brush />
+          </ChartProvider>
         </div>
         <div id="stacked-bar-chart">
           <StackBarChart
@@ -457,6 +500,99 @@ export default class App extends Component {
             brush={true}
           />
         </div>
+        <div id="stacked-bar-chart2">
+          <ChartProvider
+            className="group-bar-chart3"
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
+            data={stackBarData}
+            clip={true}
+          >
+            <PatternLines
+              id="lines1"
+              height={5}
+              width={5}
+              stroke={"black"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <PatternLines
+              id="lines2"
+              height={5}
+              width={5}
+              stroke={"red"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <PatternLines
+              id="lines3"
+              height={5}
+              width={5}
+              stroke={"blue"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />,
+            <PatternLines
+              id="lines4"
+              height={5}
+              width={5}
+              stroke={"yellow"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <PatternLines
+              id="lines5"
+              height={5}
+              width={5}
+              stroke={"green"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <PatternLines
+              id="lines6"
+              height={5}
+              width={5}
+              stroke={"grey"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <PatternLines
+              id="lines7"
+              height={5}
+              width={5}
+              stroke={"pink"}
+              strokeWidth={1}
+              orientation={["diagonal"]}
+            />
+            <Grid />
+            <XAxis
+              dataKey={"State"}
+              scale={scaleBand()
+                .round(true)
+                .padding(0.1)
+                .align(0.1)}
+              tickPadding={0.1}
+            />
+            <YAxis
+              domain={[0, 1]}
+              scale={scaleLinear().nice()}
+              tickPadding={0.1}
+            />
+            {stackBarKeys &&
+              stackBarKeys.map((keyName, index) => {
+                return (
+                  <Bar
+                    key={keyName}
+                    dataKey={keyName}
+                    fill={`url(#lines${index + 1})`}
+                    stackId={"percent"}
+                    stackOffset={"expand"}
+                  />
+                );
+              })}
+            <Zoom />
+            <Brush />
+          </ChartProvider>
+        </div>
 
         <div id="pie-chart2">
           <ChartProvider
@@ -520,6 +656,45 @@ export default class App extends Component {
             zoom={true}
             brush={true}
           />
+        </div>
+        <div id="group-bar-chart2">
+          <ChartProvider
+            className="group-bar-chart"
+            margin={{ top: 30, right: 50, bottom: 110, left: 50 }}
+            data={groupBarData}
+            clip={true}
+          >
+            <Grid />
+            <XAxis
+              dataKey={"Education"}
+              scale={scaleBand()
+                .round(true)
+                .paddingInner(0.1)}
+              tickPadding={0.1}
+            />
+            <YAxis
+              domain={[
+                0,
+                max(groupBarData, d => max(groupBarKeys, key => d[key]))
+              ]}
+              scale={scaleLinear().nice()}
+              tickPadding={0.1}
+            />
+            {groupBarKeys.map((childCateKey, index) => {
+              let colors = ["red", "pink", "black", "steelblue", "yellow"];
+              let groups = groupBarData.map(d => d.Education);
+              return (
+                <Bar
+                  key={childCateKey}
+                  dataKey={childCateKey}
+                  fill={colors[index]}
+                  groupId={"degree"}
+                />
+              );
+            })}
+            <Zoom />
+            <Brush />
+          </ChartProvider>
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import React from "react";
 import { extent } from "d3-array";
 import { XAxis } from "components";
+import _ from "lodash";
 import withSubscriber from "../withSubscriber";
 import { keyWrapper } from "ultis";
 
@@ -16,7 +17,11 @@ const hoistPropsToContext = (
 ) => {
   let xScale = scale
     .copy()
-    .domain(domain || extent(data, keyWrapper(dataKey)))
+    .domain(
+      domain ||
+        (scale.bandwidth && data.map(keyWrapper(dataKey))) ||
+        extent(data, keyWrapper(dataKey))
+    )
     .range(range || [0, width - margin.left - margin.right]);
   return {
     x: keyWrapper(dataKey),

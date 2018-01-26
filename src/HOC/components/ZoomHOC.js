@@ -6,19 +6,19 @@ import { addInvertForScale } from "ultis";
 const mapContextToProps = (context, props) => {
   let {
     width,
-    xScale,
     x,
     data,
     height,
     margin,
+    __originalProps__,
     __addedPropsToContext__
   } = context;
+  let { xScale } = __originalProps__; //fix the zoom bug
   let transformedXScale = xScale.copy();
   let isOridalScale = !transformedXScale.invert && transformedXScale.bandwidth;
   return {
     width: width - margin.left - margin.right,
     height: height - margin.top - margin.bottom,
-    dataLoaded: data.length > 0, // it is helpful for async data
     listener: {
       "zoom.zoomHOC": instance => () => {
         let { transform } = instance;
@@ -32,7 +32,8 @@ const mapContextToProps = (context, props) => {
             )
           : transform.rescaleX(xScale).domain();
         __addedPropsToContext__({
-          xScale: transformedXScale.copy().domain(transformedDomain) //override
+          xScale: transformedXScale.copy().domain(transformedDomain), //override
+          __isBrushEnd__: true
         });
       }
     },

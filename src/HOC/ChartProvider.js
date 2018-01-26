@@ -21,9 +21,6 @@ export default class ChartProvider extends Component {
     React.Children.map(props.children, child => {
       if (child && child.props && _.isFunction(child.props.__hoistingProps__)) {
         //maybe this.props as second args is helpful(for XAxisHOC and YAxisHOC etc.)
-        // if (child.props.test) {
-        //   debugger;
-        // }
         this.hoistingProps = _.merge(
           {},
           this.hoistingProps,
@@ -34,11 +31,8 @@ export default class ChartProvider extends Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    //optimize: normally its data changes in ChartProvider, like async data
     //remove the optimize because the child async state
-    // if (nextProps.data && nextProps.data.length !== this.props.data.length) {
     this.updateHoistingProps(nextProps);
-    // }
   }
   //use it in a callback prop in mappingStateToProps
   //for example onLegendItemClick

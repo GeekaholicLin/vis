@@ -11,7 +11,11 @@ export {
   getValuesArrByKeyOrFunc,
   generatePropsWithDataKey
 } from "./components.tool";
-export { addInvertForScale, getOrinalRange } from "./d3.polyfill";
+export {
+  addInvertForScale,
+  getOrinalRange,
+  generateStackData
+} from "./d3.polyfill";
 
 export {
   allGradientNames,

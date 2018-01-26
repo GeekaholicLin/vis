@@ -5,41 +5,54 @@ import { zoomIdentity } from "d3-zoom";
 import withSubscriber from "../withSubscriber";
 import { BRUSHCHANNEL } from "constant";
 import { addInvertForScale } from "ultis";
-
 const mapContextToProps = ({
   __brushProviderProps__,
   __chartProviderContext__,
   ...brushContext
 }) => {
-  let { children, xScale, width, margin } = brushContext;
+  let { children, xScale, width, height, type, margin } = brushContext;
   let innerWidth = width - margin.left - margin.right;
   let {
     xScale: transformedXScale,
     __addedPropsToContext__,
     data,
+    __isBrushEnd__,
     __zoomInstance__
   } = __chartProviderContext__;
   let transformedDomain = transformedXScale.domain();
-  let domainLength = transformedDomain.length;
-  let originalLength = xScale.domain().length;
-  let bandwidth = 0;
-  let paddingInner = 0;
-  let step = 0;
-  let isFirst = transformedDomain[0] === xScale.domain()[0];
-  let isLast =
-    transformedDomain[domainLength - 1] === xScale.domain()[originalLength - 1];
-  if (xScale.bandwidth) {
-    bandwidth = xScale.bandwidth();
-    paddingInner = xScale.paddingInner();
-    step = xScale.step();
+  let defaultMoveProp = {
+    x: [0, innerWidth],
+    y: [0, height],
+    xy: [[0, 0], [innerWidth, height]]
+  };
+  let transformedRange =
+    __isBrushEnd__ === undefined ? defaultMoveProp[type] : [];
+  //important: only update `move` in brusn-end or zoom in React
+  //if not it will cause much render
+  //(brush can hold change move internally in d3)
+  if (__isBrushEnd__) {
+    let domainLength = transformedDomain.length;
+    let originalLength = xScale.domain().length;
+    let bandwidth = 0;
+    let paddingInner = 0;
+    let step = 0;
+    let isFirst = transformedDomain[0] === xScale.domain()[0];
+    let isLast =
+      transformedDomain[domainLength - 1] ===
+      xScale.domain()[originalLength - 1];
+    if (xScale.bandwidth) {
+      bandwidth = xScale.bandwidth();
+      paddingInner = xScale.paddingInner();
+      step = xScale.step();
+    }
+    let r1 = isFirst ? 0 : xScale(transformedDomain[0]) - paddingInner * step;
+    let r2 = isLast
+      ? innerWidth
+      : xScale(transformedDomain[domainLength - 1]) +
+        bandwidth +
+        paddingInner * step;
+    transformedRange = [isNaN(r1) ? 0 : r1, isNaN(r2) ? 0 : r2];
   }
-  let r1 = isFirst ? 0 : xScale(transformedDomain[0]) - paddingInner * step;
-  let r2 = isLast
-    ? innerWidth
-    : xScale(transformedDomain[domainLength - 1]) +
-      bandwidth +
-      paddingInner * step;
-  let transformedRange = [isNaN(r1) ? 0 : r1, isNaN(r2) ? 0 : r2];
   return {
     ...__brushProviderProps__, //map to Brush Basic component
     width: innerWidth,
@@ -71,7 +84,8 @@ const mapContextToProps = ({
             )
           : t.rescaleX(xScale.copy()).domain();
         __addedPropsToContext__({
-          xScale: transformedXScale.copy().domain(transformedDomain)
+          xScale: transformedXScale.copy().domain(transformedDomain),
+          __isBrushEnd__: isEnd
         });
         if (isEnd && __zoomInstance__) {
           let { zoom, node } = __zoomInstance__;
@@ -85,7 +99,8 @@ const mapContextToProps = ({
           ...child.props.__brushStoringProps__(
             brushContext,
             __brushProviderProps__,
-            __chartProviderContext__
+            __chartProviderContext__,
+            child.props
           ),
           channel: BRUSHCHANNEL //change brush children's chart channel to brush channel
         });

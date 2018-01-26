@@ -13,6 +13,7 @@ export default class Brush extends Component {
     this.brush = null;
     this.move = null;
     this.node = null;
+    this.defaultMoveProp = null;
     this.counter = 0;
   }
 
@@ -47,8 +48,10 @@ export default class Brush extends Component {
     this.move = move || defaultMoveProp[type];
     this.brush(select(this.node));
     this.brush.move(select(this.node), this.move);
+    this.defaultMoveProp = defaultMoveProp;
   }
   componentWillUpdate(nextProps) {
+    let { type } = nextProps;
     //update move func only when `move` is not equal
     if (_.isArray(nextProps.move) && nextProps.move.length === 2) {
       if (
