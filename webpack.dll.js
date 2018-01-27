@@ -21,8 +21,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production")
     }),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn/), //添加zh与en的支持
-    // new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), //排除locale
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn/), //添加zh的支持
     new CleanWebpackPlugin(["src/lib"]),
     new webpack.optimize.UglifyJsPlugin({
       compress: {

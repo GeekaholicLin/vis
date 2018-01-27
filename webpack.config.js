@@ -5,52 +5,12 @@ const copyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const HtmlWebpackIncludeAssetsPlugin = require("html-webpack-include-assets-plugin");
-// const api = require("./src/path.config.js");
 const prod = process.env.NODE_ENV === "production";
-
-const imgLoaderDev = [
-  {
-    test: /\.(png|jpe?g|gif)/,
-    use: [
-      {
-        loader: "file-loader",
-        options: {
-          name: "[path][name].[ext]"
-        }
-      }
-    ]
-  }
-];
-
-const imgLoaderProd = [
-  {
-    test: /\.(png|jpe?g|gif)/,
-    use: [
-      {
-        loader: "file-loader",
-        options: {
-          name: "[path][name].[ext]"
-        }
-      }
-      // {
-      //   loader: "image-webpack-loader",
-      //   options: {
-      //     query: {
-      //       optimizationLevel: 7,
-      //       interlaced: false
-      //     }
-      //   }
-      // }
-    ]
-  }
-];
-const imgLoader = prod ? imgLoaderProd : imgLoaderDev;
 
 module.exports = {
   context: path.resolve(__dirname, "src"),
   entry: {
     index: "./index.js"
-    // common: ["echarts"]
   },
   output: {
     path: path.join(__dirname, prod ? "dist" : "build"),
@@ -100,7 +60,7 @@ module.exports = {
           ]
         })
       }
-    ].concat(imgLoader)
+    ]
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
@@ -132,7 +92,6 @@ module.exports = {
 };
 
 if (prod) {
-  // module.exports.devtool = "source-map";
   module.exports.plugins.push(
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production")
@@ -162,17 +121,6 @@ if (prod) {
     historyApiFallback: true,
     stats: {
       colors: true
-    },
-    proxy: {
-      "/api": {
-        // target: api.apiHost
-      },
-      "/data": {
-        // target: api.apiHost
-        // target: api.dataHost
-      },
-      changeOrigin: true,
-      secure: false
     },
     watchOptions: {
       ignored: /node_modules|bower_components|dist|build/
