@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import _ from "lodash";
-import { brushX } from "d3-brush";
 import { select } from "d3-selection";
 import Group from "./Group";
 import { PREFIX, BRUSH_TYPE_MAP, DEFAULT_PROPS } from "../constant";
@@ -17,9 +16,6 @@ export default class Brush extends Component {
     this.counter = 0;
   }
 
-  removePrefix(displayName, prefix = `${PREFIX}`) {
-    return displayName ? displayName.slice(prefix.length) : "";
-  }
   componentDidMount() {
     let {
       type,
@@ -29,7 +25,6 @@ export default class Brush extends Component {
       extent,
       width,
       height,
-      listener,
       dataLoaded
     } = this.props;
     let defaultMoveProp = {
@@ -51,7 +46,6 @@ export default class Brush extends Component {
     this.defaultMoveProp = defaultMoveProp;
   }
   componentWillUpdate(nextProps) {
-    let { type } = nextProps;
     //update move func only when `move` is not equal
     if (_.isArray(nextProps.move) && nextProps.move.length === 2) {
       if (
@@ -80,13 +74,13 @@ export default class Brush extends Component {
     let { listener } = props;
     let events = Object.keys(listener);
     if (events.length > 0) {
-      events.forEach((e, i) => {
+      events.forEach(e => {
         brush.on(e, listener[e](this));
       });
     }
   }
   render() {
-    let { className, children, left, top, childMappingProps } = this.props;
+    let { className, children, left, top } = this.props;
     return (
       <Group
         className={cx(`${PREFIX}-brush`, className)}
@@ -96,17 +90,7 @@ export default class Brush extends Component {
           this.node = node;
         }}
       >
-        {childMappingProps
-          ? React.Children.map(children, child => {
-              if (child) {
-                return React.cloneElement(child, {
-                  ...childMappingProps[
-                    this.removePrefix(child.type.displayName)
-                  ]
-                });
-              }
-            })
-          : children}
+        {children}
       </Group>
     );
   }

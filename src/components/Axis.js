@@ -36,7 +36,9 @@ export default class Axis extends Component {
       label,
       ...rest
     } = this.props;
-    var translateX = x => "translate(" + (x + 0.5) + ",0)",
+    let nTickSizeInner = tickSizeInner || tickSize,
+      nTickSizeOuter = tickSizeOuter || tickSize,
+      translateX = x => "translate(" + (x + 0.5) + ",0)",
       translateY = y => "translate(0," + (y + 0.5) + ")",
       number = scale => d => +scale(d),
       identity = x => x,
@@ -59,7 +61,7 @@ export default class Axis extends Component {
         tickFormat == null
           ? scale.tickFormat ? scale.tickFormat.apply(scale, ticks) : identity
           : tickFormat,
-      spacing = Math.max(tickSizeInner, 0) + tickPadding,
+      spacing = Math.max(nTickSizeInner, 0) + tickPadding,
       range = scale.range(),
       range0 = +range[0] + 0.5,
       range1 = +range[range.length - 1] + 0.5,
@@ -67,8 +69,8 @@ export default class Axis extends Component {
     let dynamicProps = {
       x: { x: k * spacing },
       y: { y: k * spacing },
-      x2: { x2: k * tickSizeInner },
-      y2: { y2: k * tickSizeInner }
+      x2: { x2: k * nTickSizeInner },
+      y2: { y2: k * nTickSizeInner }
     }; //depend on [x]'s value
     let labelType = ["top", "bottom"].indexOf(orientation) > -1 ? "x" : "y";
     let defaultLabelProps = {
@@ -106,10 +108,10 @@ export default class Axis extends Component {
           strokeWidth={1}
           d={
             ["left", "right"].indexOf(orientation) > -1
-              ? `M${k * tickSizeOuter},${range0}H0.5V${range1}H${k *
-                  tickSizeOuter}`
-              : `M${range0},${k * tickSizeOuter}V0.5H${range1}V${k *
-                  tickSizeOuter}`
+              ? `M${k * nTickSizeOuter},${range0}H0.5V${range1}H${k *
+                  nTickSizeOuter}`
+              : `M${range0},${k * nTickSizeOuter}V0.5H${range1}V${k *
+                  nTickSizeOuter}`
           }
         />
         {/* generate ticks */}

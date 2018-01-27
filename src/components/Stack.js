@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { stack, area } from "d3-shape";
+import { stack } from "d3-shape";
 import _ from "lodash";
 import Group from "./Group";
 import {

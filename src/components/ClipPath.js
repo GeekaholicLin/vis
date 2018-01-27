@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import _ from "lodash";
-import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
+import { PREFIX } from "../constant";
 export default class ClipPath extends Component {
   constructor(props) {
     super(props);

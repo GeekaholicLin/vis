@@ -4,11 +4,8 @@ import withSubscriber from "../withSubscriber";
 import { getChartColors, getValueByKeyOrFunc } from "ultis";
 const mapContextToProps = ({
   data,
-  width,
-  height,
   fill,
   nameKey = "name",
-  label,
   chartNamespace,
   __updateStateInContext__,
   __updatedState__

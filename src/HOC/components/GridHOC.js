@@ -1,5 +1,4 @@
 import React from "react";
-import { max } from "d3-array";
 import { Grid } from "components";
 import withSubscriber from "../withSubscriber";
 import { keyWrapper } from "ultis";

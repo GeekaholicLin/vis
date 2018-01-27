@@ -1,13 +1,10 @@
 import React from "react";
 import { Zoom } from "components";
-import { extent, max } from "d3-array";
 import withSubscriber from "../withSubscriber";
 import { addInvertForScale } from "ultis";
-const mapContextToProps = (context, props) => {
+const mapContextToProps = context => {
   let {
     width,
-    x,
-    data,
     height,
     margin,
     __originalProps__,

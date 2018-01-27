@@ -1,5 +1,4 @@
 import { range as sequence, bisectRight } from "d3-array";
-import { scaleOrdinal } from "d3-scale";
 import { stack } from "d3-shape";
 import { STACK_ORDER_MAP, STACK_OFFSET_MAP } from "constant";
 
@@ -11,7 +10,6 @@ export function getOrinalRange(scale, extra = 0) {
     round = scale.round(),
     paddingInner = scale.paddingInner(),
     step = scale.step(),
-    bandwidth = scale.bandwidth(),
     align = scale.align();
   let reverse = range[1] < range[0],
     start = range[reverse - 0],

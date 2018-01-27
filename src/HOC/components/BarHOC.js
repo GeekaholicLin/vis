@@ -1,7 +1,6 @@
 import React from "react";
 import _ from "lodash";
 import { scaleBand } from "d3-scale";
-import { max, extent } from "d3-array";
 import { Bar } from "components";
 import withSubscriber from "../withSubscriber";
 import {
@@ -21,20 +20,7 @@ function getGroupScale(xScale, groupId, __groupId__) {
     .rangeRound([0, xScale ? xScale.bandwidth() : 1]);
 }
 const mapContextToProps = (
-  {
-    width,
-    height,
-    margin,
-    data,
-    x,
-    y,
-    fill,
-    xScale,
-    yScale,
-    __stackId__,
-    __groupId__,
-    chartNamespace
-  },
+  { data, x, y, xScale, yScale, __stackId__, __groupId__ },
   { dataKey, stackId, groupId, stackValue, stackOrder, stackOffset = "expand" }
 ) => {
   //stack

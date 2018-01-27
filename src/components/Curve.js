@@ -20,7 +20,6 @@ export default class Curve extends Component {
       y,
       defined,
       curve,
-      symbolGenerator,
       ...rest
     } = this.props;
     let lineGenerator = line()

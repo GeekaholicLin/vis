@@ -1,7 +1,5 @@
 import React from "react";
 import _ from "lodash";
-import { stack, area } from "d3-shape";
-import { max, extent } from "d3-array";
 import { Area } from "components";
 import withSubscriber from "../withSubscriber";
 import {
@@ -12,19 +10,7 @@ import {
 import { keyWrapper } from "../../ultis/components.tool";
 
 const mapContextToProps = (
-  {
-    width,
-    height,
-    margin,
-    data,
-    x,
-    y,
-    fill,
-    xScale,
-    yScale,
-    __stackId__,
-    chartNamespace
-  },
+  { data, x, y, xScale, yScale, __stackId__ },
   { dataKey, stackId, stackValue, stackOrder, stackOffset = "expand" }
 ) => {
   let stackKeys =
@@ -53,7 +39,7 @@ const mapContextToProps = (
         y1: y ? y[dataKey] : keyWrapper(dataKey)
       };
 };
-const mapPropsToBrush = (brushContext, brushProps) => {
+const mapPropsToBrush = brushContext => {
   let { xScale, yScale, height: brushHeight } = brushContext;
   return {
     xScale: xScale.copy(),

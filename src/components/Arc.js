@@ -12,7 +12,6 @@ export default class Arc extends Component {
   render() {
     let {
       className,
-      data,
       left,
       top,
       centroid,

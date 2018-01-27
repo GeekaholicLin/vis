@@ -1,11 +1,10 @@
 import React from "react";
 import { extent } from "d3-array";
 import { XAxis } from "components";
-import _ from "lodash";
 import withSubscriber from "../withSubscriber";
 import { keyWrapper } from "ultis";
 
-const mapContextToProps = ({ data, x, width, height, margin, xScale }) => {
+const mapContextToProps = ({ height, margin, xScale }) => {
   return {
     scale: xScale, // must to map this because scale is copied in hoistPropsToContext
     top: height - margin.top - margin.bottom
@@ -28,7 +27,7 @@ const hoistPropsToContext = (
     xScale
   };
 };
-const mapPropsToBrush = (brushContext, brushProps) => {
+const mapPropsToBrush = brushContext => {
   let { xScale, height: brushHeight } = brushContext;
   return {
     scale: xScale.copy(),

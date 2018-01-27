@@ -1,5 +1,4 @@
 import React from "react";
-import { max, extent } from "d3-array";
 import { Curve } from "components";
 import withSubscriber from "../withSubscriber";
 import { getChartColors, generatePropsWithDataKey } from "ultis";
@@ -14,7 +13,7 @@ const mapContextToProps = (context, { dataKey }) => {
     yScale
   };
 };
-const mapPropsToBrush = (brushContext, brushProps) => {
+const mapPropsToBrush = brushContext => {
   let { xScale, yScale, height: brushHeight } = brushContext;
   return {
     xScale: xScale.copy(),

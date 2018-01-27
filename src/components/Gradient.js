@@ -82,7 +82,7 @@ Gradient.propTypes = {
   cx: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   cy: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   fx: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  fx: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  fy: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   r: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   colors: PropTypes.array,
   opacities: PropTypes.array
