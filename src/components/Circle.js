@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import cl from "classnames";
 import { PREFIX, ALL_COMMON_PROPTYPES, ALL_DEFAULT_PROPS } from "../constant";
 export default class Circle extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export default class Circle extends Component {
     if (cx === +cx && cy === +cy && r === +r) {
       return (
         <circle
-          className={cx(`${PREFIX}-circle`, className)}
+          className={cl(`${PREFIX}-circle`, className)}
           cx={cx}
           cy={cy}
           r={r}

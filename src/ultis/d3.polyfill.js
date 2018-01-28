@@ -1,6 +1,6 @@
 import { range as sequence, bisectRight } from "d3-array";
 import { stack } from "d3-shape";
-import { STACK_ORDER_MAP, STACK_OFFSET_MAP } from "constant";
+import { STACK_ORDER_MAP, STACK_OFFSET_MAP } from "../constant";
 
 //inspired by d3 bandScale rescale source code
 //https://github.com/d3/d3-scale/blob/master/src/band.js#L18

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react";
-import { STACK_ORDER_MAP, STACK_OFFSET_MAP } from "constant";
+import { STACK_ORDER_MAP, STACK_OFFSET_MAP } from "../constant";
 
 /**
  * @description

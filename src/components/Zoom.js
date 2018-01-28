@@ -9,7 +9,7 @@ import {
   zoomIdentity
 } from "d3-zoom";
 import Rect from "./Rect";
-import { DEFAULT_PROPS, PREFIX } from "constant";
+import { DEFAULT_PROPS, PREFIX } from "../constant";
 export default class Zoom extends PureComponent {
   constructor(props) {
     super(props);
