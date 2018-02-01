@@ -10,7 +10,8 @@ const mapContextToProps = ({
   __chartProviderContext__,
   ...brushContext
 }) => {
-  let { children, xScale, width, height, type, margin } = brushContext;
+  let { children, xScale, height, type, margin } = brushContext;
+  let { width } = __chartProviderContext__; //fix bug, use chart width
   let innerWidth = width - margin.left - margin.right;
   let {
     xScale: transformedXScale,
@@ -61,9 +62,13 @@ const mapContextToProps = ({
     childMappingProps: null,
     listener: {
       "brush.__internal__ end.__internal__": instance => () => {
+        //filter end because brush.move will trigger brush event
+        //which would cause a bug canculating domain again
         if (
           (currentEvent.sourceEvent &&
             currentEvent.sourceEvent.type === "zoom") ||
+          (currentEvent.sourceEvent &&
+            currentEvent.sourceEvent.type === "end") ||
           !currentEvent.sourceEvent
         )
           return;
@@ -74,7 +79,7 @@ const mapContextToProps = ({
         let isEnd = currentEvent.type === "end";
         let isOridalScale =
           !transformedXScale.invert && transformedXScale.bandwidth;
-        let transformedDomain = isOridalScale
+        let newTransformedDomain = isOridalScale
           ? addInvertForScale(xScale.copy()).invertExtent.apply(
               null,
               xScale
@@ -84,7 +89,7 @@ const mapContextToProps = ({
             )
           : t.rescaleX(xScale.copy()).domain();
         __addedPropsToContext__({
-          xScale: transformedXScale.copy().domain(transformedDomain),
+          xScale: transformedXScale.copy().domain(newTransformedDomain),
           __isBrushEnd__: isEnd
         });
         if (isEnd && __zoomInstance__) {

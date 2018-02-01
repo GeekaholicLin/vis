@@ -108,8 +108,7 @@ Brush.propTypes = {
   extent: PropTypes.array,
   filter: PropTypes.func,
   handleSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  listener: PropTypes.object,
-  childMappingProps: PropTypes.object
+  listener: PropTypes.object
 };
 Brush.defaultProps = {
   type: "x",
