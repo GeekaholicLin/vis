@@ -12,7 +12,16 @@ import {
 import { schemeCategory20, scaleLinear, scaleBand } from "d3-scale";
 import { extent, max } from "d3-array";
 
-import { ChartProvider, XAxis, YAxis, Curve, Grid } from "../src/HOC";
+import {
+  ChartProvider,
+  XAxis,
+  YAxis,
+  Curve,
+  Grid,
+  Marker,
+  Zoom,
+  Brush
+} from "../src/HOC";
 
 const lineData = [
   { name: "Mon", value: 820 },
@@ -221,5 +230,233 @@ storiesOf("LineChart", module)
       />
       <XAxis dataKey={"name"} scale={scaleBand()} />
       <YAxis dataKey={"value"} scale={scaleLinear()} />
+    </ChartProvider>
+  ))
+  .add("with horizontal Marker", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={margin}
+      data={object("data: ", lineData)}
+      clip={true}
+      title={customTitle}
+    >
+      <Grid
+        grid={select(
+          "grid type: ",
+          {
+            auto: "auto",
+            row: "row",
+            column: "column"
+          },
+          "row"
+        )}
+      />
+      <Curve
+        stroke={color("curve stroke color: ", "steelblue")}
+        dataKey={"value"}
+      />
+      <Marker
+        value={
+          lineData.reduce((total, data, index) => (total += data.value), 0) /
+          lineData.length
+        }
+        label={"平均值"}
+        labelAnchor={select(
+          "horizontal Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "start"
+        )}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis dataKey={"value"} scale={scaleLinear()} />
+    </ChartProvider>
+  ))
+  .add("with vertical Marker", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={margin}
+      data={object("data: ", lineData)}
+      clip={true}
+      title={customTitle}
+    >
+      <Grid
+        grid={select(
+          "grid type: ",
+          {
+            auto: "auto",
+            row: "row",
+            column: "column"
+          },
+          "row"
+        )}
+      />
+      <Curve
+        stroke={color("curve stroke color: ", "steelblue")}
+        dataKey={"value"}
+      />
+      <Marker
+        type="x"
+        value={select(
+          "vertical Marker value: ",
+          lineData.reduce((obj, data, index) => {
+            obj = Object.assign({}, obj, { [data.name]: data.name });
+            return obj;
+          }, {})
+        )}
+        label={"日期"}
+        labelAnchor={select(
+          "vertical Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "start"
+        )}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis dataKey={"value"} scale={scaleLinear()} />
+    </ChartProvider>
+  ))
+  .add("with Zoom", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={margin}
+      data={object("data: ", lineData)}
+      clip={true}
+      title={customTitle}
+    >
+      <Grid
+        grid={select(
+          "grid type: ",
+          {
+            auto: "auto",
+            row: "row",
+            column: "column"
+          },
+          "row"
+        )}
+      />
+      <Curve
+        stroke={color("curve stroke color: ", "steelblue")}
+        dataKey={"value"}
+      />
+      <Marker
+        value={
+          lineData.reduce((total, data, index) => (total += data.value), 0) /
+          lineData.length
+        }
+        label={"平均值"}
+        labelAnchor={select(
+          "horizontal Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "start"
+        )}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis dataKey={"value"} scale={scaleLinear()} />
+      <Zoom />
+    </ChartProvider>
+  ))
+  .add("with Brush", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+      data={object("data: ", lineData)}
+      clip={true}
+      title={customTitle}
+    >
+      <Grid
+        grid={select(
+          "grid type: ",
+          {
+            auto: "auto",
+            row: "row",
+            column: "column"
+          },
+          "row"
+        )}
+      />
+      <Curve
+        stroke={color("curve stroke color: ", "steelblue")}
+        dataKey={"value"}
+      />
+      <Marker
+        value={
+          lineData.reduce((total, data, index) => (total += data.value), 0) /
+          lineData.length
+        }
+        label={"平均值"}
+        labelAnchor={select(
+          "horizontal Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "start"
+        )}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis dataKey={"value"} scale={scaleLinear()} />
+      <Brush top={380} />
+    </ChartProvider>
+  ))
+  .add("with Zoom and Brush", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+      data={object("data: ", lineData)}
+      clip={true}
+      title={customTitle}
+    >
+      <Grid
+        grid={select(
+          "grid type: ",
+          {
+            auto: "auto",
+            row: "row",
+            column: "column"
+          },
+          "row"
+        )}
+      />
+      <Curve
+        stroke={color("curve stroke color: ", "steelblue")}
+        dataKey={"value"}
+      />
+      <Marker
+        value={
+          lineData.reduce((total, data, index) => (total += data.value), 0) /
+          lineData.length
+        }
+        label={"平均值"}
+        labelAnchor={select(
+          "horizontal Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "start"
+        )}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis dataKey={"value"} scale={scaleLinear()} />
+      <Zoom />
+      <Brush top={380} />
     </ChartProvider>
   ));
