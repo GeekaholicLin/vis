@@ -6,7 +6,9 @@ import { getChartColors, generatePropsWithDataKey } from "ultis";
 const mapContextToProps = (context, { dataKey }) => {
   let { data, x, y, xScale, yScale } = context;
   return {
-    data,
+    data: data.filter(
+      d => xScale(x(d)) !== undefined && yScale(y[dataKey](d)) !== undefined
+    ), //fix bug when zoom category scale line
     x,
     y: y[dataKey],
     xScale,

@@ -86,10 +86,13 @@ export default class Marker extends Component {
         }
       }
     };
+    let bandOffset =
+      xScale.bandwidth && type === "x" ? xScale.bandwidth() / 2 : 0; //support bandscale
+
     return (
       <Group
         top={top}
-        left={left}
+        left={left ? left : bandOffset}
         className={cx(`${PREFIX}-marker-group`, className)}
         clipPath={clipPath}
       >
