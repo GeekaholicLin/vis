@@ -41,6 +41,15 @@ const withNoDefinedData = [
   { name: "Sat", value: 133 },
   { name: "Sun", value: 132 }
 ];
+const multiLines = [
+  { name: "Mon", value: 820, score: 500, class: "a" },
+  { name: "Tue", value: 932, score: 450, class: "c" },
+  { name: "Web", value: 901, score: 480, class: "d" },
+  { name: "Thu", value: 934, score: 300, class: "b" },
+  { name: "Fri", value: 1290, score: 1000, class: "f" },
+  { name: "Sat", value: 1330, score: 700, class: "h" },
+  { name: "Sun", value: 1320, score: 800, class: "g" }
+];
 const margin = { top: 50, right: 50, bottom: 30, left: 50 };
 const chartWidthOptions = {
   range: true,
@@ -456,6 +465,111 @@ storiesOf("LineChart", module)
       />
       <XAxis dataKey={"name"} scale={scaleBand()} />
       <YAxis dataKey={"value"} scale={scaleLinear()} />
+      <Zoom />
+      <Brush top={380} />
+    </ChartProvider>
+  ))
+  .add("multi-lines with the same scale", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+      data={object("data: ", multiLines)}
+      clip={true}
+      title={customTitle}
+    >
+      <Grid
+        grid={select(
+          "grid type: ",
+          {
+            auto: "auto",
+            row: "row",
+            column: "column"
+          },
+          "row"
+        )}
+      />
+      <Curve
+        stroke={color("curve1 stroke color: ", "steelblue")}
+        dataKey={"value"}
+      />
+      <Curve
+        stroke={color("curve2 stroke color: ", "purple")}
+        dataKey={"score"}
+      />
+      <Marker
+        value={
+          multiLines.reduce((total, data, index) => (total += data.value), 0) /
+          multiLines.length
+        }
+        label={"蓝色平均值"}
+        labelAnchor={select(
+          "horizontal blue Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "start"
+        )}
+        stroke={"steelblue"}
+      />
+      <Marker
+        value={
+          multiLines.reduce((total, data, index) => (total += data.score), 0) /
+          multiLines.length
+        }
+        label={"紫色平均值"}
+        labelAnchor={select(
+          "horizontal purple Marker label anchor: ",
+          {
+            start: "start",
+            middle: "middle",
+            end: "end"
+          },
+          "middle"
+        )}
+        stroke={"purple"}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis dataKey={"value"} scale={scaleLinear()} />
+      <Zoom />
+      <Brush top={380} />
+    </ChartProvider>
+  ))
+  .add("multi-lines with different scales", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+      data={object("data: ", multiLines)}
+      clip={true}
+      title={customTitle}
+    >
+      <Curve
+        stroke={color("curve1 stroke color: ", "steelblue")}
+        dataKey={"value"}
+        yAxisId={"value"}
+      />
+      <Curve
+        stroke={color("curve2 stroke color: ", "purple")}
+        dataKey={"score"}
+        yAxisId={"value"}
+      />
+      <Curve
+        stroke={color("curve3 stroke color: ", "blue")}
+        dataKey={"class"}
+        yAxisId={"class"}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis
+        dataKey={"class"}
+        yAxisId={"class"}
+        scale={scaleBand()}
+        domain={multiLines.map(obj => obj.class).sort()}
+        orientation={"right"}
+      />
+      <YAxis dataKey={"value"} yAxisId={"value"} scale={scaleLinear()} />
       <Zoom />
       <Brush top={380} />
     </ChartProvider>
