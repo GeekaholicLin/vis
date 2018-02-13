@@ -4,10 +4,11 @@ import { XAxis } from "components";
 import withSubscriber from "../withSubscriber";
 import { keyWrapper } from "ultis";
 
-const mapContextToProps = ({ height, margin, xScale }) => {
+const mapContextToProps = ({ height, margin, xScale }, { orientation }) => {
+  let innerHeight = height - margin.top - margin.bottom;
   return {
     scale: xScale, // must to map this because scale is copied in hoistPropsToContext
-    top: height - margin.top - margin.bottom
+    top: orientation === "top" ? 0 : innerHeight
   };
 };
 const hoistPropsToContext = (
@@ -27,11 +28,11 @@ const hoistPropsToContext = (
     xScale
   };
 };
-const mapPropsToBrush = brushContext => {
+const mapPropsToBrush = (brushContext, {}, {}, { orientation }) => {
   let { xScale, height: brushHeight } = brushContext;
   return {
     scale: xScale.copy(),
-    top: brushHeight
+    top: orientation === "top" ? 0 : brushHeight //brushHeight is default
   };
 };
 const skipPropsKeys = ["dataKey", "scale", "domain", "range"];

@@ -18,6 +18,7 @@ export default class Marker extends Component {
       value,
       top,
       left,
+      stroke,
       label,
       labelAnchor,
       xScale, //get from Chat Component
@@ -100,7 +101,7 @@ export default class Marker extends Component {
           from={from}
           to={to}
           className={`${PREFIX}-marker-line`}
-          stroke="red"
+          stroke={stroke}
           fill="none"
         />
         {_.isString(label) ? (
@@ -124,6 +125,7 @@ Marker.propTypes = {
   value: PropTypes.any,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   labelAnchor: PropTypes.oneOf(["start", "middle", "end"]),
+  stroke: PropTypes.string,
   ...Line.propTypes,
   clipPath: PropTypes.string
 };
@@ -131,5 +133,6 @@ Marker.defaultProps = {
   ...Line.defaultProps,
   type: "y",
   label: "",
-  labelAnchor: "start"
+  labelAnchor: "start",
+  stroke: "red"
 };
