@@ -25,14 +25,17 @@ export default class Curve extends Component {
     let lineGenerator = line()
       .x(d => xScale(x(d)))
       .y(d => yScale(y(d)));
-    let bandOffset = xScale.bandwidth ? xScale.bandwidth() / 2 : 0; //support bandscale
+    let bandOffsetX = xScale.bandwidth ? xScale.bandwidth() / 2 : 0; //support bandscale
+    let bandOffsetY = yScale.bandwidth ? yScale.bandwidth() / 2 : 0; //support bandscale
     defined && lineGenerator.defined(defined);
     curve && lineGenerator.curve(curve);
     return (
       <path
         className={cx(`${PREFIX}-curve`, className)}
-        d={lineGenerator(data)}
-        transform={`translate(${left ? left : bandOffset},${top})`}
+        d={d}
+        transform={`translate(${left ? left : bandOffsetX},${
+          top ? top : bandOffsetY
+        })`}
         {...rest}
       />
     );
