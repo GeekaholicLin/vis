@@ -11,6 +11,7 @@ import {
 } from "@storybook/addon-knobs";
 import { schemeCategory20, scaleLinear, scaleBand } from "d3-scale";
 import { extent, max } from "d3-array";
+import { SYMBOLS_MAP } from "../src/constant/d3.constant";
 
 import {
   ChartProvider,
@@ -20,7 +21,8 @@ import {
   Grid,
   Marker,
   Zoom,
-  Brush
+  Brush,
+  Legend
 } from "../src/HOC";
 
 const lineData = [
@@ -572,5 +574,113 @@ storiesOf("LineChart", module)
       <YAxis dataKey={"value"} yAxisId={"value"} scale={scaleLinear()} />
       <Zoom />
       <Brush top={380} />
+    </ChartProvider>
+  ))
+  .add("with Legend", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+      data={object("data: ", multiLines)}
+      clip={true}
+      title={customTitle}
+    >
+      <Curve
+        stroke={color("curve1 stroke color: ", "steelblue")}
+        dataKey={"value"}
+        yAxisId={"value"}
+      />
+      <Curve
+        stroke={color("curve2 stroke color: ", "purple")}
+        dataKey={"score"}
+        yAxisId={"value"}
+      />
+      <Curve
+        stroke={color("curve3 stroke color: ", "blue")}
+        dataKey={"class"}
+        yAxisId={"class"}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis
+        dataKey={"class"}
+        yAxisId={"class"}
+        scale={scaleBand()}
+        domain={multiLines.map(obj => obj.class).sort()}
+        orientation={"right"}
+      />
+      <YAxis dataKey={"value"} yAxisId={"value"} scale={scaleLinear()} />
+      <Zoom />
+      <Brush top={380} />
+      <Legend type={"key"} />
+    </ChartProvider>
+  ))
+  .add("with custom Legend", () => (
+    <ChartProvider
+      width={number("chart width: ", 500, chartWidthOptions)}
+      height={500}
+      margin={{ top: 50, right: 50, bottom: 110, left: 50 }}
+      data={object("data: ", multiLines)}
+      clip={true}
+      title={customTitle}
+    >
+      <Curve
+        stroke={color("curve1 stroke color: ", "steelblue")}
+        dataKey={"value"}
+        yAxisId={"value"}
+      />
+      <Curve
+        stroke={color("curve2 stroke color: ", "purple")}
+        dataKey={"score"}
+        yAxisId={"value"}
+      />
+      <Curve
+        stroke={color("curve3 stroke color: ", "blue")}
+        dataKey={"class"}
+        yAxisId={"class"}
+      />
+      <XAxis dataKey={"name"} scale={scaleBand()} />
+      <YAxis
+        dataKey={"class"}
+        yAxisId={"class"}
+        scale={scaleBand()}
+        domain={multiLines.map(obj => obj.class).sort()}
+        orientation={"right"}
+      />
+      <YAxis dataKey={"value"} yAxisId={"value"} scale={scaleLinear()} />
+      <Zoom />
+      <Brush top={380} />
+      <Legend
+        type={"key"}
+        style={object("Legend style: ", {
+          position: "absolute",
+          right: -100,
+          top: 0,
+          width: 100,
+          padding: "10px",
+          backgroundColor: "rgba(173, 169, 169, 0.75)",
+          borderRadius: "5px",
+          boxSizing: "border-box",
+          border: "1px solid rgba(0,0,0,0.95)"
+        })}
+        title={text("Legend title: ", "mock")}
+        titleStyle={object("legend's title style: ", {
+          color: "#000"
+        })}
+        items={object(
+          "Legend items: ",
+          ["custom-value", "custom-score", "custom-class"].map((key, i) => {
+            return {
+              name: key.split("-")[1],
+              icon: Object.keys(SYMBOLS_MAP).slice(i, i + 1)[0],
+              iconProps: {
+                fill: ["steelblue", "purple", "blue"].slice(i, i + 1)[0]
+              },
+              selected: i % 2 === 0,
+              label: key
+            };
+          })
+        )}
+        inactiveColor={color("inactive Color: ", "#F8E71C")}
+      />
     </ChartProvider>
   ));
