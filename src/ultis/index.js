@@ -9,7 +9,8 @@ export {
   valueGetter,
   getValueByKeyOrFunc,
   getValuesArrByKeyOrFunc,
-  generatePropsWithDataKey
+  generatePropsWithDataKey,
+  generateLegendColorsWithDataKey
 } from "./components.tool";
 export {
   addInvertForScale,

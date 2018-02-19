@@ -133,3 +133,14 @@ export function generatePropsWithDataKey(dataKey, originalProps = {}) {
     });
   } else return originalProps;
 }
+
+export function generateLegendColorsWithDataKey(
+  dataKey = "default",
+  color = "steelblue"
+) {
+  return {
+    __legendColors__: {
+      [dataKey]: color
+    }
+  };
+}

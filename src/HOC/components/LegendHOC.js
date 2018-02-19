@@ -10,6 +10,8 @@ const mapContextToProps = ({
   __updateStateInContext__,
   __updatedState__
 }) => {
+    __legendColors__,
+                fill: __legendColors__[key]
   return {
     items: data.map((d, i) => {
       return {
