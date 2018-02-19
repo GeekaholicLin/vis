@@ -17,6 +17,10 @@ const mapContextToProps = (context, { dataKey, yAxisId = DEFAULT_YAXISID }) => {
     y: y[dataKey],
     xScale,
     yScale: yScale[yAxisId]
+    hidden:
+      __legendSelectedItems__ === "all"
+        ? false
+        : __legendSelectedItems__.indexOf(dataKey) < 0
   };
 };
 const mapPropsToBrush = (
@@ -29,6 +33,10 @@ const mapPropsToBrush = (
   return {
     xScale: xScale.copy(),
     yScale: yScale[yAxisId].copy().range([brushHeight, 0])
+    hidden:
+      __legendSelectedItems__ === "all"
+        ? false
+        : __legendSelectedItems__.indexOf(dataKey) < 0
   };
 };
 const hoistPropsToContext = ({ dataKey, stroke }) => {

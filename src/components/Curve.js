@@ -20,6 +20,7 @@ export default class Curve extends Component {
       y,
       defined,
       curve,
+      hidden,
       ...rest
     } = this.props;
     let lineGenerator = line()
@@ -29,7 +30,8 @@ export default class Curve extends Component {
     let bandOffsetY = yScale.bandwidth ? yScale.bandwidth() / 2 : 0; //support bandscale
     defined && lineGenerator.defined(defined);
     curve && lineGenerator.curve(curve);
-    return (
+    let d = lineGenerator(data);
+    return /NaN/.test(d) || hidden ? null : (
       <path
         className={cx(`${PREFIX}-curve`, className)}
         d={d}
@@ -51,9 +53,11 @@ Curve.propTypes = {
   y: PropTypes.func.isRequired,
   defined: PropTypes.func,
   curve: PropTypes.func,
+  hidden: PropTypes.bool,
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Curve.defaultProps = {
   fill: "none",
+  hidden: false,
   ..._.pick(ALL_DEFAULT_PROPS, ["left", "top", "stroke", "strokeWidth"])
 };
