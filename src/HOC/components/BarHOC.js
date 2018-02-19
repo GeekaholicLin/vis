@@ -107,10 +107,6 @@ const mapPropsToBrush = (brushContext, brushProps, {}, selfProps) => {
           width: xScale.bandwidth ? xScale.bandwidth() : 0,
           height: y ? d => brushHeight - brushYScale(y[dataKey](d)) : 0
         };
-  return {
-    xScale: xScale.copy(),
-    yScale: yScale.copy().range([brushHeight, 0])
-  };
 };
 const hoistPropsToContext = ({ dataKey, stackId, groupId }) => {
   let original = !_.isNil(stackId)
