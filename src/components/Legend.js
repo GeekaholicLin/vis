@@ -26,7 +26,10 @@ export default class Legend extends Component {
       },
       () => {
         onLegendItemClick &&
-          onLegendItemClick({ ...obj, selected: !selectedArr[index] });
+          onLegendItemClick({
+            ...obj,
+            selected: !selectedArr[index]
+          });
       }
     );
   };

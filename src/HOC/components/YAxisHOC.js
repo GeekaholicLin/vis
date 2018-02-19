@@ -36,7 +36,7 @@ const hoistPropsToContext = (
     }
   });
 };
-const skipPropsKeys = ["dataKey", "scale", "domain", "range"];
+const skipPropsKeys = ["dataKey", "scale", "domain", "range", "yAxisId"];
 const componentRenderSide = "outer";
 
 export default withSubscriber({
