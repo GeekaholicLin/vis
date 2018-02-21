@@ -57,7 +57,7 @@ export function generateStackData(
   stackKeys,
   stackValue,
   stackOrder,
-  stackOffset = "expand"
+  stackOffset
 ) {
   let stackGenerator = stack();
   stackGenerator.keys(stackKeys);
