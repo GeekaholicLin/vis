@@ -7,7 +7,8 @@ import {
   getChartColors,
   generatePropsWithDataKey,
   keyWrapper,
-  generateStackData
+  generateStackData,
+  generateLegendColorsWithDataKey
 } from "ultis";
 
 function getGroupScale(xScale, groupId, __groupId__) {
@@ -20,7 +21,16 @@ function getGroupScale(xScale, groupId, __groupId__) {
     .rangeRound([0, xScale ? xScale.bandwidth() : 1]);
 }
 const mapContextToProps = (
-  { data, x, y, xScale, yScale, __stackId__, __groupId__ },
+  {
+    data,
+    x,
+    y,
+    xScale,
+    yScale,
+    __stackId__,
+    __groupId__,
+    __legendSelectedItems__ = "all"
+  },
   { dataKey, stackId, groupId, stackValue, stackOrder, stackOffset = "expand" }
 ) => {
   //stack
@@ -74,6 +84,7 @@ const mapPropsToBrush = (brushContext, brushProps, {}, selfProps) => {
     __groupId__,
     __stackId__
   } = brushContext;
+  let { __legendSelectedItems__ = "all" } = __chartProviderContext__;
   let {
     dataKey,
     groupId,
@@ -114,7 +125,7 @@ const mapPropsToBrush = (brushContext, brushProps, {}, selfProps) => {
           height: y ? d => brushHeight - brushYScale(y[dataKey](d)) : 0
         };
 };
-const hoistPropsToContext = ({ dataKey, stackId, groupId }) => {
+const hoistPropsToContext = ({ dataKey, stackId, groupId, fill }) => {
   let original = !_.isNil(stackId)
     ? {
         ["__stackId__"]: {
@@ -132,7 +143,10 @@ const hoistPropsToContext = ({ dataKey, stackId, groupId }) => {
           }
         }
       : {};
-  return generatePropsWithDataKey(dataKey, original);
+  return generatePropsWithDataKey(
+    dataKey,
+    Object.assign({}, original, generateLegendColorsWithDataKey(dataKey, fill))
+  );
 };
 const skipPropsKeys = [
   "dataKey",
