@@ -33,6 +33,10 @@ const mapContextToProps = (
 
   //group
   let groupScale = groupId && getGroupScale(xScale, groupId, __groupId__);
+  let isHidden =
+    __legendSelectedItems__ === "all"
+      ? false
+      : __legendSelectedItems__.indexOf(dataKey) < 0;
   return isStack
     ? {
         data: [...stackDataArr[stackIndex]],
@@ -40,6 +44,7 @@ const mapContextToProps = (
         top: y ? d => yScale(d[1]) : 0,
         width: xScale.bandwidth ? xScale.bandwidth() : 1,
         height: y ? d => yScale(d[0]) - yScale(d[1]) : 0
+        hidden: isHidden
       }
     : groupId
       ? {
@@ -55,6 +60,7 @@ const mapContextToProps = (
           top: y ? d => yScale(y[dataKey](d)) : 0,
           width: xScale.bandwidth ? xScale.bandwidth() : 0,
           height: y ? d => innerHeight - yScale(y[dataKey](d)) : 0
+          hidden: isHidden
         };
 };
 const mapPropsToBrush = (brushContext, brushProps, {}, selfProps) => {

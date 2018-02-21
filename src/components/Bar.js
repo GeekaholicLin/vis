@@ -25,9 +25,10 @@ export default class Bar extends Component {
       rx,
       ry,
       fill,
+      hidden,
       ...rest
     } = this.props;
-    return (
+    return hidden ? null : (
       <Group className={cx(`${PREFIX}-bar-group`, className)}>
         {data.map((d, i) => {
           return (
@@ -54,10 +55,12 @@ Bar.propTypes = {
   className: PropTypes.string,
   data: PropTypes.array,
   ...Rect.propTypes,
-  fill: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
+  fill: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+  hidden: PropTypes.bool
 };
 Bar.defaultProps = {
   ...Rect.defaultProps,
   fill: "steelblue",
-  stroke: "none"
+  stroke: "none",
+  hidden: false
 };
