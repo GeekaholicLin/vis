@@ -16,20 +16,30 @@ const DEFAULT_YAXISID = "__default__";
 function getGroupScale(
   xScale,
   groupId,
+  __stackId__ = {},
   __groupId__,
-  stackIds = [],
   intersection = "all"
 ) {
   let childCateKeys = !_.isNil(groupId)
     ? Object.keys(__groupId__[groupId])
     : []; //child
+  let stackIds = Object.keys(__stackId__);
+  let groupedStackIds = [...stackIds];
   // make stackIds be domain as well
+  intersection !== "all" &&
+    stackIds.forEach(id => {
+      let idKeys = Object.keys(__stackId__[id] || {});
+      // if all of this stackId keys are not selected, remove from stackIds
+      if (_.intersection(intersection, idKeys).length === 0) {
+        groupedStackIds = groupedStackIds.filter(gId => gId !== id);
+      }
+    });
   return scaleBand()
     .padding(0.05)
     .domain(
       intersection === "all"
-        ? childCateKeys.concat(stackIds)
-        : _.intersection(childCateKeys.concat(stackIds), intersection)
+        ? childCateKeys.concat(groupedStackIds)
+        : _.intersection(childCateKeys, intersection).concat(groupedStackIds)
     )
     .rangeRound([0, xScale ? xScale.bandwidth() : 1]);
 }
@@ -77,8 +87,8 @@ const mapContextToProps = (
     getGroupScale(
       xScale,
       groupId,
+      __stackId__,
       __groupId__,
-      Object.keys(__stackId__ || {}),
       __legendSelectedItems__
     );
   let bandoffset =
@@ -173,8 +183,8 @@ const mapPropsToBrush = (
     getGroupScale(
       xScale,
       groupId,
+      __stackId__,
       __groupId__,
-      Object.keys(__stackId__ || {}),
       __legendSelectedItems__
     );
   let brushBandoffset =
