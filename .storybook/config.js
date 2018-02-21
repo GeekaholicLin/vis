@@ -16,7 +16,9 @@ setOptions({
 const req = require.context("../stories", true, /\.stories\.js$/);
 
 function loadStories() {
-  req.keys().forEach(filename => req(filename)); //Loading stories dynamically
+  // req.keys().forEach(filename => req(filename)); //Loading stories dynamically
+  require("../stories/LineChart.stories");
+  require("../stories/BarChart.stories");
 }
 
 configure(loadStories, module);
