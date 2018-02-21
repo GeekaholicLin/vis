@@ -4,6 +4,8 @@ import cx from "classnames";
 import _ from "lodash";
 import { select } from "d3-selection";
 import Group from "./Group";
+import ClipPath from "./ClipPath";
+import Rect from "./Rect";
 import { PREFIX, BRUSH_TYPE_MAP, DEFAULT_PROPS } from "../constant";
 
 export default class Brush extends Component {
@@ -14,6 +16,7 @@ export default class Brush extends Component {
     this.node = null;
     this.defaultMoveProp = null;
     this.counter = 0;
+    this.uniqueId = _.uniqueId("brush-");
   }
 
   componentDidMount() {
@@ -80,7 +83,15 @@ export default class Brush extends Component {
     }
   }
   render() {
-    let { className, children, left, top } = this.props;
+    let {
+      className,
+      children,
+      left,
+      top,
+      width,
+      height,
+      outerChildren
+    } = this.props;
     return (
       <Group
         className={cx(`${PREFIX}-brush`, className)}
@@ -90,7 +101,18 @@ export default class Brush extends Component {
           this.node = node;
         }}
       >
-        {children}
+        <ClipPath id={`${this.uniqueId}-clip-path`}>
+          <Rect width={width} height={height} fill={"none"} left={0} top={0} />
+        </ClipPath>
+        <Group
+          className={`${PREFIX}-brush-inner`}
+          clipPath={`url(#${this.uniqueId}-clip-path`}
+        >
+          {children}
+        </Group>
+        {outerChildren ? (
+          <Group className={`${PREFIX}-brush-outer`}>{outerChildren}</Group>
+        ) : null}
       </Group>
     );
   }
@@ -108,7 +130,8 @@ Brush.propTypes = {
   extent: PropTypes.array,
   filter: PropTypes.func,
   handleSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  listener: PropTypes.object
+  listener: PropTypes.object,
+  outerChildren: PropTypes.any
 };
 Brush.defaultProps = {
   type: "x",

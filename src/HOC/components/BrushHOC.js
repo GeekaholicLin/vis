@@ -5,6 +5,31 @@ import { zoomIdentity } from "d3-zoom";
 import withSubscriber from "../withSubscriber";
 import { BRUSHCHANNEL } from "constant";
 import { addInvertForScale } from "ultis";
+const splitContent = (
+  { children, brushContext, __brushProviderProps__, __chartProviderContext__ },
+  innerOrOuter = "inner"
+) => {
+  return React.Children.map(children, child => {
+    if (
+      child &&
+      child.props &&
+      child.props.__brushStoringProps__ &&
+      (innerOrOuter === "inner"
+        ? child.props.__clip__ !== "outer"
+        : child.props.__clip__ === "outer")
+    ) {
+      return React.cloneElement(child, {
+        ...child.props.__brushStoringProps__(
+          brushContext,
+          __brushProviderProps__,
+          __chartProviderContext__,
+          child.props
+        ),
+        channel: BRUSHCHANNEL //change brush children's chart channel to brush channel
+      });
+    } else return null;
+  });
+};
 const mapContextToProps = ({
   __brushProviderProps__,
   __chartProviderContext__,
@@ -98,19 +123,21 @@ const mapContextToProps = ({
         }
       }
     },
-    children: React.Children.map(children, child => {
-      if (child && child.props && child.props.__brushStoringProps__) {
-        return React.cloneElement(child, {
-          ...child.props.__brushStoringProps__(
-            brushContext,
-            __brushProviderProps__,
-            __chartProviderContext__,
-            child.props
-          ),
-          channel: BRUSHCHANNEL //change brush children's chart channel to brush channel
-        });
-      } else return null;
-    })
+    children: splitContent({
+      children,
+      brushContext,
+      __brushProviderProps__,
+      __chartProviderContext__
+    }),
+    outerChildren: splitContent(
+      {
+        children,
+        brushContext,
+        __brushProviderProps__,
+        __chartProviderContext__
+      },
+      "outer"
+    )
   };
 };
 const subscriberChannel = BRUSHCHANNEL; //set brush in brush channel
