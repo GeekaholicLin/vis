@@ -146,7 +146,7 @@ export default class ChartProvider extends Component {
             <ClipPath id={`${chartNamespace}-clip-path`}>
               <Rect
                 width={innerWidth}
-                height={innerHeight + 20}
+                height={innerHeight}
                 fill={"none"}
                 left={0}
                 top={0}
