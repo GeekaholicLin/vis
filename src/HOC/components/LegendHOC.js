@@ -35,7 +35,6 @@ const mapContextToProps = (
                 ? Object.keys(y)
                 : __legendSelectedItems__
             );
-            console.log("Array.from(selectedSet)", Array.from(selectedSet));
             selected ? selectedSet.add(name) : selectedSet.delete(name);
             __addedPropsToContext__({
               __legendSelectedItems__: Array.from(selectedSet)
