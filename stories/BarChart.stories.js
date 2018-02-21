@@ -933,4 +933,55 @@ storiesOf("BarChart", module)
         <Legend {...barLegnedSettings} />
       </ChartProvider>
     );
+  })
+  .add("mixed grouped and stacked BarChart-2 with Legend", () => {
+    let dynamicProps = [
+      { stackId: "mixed-stack-1", groupId: "mixed-group" },
+      { stackId: "mixed-stack-2", groupId: "mixed-group" },
+      { groupId: "mixed-group" }
+    ];
+    return (
+      <ChartProvider
+        width={number("chart width: ", 500, chartWidthOptions)}
+        height={500}
+        margin={margin}
+        data={object("data: ", barData)}
+        title={"柱形图"}
+        clip={true}
+      >
+        <Grid
+          grid={select(
+            "grid type: ",
+            {
+              auto: "auto",
+              row: "row",
+              column: "column"
+            },
+            "column"
+          )}
+        />
+        {Object.keys(barKeyObject).map((key, i) => (
+          <Bar
+            key={key}
+            dataKey={key}
+            fill={color(
+              "bar-" + (i + 1) + "'s color: ",
+              ["steelblue", "purple", "red", "blue", "green"][i]
+            )}
+            {...dynamicProps[i % 3]}
+          />
+        ))}
+        <XAxis
+          dataKey={"Education"}
+          scale={scaleBand()
+            .round(true)
+            .padding(0.1)}
+          tickPadding={0.1}
+        />
+        <YAxis domain={[0, 16000]} scale={scaleLinear()} tickPadding={0.1} />
+        <Zoom />
+        <Brush top={380} />
+        <Legend {...barLegnedSettings} />
+      </ChartProvider>
+    );
   });
