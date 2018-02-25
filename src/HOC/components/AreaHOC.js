@@ -18,7 +18,7 @@ const mapContextToProps = (
     stackId,
     stackValue,
     stackOrder,
-    stackOffset = "expand",
+    stackOffset,
     yAxisId = DEFAULT_YAXISID
   }
 ) => {
@@ -29,12 +29,14 @@ const mapContextToProps = (
   let stackDataArr = isStack
     ? generateStackData(data, stackKeys, stackValue, stackOrder, stackOffset)
     : data;
+  let thisYScale = yScale[yAxisId];
+  let offset = thisYScale.bandwidth ? thisYScale.bandwidth() / 2 : 0;
   return isStack
     ? {
         data: [...stackDataArr[stackIndex]],
         x: d => x(d.data),
         xScale,
-        yScale: yScale[yAxisId],
+        yScale: thisYScale,
         y0: d => d[0],
         y1: d => d[1]
       }
@@ -43,8 +45,8 @@ const mapContextToProps = (
         x,
         y: y ? y[dataKey] : keyWrapper(dataKey),
         xScale,
-        yScale: yScale[yAxisId],
-        y0: () => 0,
+        yScale: thisYScale,
+        y0: () => thisYScale.domain()[0],
         y1: y ? y[dataKey] : keyWrapper(dataKey)
       };
 };
@@ -73,7 +75,8 @@ const skipPropsKeys = [
   "groupId",
   "stackValue",
   "stackOrder",
-  "stackOffset"
+  "stackOffset",
+  "yAxisId"
 ];
 
 export default withSubscriber({

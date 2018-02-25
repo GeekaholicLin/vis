@@ -19,6 +19,7 @@ function loadStories() {
   // req.keys().forEach(filename => req(filename)); //Loading stories dynamically
   require("../stories/LineChart.stories");
   require("../stories/BarChart.stories");
+  require("../stories/AreaChart.stories");
 }
 
 configure(loadStories, module);
