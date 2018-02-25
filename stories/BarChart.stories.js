@@ -23,6 +23,7 @@ import {
   Brush,
   Legend
 } from "../src/HOC";
+import { Gradient } from "../src/components";
 import { PatternLines } from "@vx/pattern";
 
 const margin = { top: 50, right: 50, bottom: 110, left: 50 };
@@ -979,6 +980,137 @@ storiesOf("BarChart", module)
           tickPadding={0.1}
         />
         <YAxis domain={[0, 16000]} scale={scaleLinear()} tickPadding={0.1} />
+        <Zoom />
+        <Brush top={380} />
+        <Legend {...barLegnedSettings} />
+      </ChartProvider>
+    );
+  })
+  .add("stacked BarChart with Gradient", () => {
+    return (
+      <ChartProvider
+        width={number("chart width: ", 500, chartWidthOptions)}
+        height={500}
+        margin={margin}
+        data={object("data: ", barData)}
+        title={"堆叠柱形图"}
+        clip={true}
+      >
+        <Gradient id="stackarea-chart1" colors={["#5EFCE8", "#736EFE"]} />
+        <Gradient id="stackarea-chart2" colors={["#FDD819", "#E80505"]} />
+        <Gradient id="stackarea-chart3" colors={["#FFFE9F", "#FCA180"]} />
+        <Gradient id="stackarea-chart4" colors={["#FFF3B0", "#CA26FF"]} />
+        <Gradient id="stackarea-chart5" colors={["#ABDCFF", "#0396FF"]} />
+        <Grid
+          grid={select(
+            "grid type: ",
+            {
+              auto: "auto",
+              row: "row",
+              column: "column"
+            },
+            "column"
+          )}
+        />
+        {Object.keys(barKeyObject).map((key, i) => (
+          <Bar
+            key={key}
+            dataKey={key}
+            fill={`url(#stackarea-chart${i + 1})`}
+            stackId={"stack-bar"}
+          />
+        ))}
+        <XAxis
+          dataKey={"Education"}
+          scale={scaleBand()
+            .round(true)
+            .padding(0.1)}
+          tickPadding={0.1}
+        />
+        <YAxis domain={[0, 40000]} scale={scaleLinear()} tickPadding={0.1} />
+        <Zoom />
+        <Brush top={380} />
+        <Legend {...barLegnedSettings} />
+      </ChartProvider>
+    );
+  })
+  .add("stacked BarChart with Patterns", () => {
+    return (
+      <ChartProvider
+        width={number("chart width: ", 500, chartWidthOptions)}
+        height={500}
+        margin={margin}
+        data={object("data: ", barData)}
+        title={"堆叠柱形图"}
+        clip={true}
+      >
+        <PatternLines
+          id="stackarea-chart1"
+          height={5}
+          width={5}
+          stroke={"#736EFE"}
+          strokeWidth={1}
+          orientation={["diagonal"]}
+        />
+        <PatternLines
+          id="stackarea-chart2"
+          height={5}
+          width={5}
+          stroke={"#E80505"}
+          strokeWidth={1}
+          orientation={["diagonal"]}
+        />
+        <PatternLines
+          id="stackarea-chart3"
+          height={5}
+          width={5}
+          stroke={"#FCA180"}
+          strokeWidth={1}
+          orientation={["diagonal"]}
+        />
+        <PatternLines
+          id="stackarea-chart4"
+          height={5}
+          width={5}
+          stroke={"#CA26FF"}
+          strokeWidth={1}
+          orientation={["diagonal"]}
+        />
+        <PatternLines
+          id="stackarea-chart5"
+          height={5}
+          width={5}
+          stroke={"#0396FF"}
+          strokeWidth={1}
+          orientation={["diagonal"]}
+        />
+        <Grid
+          grid={select(
+            "grid type: ",
+            {
+              auto: "auto",
+              row: "row",
+              column: "column"
+            },
+            "column"
+          )}
+        />
+        {Object.keys(barKeyObject).map((key, i) => (
+          <Bar
+            key={key}
+            dataKey={key}
+            fill={`url(#stackarea-chart${i + 1})`}
+            stackId={"stack-bar"}
+          />
+        ))}
+        <XAxis
+          dataKey={"Education"}
+          scale={scaleBand()
+            .round(true)
+            .padding(0.1)}
+          tickPadding={0.1}
+        />
+        <YAxis domain={[0, 40000]} scale={scaleLinear()} tickPadding={0.1} />
         <Zoom />
         <Brush top={380} />
         <Legend {...barLegnedSettings} />
