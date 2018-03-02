@@ -36,8 +36,11 @@ const mapContextToProps = (
                 : __legendSelectedItems__
             );
             selected ? selectedSet.add(name) : selectedSet.delete(name);
+            let selectedArr = Array.from(selectedSet);
             __addedPropsToContext__({
-              __legendSelectedItems__: Array.from(selectedSet)
+              __legendSelectedItems__: Object.keys(y).filter(
+                key => selectedArr.indexOf(key) > -1
+              )
             });
           }
         }
