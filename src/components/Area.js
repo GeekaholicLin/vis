@@ -24,6 +24,7 @@ export default class Area extends Component {
       curve,
       xScale,
       yScale,
+      hidden,
       ...rest
     } = this.props;
     const areaGenerator = area();
@@ -35,7 +36,7 @@ export default class Area extends Component {
     y1 && areaGenerator.y1(d => yScale(y1(d)));
     defined && areaGenerator.defined(defined);
     curve && areaGenerator.curve(curve);
-    return (
+    return hidden ? null : (
       <path
         className={cx(`${PREFIX}-area`, className)}
         d={areaGenerator(data)}
@@ -59,9 +60,11 @@ Area.propTypes = {
   yScale: PropTypes.func.isRequired,
   defined: PropTypes.func,
   curve: PropTypes.func,
+  hidden: PropTypes.bool,
   ..._.pick(ALL_COMMON_PROPTYPES, ["left", "top"])
 };
 Area.defaultProps = {
   ..._.pick(ALL_DEFAULT_PROPS, ["left", "top"]),
-  stroke: "none"
+  stroke: "none",
+  hidden: false
 };
