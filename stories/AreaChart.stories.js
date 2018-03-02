@@ -9,7 +9,13 @@ import {
   select,
   boolean
 } from "@storybook/addon-knobs";
-import { schemeCategory20, scaleLinear, scaleTime, scaleBand } from "d3-scale";
+import {
+  schemeCategory20,
+  scaleLinear,
+  scaleTime,
+  scaleBand,
+  scalePoint
+} from "d3-scale";
 import { extent, max } from "d3-array";
 import { SYMBOLS_MAP } from "../src/constant/d3.constant";
 import {
@@ -51,7 +57,7 @@ let areaLegnedSettings = {
     border: "1px solid rgba(0,0,0,0.95)",
     fontSize: "12px"
   },
-  title: "bar legend",
+  title: "area legend",
   titleStyl: { color: "#000" },
   inactiveColor: "#fff"
 };
@@ -271,51 +277,142 @@ storiesOf("AreaChart", module)
         <Brush top={380} />
       </ChartProvider>
     );
+  })
+  .add("multi-area with defferent scales", () => {
+    return (
+      <ChartProvider
+        width={number("chart width: ", 600, chartWidthOptions)}
+        height={500}
+        margin={margin}
+        data={areaData}
+        clip={true}
+      >
+        <Area
+          dataKey={"close"}
+          fill={color("area color 1: ", "steelblue")}
+          yAxisId={"area-close"}
+        />
+        <Curve
+          stroke={color("line color: ", "#0E5DA0")}
+          dataKey={"close"}
+          yAxisId={"area-close"}
+        />
+        <Area
+          dataKey={"degree"}
+          fill={color("area color 2: ", "#82BBEC")}
+          yAxisId={"area-degree"}
+        />
+        <XAxis dataKey={"date"} scale={scaleTime()} label={"时间"} />
+        <YAxis
+          dataKey={"close"}
+          scale={scaleLinear()}
+          tickPadding={0.1}
+          label={"所占比例"}
+          yAxisId={"area-close"}
+        />
+        {/* should use `scalePoint` */}
+        <YAxis
+          orientation={"right"}
+          dataKey={"degree"}
+          scale={scalePoint()}
+          tickPadding={0.1}
+          label={"所在等级"}
+          yAxisId={"area-degree"}
+        />
+        <Zoom />
+        <Brush top={380} />
+      </ChartProvider>
+    );
+  })
+  .add("stacked AreaChart", () => {
+    return (
+      <ChartProvider
+        width={number("chart width: ", 600, chartWidthOptions)}
+        height={500}
+        margin={margin}
+        data={originAreaData}
+        clip={true}
+      >
+        <Gradient id="stackarea-chart1" colors={["#5EFCE8", "#736EFE"]} />
+        <Gradient id="stackarea-chart2" colors={["#FDD819", "#E80505"]} />
+        <Gradient id="stackarea-chart3" colors={["#FFFE9F", "#FCA180"]} />
+        <Gradient id="stackarea-chart4" colors={["#FFF3B0", "#CA26FF"]} />
+        <Gradient id="stackarea-chart5" colors={["#ABDCFF", "#0396FF"]} />
+        <Gradient id="stackarea-chart6" colors={["#5EFCE8", "#736EFE"]} />
+        <Gradient id="stackarea-chart7" colors={["#FDD819", "#E80505"]} />
+        <Gradient id="stackarea-chart8" colors={["#FFFE9F", "#FCA180"]} />
+        {Object.keys(originAreaData[0])
+          .filter(key => key !== "date")
+          .map((key, i) => (
+            <Area
+              key={key}
+              dataKey={key}
+              stroke={"none"}
+              fill={`url(#stackarea-chart${i + 1})`}
+              stackId={"browser"}
+              stackOffset={"expand"}
+            />
+          ))}
+        <XAxis
+          dataKey={d => new Date(d.date)}
+          scale={scaleTime()}
+          label={"时间"}
+        />
+        <YAxis
+          dataKey={"close"}
+          scale={scaleLinear()}
+          tickPadding={0.1}
+          label={"比例"}
+          domain={[0, 1]}
+        />
+        <Zoom />
+        <Brush top={380} />
+      </ChartProvider>
+    );
+  })
+  .add("stacked AreaChart with Legend", () => {
+    return (
+      <ChartProvider
+        width={number("chart width: ", 600, chartWidthOptions)}
+        height={500}
+        margin={margin}
+        data={originAreaData}
+        clip={true}
+      >
+        <Gradient id="stackarea-chart1" colors={["#5EFCE8", "#736EFE"]} />
+        <Gradient id="stackarea-chart2" colors={["#FDD819", "#E80505"]} />
+        <Gradient id="stackarea-chart3" colors={["#FFFE9F", "#FCA180"]} />
+        <Gradient id="stackarea-chart4" colors={["#FFF3B0", "#CA26FF"]} />
+        <Gradient id="stackarea-chart5" colors={["#ABDCFF", "#0396FF"]} />
+        <Gradient id="stackarea-chart6" colors={["#5EFCE8", "#736EFE"]} />
+        <Gradient id="stackarea-chart7" colors={["#FDD819", "#E80505"]} />
+        <Gradient id="stackarea-chart8" colors={["#FFFE9F", "#FCA180"]} />
+        {Object.keys(originAreaData[0])
+          .filter(key => key !== "date")
+          .map((key, i) => (
+            <Area
+              key={key}
+              dataKey={key}
+              stroke={"none"}
+              fill={`url(#stackarea-chart${i + 1})`}
+              stackId={"browser"}
+              stackOffset={"expand"}
+            />
+          ))}
+        <XAxis
+          dataKey={d => new Date(d.date)}
+          scale={scaleTime()}
+          label={"时间"}
+        />
+        <YAxis
+          scale={scaleLinear()}
+          tickPadding={0.1}
+          label={"比例"}
+          domain={[0, 1]}
+        />
+        <Zoom />
+        <Brush top={380} />
+        <Legend {...areaLegnedSettings} />
+      </ChartProvider>
+    );
   });
-// .add("multi-area with defferent scales", () => {
-//   return (
-//     <ChartProvider
-//       width={number("chart width: ", 600, chartWidthOptions)}
-//       height={500}
-//       margin={margin}
-//       data={areaData}
-//       clip={true}
-//     >
-//       <ClipPath />
-//       <Area
-//         dataKey={"close"}
-//         fill={color("area color 1: ", "steelblue")}
-//         yAxisId={"area-close"}
-//       />
-//       <Curve
-//         stroke={color("line color: ", "#0E5DA0")}
-//         dataKey={"close"}
-//         yAxisId={"area-close"}
-//       />
-//       <Curve
-//         dataKey={"degree"}
-//         stroke={color("area color 2: ", "#82BBEC")}
-//         yAxisId={"area-degree"}
-//       />
-//       <Rect width={600} height={500} fill={"yellow"} />
-//       <XAxis dataKey={"date"} scale={scaleTime()} label={"时间"} />
-//       <YAxis
-//         dataKey={"close"}
-//         scale={scaleLinear()}
-//         tickPadding={0.1}
-//         label={"所占比例"}
-//         yAxisId={"area-close"}
-//       />
-//       <YAxis
-//         orientation={"right"}
-//         dataKey={"degree"}
-//         scale={scaleBand()}
-//         tickPadding={0.1}
-//         label={"所在等级"}
-//         yAxisId={"area-degree"}
-//       />
-//       <Zoom />
-//       <Brush top={380} />
-//     </ChartProvider>
-//   );
-// });
