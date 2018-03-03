@@ -6,16 +6,14 @@ const mapContextToProps = (
   {
     y,
     data,
-    fill = ["black"],
-    nameKey = "name",
+    nameKey,
     __legendColors__,
     __legendSelectedItems__,
-    chartNamespace,
     __addedPropsToContext__
   },
   props
 ) => {
-  let { type = "data" } = props;
+  let { type } = props;
   let options =
     type === "key"
       ? {
@@ -45,22 +43,30 @@ const mapContextToProps = (
           }
         }
       : {
+          // for PieChart
           items: data.map((d, i) => {
             return {
               name: getValueByKeyOrFunc(nameKey, d),
               iconProps: {
-                fill: getChartColors(fill, chartNamespace)[i % fill.length]
+                fill: __legendColors__["__pie__"][i % data.length]
               },
               selected: true,
               label: getValueByKeyOrFunc(nameKey, d)
             };
           }),
-          onLegendItemClick: ({ index, selected }) => {
-            let updatedData = __updatedState__.data || data;
-            let result = [...updatedData];
-            result[index] = selected ? data[index] : {};
-            __updateStateInContext__({
-              data: [...result]
+          onLegendItemClick: ({ index, selected, name }) => {
+            let items = data.map(d => getValueByKeyOrFunc(nameKey, d));
+            let selectedSet = new Set(
+              __legendSelectedItems__ === "all"
+                ? items
+                : __legendSelectedItems__
+            );
+            selected ? selectedSet.add(name) : selectedSet.delete(name);
+            let selectedArr = Array.from(selectedSet);
+            __addedPropsToContext__({
+              __legendSelectedItems__: items.filter(
+                key => selectedArr.indexOf(key) > -1
+              )
             });
           }
         };
