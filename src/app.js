@@ -32,6 +32,24 @@ import { PatternLines } from "@vx/pattern";
 import { PREFIX } from "constant";
 import salesData from "data/sales.data";
 import { getRandomGradientColor } from "ultis";
+let pieLegnedSettings = {
+  type: "nameKey",
+  width: 100,
+  style: {
+    position: "absolute",
+    right: -100,
+    top: 50,
+    padding: "10px",
+    backgroundColor: "rgba(173, 169, 169, 0.75)",
+    borderRadius: "5px",
+    boxSizing: "border-box",
+    border: "1px solid rgba(0,0,0,0.95)",
+    fontSize: "12px"
+  },
+  title: "pie legend",
+  titleStyl: { color: "#000" },
+  inactiveColor: "#fff"
+};
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -407,9 +425,7 @@ export default class App extends Component {
 
         <div id="pie-chart2">
           <ChartProvider
-            className="vis-app-pie-chart2"
-            width={960}
-            height={500}
+            margin={{ top: 30, right: 50, bottom: 30, left: 50 }}
             data={[
               { value: 335, name: "直达" },
               { value: 310, name: "邮件营销" },
@@ -420,12 +436,15 @@ export default class App extends Component {
               { value: 147, name: "必应" },
               { value: 102, name: "其他" }
             ]}
-            dataKey={d => d.value}
-            nameKey={"name"}
-            fill={schemeCategory20}
           >
-            <Pie className="pie-chart" innerRadius={50} outerRadius={150} />
-            <Legend title="饼图图例" />
+            <Pie
+              innerRadius={0}
+              outerRadius={200}
+              nameKey={"name"}
+              dataKey={"value"}
+              fill={schemeCategory20}
+            />
+            <Legend {...pieLegnedSettings} />
           </ChartProvider>
         </div>
         <div id="group-bar-chart2">
