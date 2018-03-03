@@ -20,6 +20,7 @@ function loadStories() {
   require("../stories/LineChart.stories");
   require("../stories/BarChart.stories");
   require("../stories/AreaChart.stories");
+  require("../stories/PieChart.stories");
 }
 
 configure(loadStories, module);
